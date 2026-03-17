@@ -7,7 +7,7 @@ export function TodoListsPage() {
   const { todoLists, isLoading, isError, refetch } = useTodoListsPage();
 
   return (
-    <div className="min-h-screen bg-slate-100 flex items-start justify-center py-10 md:py-16 px-4">
+    <div className="flex items-start justify-center py-4 md:py-8">
       <div className="w-full max-w-5xl space-y-6">
         {isError && <TodoListsPageError onRetry={() => refetch()} />}
 

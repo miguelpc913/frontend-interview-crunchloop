@@ -30,7 +30,7 @@ export function TodoList({ todoListId }: TodoListProps) {
   }
 
   return (
-    <div className="w-full max-w-md mx-auto rounded-2xl border border-slate-200/80 bg-white/80 shadow-sm transition-shadow hover:shadow-md font-sans text-slate-900 overflow-hidden">
+    <div className="w-full max-w-md mx-auto rounded-2xl border border-slate-200/80 bg-white/80 shadow-sm transition-shadow hover:shadow-md font-sans text-slate-900 overflow-hidden dark:border-slate-800/80 dark:bg-slate-900/80 dark:text-slate-50">
       <TodoListHeader
         name={todoList.name}
         onUpdateName={handleUpdateName}
