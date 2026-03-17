@@ -13,7 +13,7 @@ export function useTodoList(todoListId: number) {
   const queryClient = useQueryClient();
 
   const {
-    data: todoList,
+    data,
     isLoading,
     isError,
     refetch,
@@ -25,6 +25,8 @@ export function useTodoList(todoListId: number) {
       toast.error('Failed to load todo list');
     },
   });
+
+  const todoList = data ?? null;
 
   const updateNameMutation = useMutation({
     mutationFn: (name: string) => updateTodoList(todoListId, { name }),
@@ -211,7 +213,7 @@ export function useTodoList(todoListId: number) {
   }
 
   return {
-    todoList: todoList ?? null,
+    todoList,
     isLoading,
     isError,
     refetch,
