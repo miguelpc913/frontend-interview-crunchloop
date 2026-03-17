@@ -45,6 +45,20 @@ Use this template for each new decision:
 - **Related**
   - `package.json` React 18 setup.
 
+### [2026-03-17] React Query hooks for todo features
+
+- **Context**
+  - We needed a consistent way to manage server state for all todo list operations (lists and items) without scattering fetch logic across components.
+- **Decision**
+  - Use dedicated React Query hooks (e.g. `useTodoListsPage`, `useTodoList`) as the single interface for reading and mutating todo data.
+- **Rationale**
+  - Centralizes data-fetching and caching concerns per feature, simplifying components and making behaviors like refetching and cache updates predictable.
+  - Makes it easier to adjust query keys, stale times, and mutation strategies without touching presentation components.
+- **Status**: Accepted
+- **Related**
+  - `src/features/todoLists/useTodoListsPage.ts`
+  - `src/features/todoLists/components/TodoList/useTodoList.ts`
+
 ---
 
 ## UI/UX & Design System
@@ -62,6 +76,21 @@ Use this template for each new decision:
 - **Related**
   - `package.json` Tailwind dependencies.
 
+### [2026-03-17] Separate skeleton and error views
+
+- **Context**
+  - Loading and error UX was previously mixed into core list components, making them harder to read and reuse.
+- **Decision**
+  - Extract dedicated skeleton and error components for todo lists and the todo lists page, and have container components choose which view to render.
+- **Rationale**
+  - Keeps core list components focused on the “loaded” state while still providing rich loading and error experiences.
+  - Makes it easy to reuse consistent skeletons and error treatments across the app.
+- **Status**: Accepted
+- **Related**
+  - `src/features/todoLists/TodoListsPageSkeleton.tsx`
+  - `src/features/todoLists/TodoListsPageError.tsx`
+  - `src/features/todoLists/components/TodoList/TodoList.tsx`
+
 ---
 
 ## Data Fetching & APIs
@@ -78,6 +107,20 @@ Use this template for each new decision:
 - **Status**: Accepted
 - **Related**
   - `package.json` `@tanstack/react-query` dependency.
+
+### [2026-03-17] Optimistic updates with toast feedback
+
+- **Context**
+  - Todo create/update/delete operations should feel instant while still surfacing failures clearly to the user.
+- **Decision**
+  - Use React Query mutations with optimistic updates where appropriate, combined with `react-hot-toast` notifications for successes and errors.
+- **Rationale**
+  - Optimistic updates keep the UI snappy and responsive even with network latency.
+  - Toasts provide clear, non-blocking feedback without cluttering the views with error text.
+- **Status**: Accepted
+- **Related**
+  - `src/features/todoLists/components/TodoList/useTodoList.ts`
+  - `src/features/todoLists/useTodoListsPage.ts`
 
 ---
 
@@ -112,4 +155,20 @@ Use this template for each new decision:
 - **Status**: Accepted
 - **Related**
   - `package.json` Vite scripts and dependencies.
+
+### [2026-03-17] ThemeProvider with Tailwind dark mode
+
+- **Context**
+  - We wanted first-class light/dark theme support with persistence and alignment to system preferences, while keeping styling within Tailwind.
+- **Decision**
+  - Use Tailwind’s `darkMode: 'class'` configuration together with a custom `ThemeProvider` that toggles a `dark` class on `document.documentElement` and stores the user preference.
+- **Rationale**
+  - Keeps theming simple and CSS-driven while still allowing a global React context and hook (`useTheme`) for UI elements like toggles.
+  - Respects users’ system theme by default and remembers explicit choices via `localStorage`.
+- **Status**: Accepted
+- **Related**
+  - `tailwind.config.ts`
+  - `src/theme/ThemeProvider.tsx`
+  - `src/main.tsx`
+
 
