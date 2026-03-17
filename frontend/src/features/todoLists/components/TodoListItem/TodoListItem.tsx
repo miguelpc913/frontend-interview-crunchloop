@@ -17,13 +17,13 @@ export function TodoListItem({ item, onUpdate, onDelete }: TodoListItemProps) {
     });
 
   const baseClasses =
-    'flex items-start gap-3 px-2 py-2.5 rounded-lg transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/80';
-  const doneClasses = item.done ? ' opacity-70' : '';
+    'group flex items-start gap-3 px-2.5 py-2.5 rounded-lg border border-transparent transition-colors transition-shadow duration-150 hover:bg-slate-50 hover:border-slate-200/80 dark:hover:bg-slate-800/80 dark:hover:border-slate-700/80';
+  const doneClasses = item.done ? ' opacity-80' : '';
 
   return (
     <li className={baseClasses + doneClasses}>
       <button
-        className="flex h-6 w-6 items-center justify-center rounded-full text-slate-400 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 shrink-0 dark:text-slate-500 dark:hover:text-slate-100 dark:focus-visible:ring-slate-500"
+        className="flex h-6 w-6 items-center justify-center rounded-full border border-transparent text-slate-400 hover:text-slate-900 hover:border-slate-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 shrink-0 dark:text-slate-500 dark:hover:text-slate-100 dark:hover:border-slate-600 dark:focus-visible:ring-slate-500"
         type="button"
         onClick={handleToggleDone}
         aria-label={item.done ? 'Mark as incomplete' : 'Mark as complete'}
@@ -37,7 +37,7 @@ export function TodoListItem({ item, onUpdate, onDelete }: TodoListItemProps) {
 
       <div className="flex-1 flex flex-col gap-1 min-w-0">
         <input
-          className={`w-full border-none outline-none bg-transparent py-0.5 font-sans text-sm font-medium ${
+          className={`w-full border-none outline-none bg-transparent py-0.5 font-sans text-sm font-semibold tracking-tight ${
             item.done
               ? 'line-through italic text-slate-400 dark:text-slate-500'
               : 'text-slate-900 dark:text-slate-50'
@@ -49,7 +49,7 @@ export function TodoListItem({ item, onUpdate, onDelete }: TodoListItemProps) {
           onKeyDown={nameField.onKeyDown}
         />
         <input
-          className={`w-full border-none outline-none text-xs bg-transparent p-0 font-sans placeholder:italic placeholder:text-slate-300 dark:placeholder:text-slate-500 ${
+          className={`w-full border-none outline-none text-xs bg-transparent pt-0.5 font-sans leading-relaxed placeholder:italic placeholder:text-slate-300 dark:placeholder:text-slate-500 ${
             item.done
               ? 'line-through italic text-slate-300 dark:text-slate-500'
               : 'text-slate-500 dark:text-slate-400'
@@ -64,7 +64,7 @@ export function TodoListItem({ item, onUpdate, onDelete }: TodoListItemProps) {
       </div>
 
       <button
-        className="flex items-center justify-center rounded-full p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-200 dark:text-slate-500 dark:hover:text-red-400 dark:hover:bg-red-500/10 dark:focus-visible:ring-red-500/70"
+        className="flex items-center justify-center rounded-full p-1.5 text-slate-400 opacity-60 group-hover:opacity-100 hover:text-red-500 hover:bg-red-50 transition-colors transition-opacity duration-150 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-200 dark:text-slate-500 dark:hover:text-red-400 dark:hover:bg-red-500/10 dark:focus-visible:ring-red-500/70"
         type="button"
         onClick={onDelete}
         aria-label="Delete task"

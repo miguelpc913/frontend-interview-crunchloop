@@ -31,8 +31,16 @@ function ThemeToggle() {
 function App() {
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900 dark:bg-slate-900 dark:text-slate-100">
-      <div className="mx-auto flex min-h-screen max-w-6xl flex-col px-4 py-4 md:px-6 md:py-6">
-        <header className="mb-4 flex items-center justify-end">
+      <div className="mx-auto flex min-h-screen max-w-6xl flex-col px-4 py-4 md:px-6 md:py-8">
+        <header className="mb-4 flex items-center justify-between md:mb-6">
+          <div className="flex flex-col gap-0.5">
+            <span className="text-xs font-medium uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500">
+              Tasks
+            </span>
+            <h1 className="text-base font-semibold text-slate-900 dark:text-slate-50">
+              Todo lists
+            </h1>
+          </div>
           <ThemeToggle />
         </header>
         <main className="flex-1">
