@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { TodoList as TodoListType } from '../../types/todoList';
 import {
@@ -21,12 +22,15 @@ export function useTodoList(todoListId: number) {
     queryKey: ['todoList', todoListId],
     queryFn: () => getTodoListById(todoListId),
     enabled: !!todoListId,
-    onError: () => {
-      toast.error('Failed to load todo list');
-    },
   });
 
   const todoList = data ?? null;
+
+  useEffect(() => {
+    if (isError) {
+      toast.error('Failed to load todo list');
+    }
+  }, [isError]);
 
   const updateNameMutation = useMutation({
     mutationFn: (name: string) => updateTodoList(todoListId, { name }),
