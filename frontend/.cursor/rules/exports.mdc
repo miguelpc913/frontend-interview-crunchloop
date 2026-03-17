@@ -1,0 +1,16 @@
+You can export Cursor agent transcripts for this project into an OpenAI-style JSONL file.
+
+- **Transcripts source**: `~/.cursor/projects/workspaces-frontend/agent-transcripts/*.txt`
+- **Export script**: `npm run export:agent-chats`
+- **Script implementation**: `scripts/export-agent-transcripts-to-jsonl.mjs`
+- **Output file**: `exports/agent-chats.jsonl`
+
+Each line in `agent-chats.jsonl` is a single message object:
+
+- `session_id`: string, derived from the transcript filename (without `.txt`)
+- `role`: `"user"` or `"assistant"`, based on the `user:` / `assistant:` prefix in the transcript
+- `content`: full message text (including any tool-call annotations)
+- `index`: 0-based index of the message within its `session_id`
+
+Use this export when you need a JSONL dataset of all agent conversations for this workspace.
+
