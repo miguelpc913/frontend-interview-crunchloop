@@ -1,6 +1,5 @@
 import type { TodoItem, UpdateTodoItemDto } from '../../types/todoList';
 import { useTodoListItem } from './useTodoListItem';
-import './TodoListItem.css';
 
 interface TodoListItemProps {
   item: TodoItem;
@@ -9,24 +8,28 @@ interface TodoListItemProps {
 }
 
 export function TodoListItem({ item, onUpdate, onDelete }: TodoListItemProps) {
-  const { nameField, descriptionField, handleToggleDone, blockClass } =
+  const { nameField, descriptionField, handleToggleDone } =
     useTodoListItem({
       item,
       onUpdate,
       onDelete,
     });
 
+  const baseClasses =
+    'flex items-center gap-3 py-2 border-b border-gray-100 last:border-b-0';
+  const doneClasses = item.done ? ' opacity-70' : '';
+
   return (
-    <li className={blockClass}>
+    <li className={baseClasses + doneClasses}>
       <button
-        className="todo-list-item__checkbox"
+        className="flex items-center justify-center p-0 bg-transparent border-0 cursor-pointer shrink-0"
         type="button"
         onClick={handleToggleDone}
         aria-label={item.done ? 'Mark as incomplete' : 'Mark as complete'}
       >
         {item.done ? (
           <svg
-            className="todo-list-item__check-icon"
+            className="w-6 h-6"
             viewBox="0 0 24 24"
             width="24"
             height="24"
@@ -43,7 +46,7 @@ export function TodoListItem({ item, onUpdate, onDelete }: TodoListItemProps) {
           </svg>
         ) : (
           <svg
-            className="todo-list-item__circle-icon"
+            className="w-6 h-6"
             viewBox="0 0 24 24"
             width="24"
             height="24"
@@ -54,9 +57,11 @@ export function TodoListItem({ item, onUpdate, onDelete }: TodoListItemProps) {
         )}
       </button>
 
-      <div className="todo-list-item__content">
+      <div className="flex-1 flex flex-col gap-0.5 min-w-0">
         <input
-          className="todo-list-item__name-input"
+          className={`w-full border-none outline-none text-base font-medium bg-transparent py-0.5 font-sans ${
+            item.done ? 'line-through italic text-gray-400' : 'text-black'
+          }`}
           type="text"
           value={nameField.value}
           onChange={nameField.onChange}
@@ -64,7 +69,9 @@ export function TodoListItem({ item, onUpdate, onDelete }: TodoListItemProps) {
           onKeyDown={nameField.onKeyDown}
         />
         <input
-          className="todo-list-item__description-input"
+          className={`w-full border-none outline-none text-xs bg-transparent p-0 font-sans placeholder:italic placeholder:text-gray-300 ${
+            item.done ? 'line-through italic text-gray-300' : 'text-gray-500'
+          }`}
           type="text"
           value={descriptionField.value}
           placeholder="Add a description..."
@@ -75,7 +82,7 @@ export function TodoListItem({ item, onUpdate, onDelete }: TodoListItemProps) {
       </div>
 
       <button
-        className="todo-list-item__delete-btn"
+        className="flex items-center justify-center p-1 bg-transparent border-0 cursor-pointer text-black shrink-0 transition-opacity hover:opacity-60"
         type="button"
         onClick={onDelete}
         aria-label="Delete task"

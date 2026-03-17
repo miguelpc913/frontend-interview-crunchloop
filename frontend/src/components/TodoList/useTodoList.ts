@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { TodoList as TodoListType } from '../../types/todoList';
 import {
   getTodoListById,
@@ -7,51 +7,214 @@ import {
   updateTodoItem,
   deleteTodoItem,
 } from '../../services/todoListService';
+import toast from 'react-hot-toast';
 
 export function useTodoList(todoListId: number) {
-  const [todoList, setTodoList] = useState<TodoListType | null>(null);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    getTodoListById(todoListId).then(setTodoList);
-  }, [todoListId]);
+  const {
+    data: todoList,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery<TodoListType, Error>({
+    queryKey: ['todoList', todoListId],
+    queryFn: () => getTodoListById(todoListId),
+    enabled: !!todoListId,
+    onError: () => {
+      toast.error('Failed to load todo list');
+    },
+  });
 
-  async function handleUpdateName(name: string) {
-    if (!todoList) return;
-    const updated = await updateTodoList(todoListId, { name });
-    setTodoList(updated);
+  const updateNameMutation = useMutation({
+    mutationFn: (name: string) => updateTodoList(todoListId, { name }),
+    onMutate: async (name: string) => {
+      await queryClient.cancelQueries({ queryKey: ['todoList', todoListId] });
+      const previous = queryClient.getQueryData<TodoListType>([
+        'todoList',
+        todoListId,
+      ]);
+      if (previous) {
+        queryClient.setQueryData<TodoListType>(['todoList', todoListId], {
+          ...previous,
+          name,
+        });
+      }
+      return { previous };
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(['todoList', todoListId], context.previous);
+      }
+      toast.error('Could not rename the list');
+    },
+    onSuccess: (updated) => {
+      queryClient.setQueryData(['todoList', todoListId], updated);
+      toast.success('List name updated');
+    },
+  });
+
+  const addItemMutation = useMutation({
+    mutationFn: (name: string) => addTodoItem(todoListId, { name }),
+    onMutate: async (name: string) => {
+      await queryClient.cancelQueries({ queryKey: ['todoList', todoListId] });
+      const previous = queryClient.getQueryData<TodoListType>([
+        'todoList',
+        todoListId,
+      ]);
+
+      if (previous) {
+        const optimisticItemId = Math.max(
+          0,
+          ...previous.todoItems.map((i) => i.id),
+        ) + 1;
+
+        const optimisticItem = {
+          id: optimisticItemId,
+          name,
+          description: '',
+          done: false,
+          todoListId: previous.id,
+        };
+
+        queryClient.setQueryData<TodoListType>(['todoList', todoListId], {
+          ...previous,
+          todoItems: [...previous.todoItems, optimisticItem],
+        });
+
+        return { previous };
+      }
+
+      return { previous: undefined };
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(['todoList', todoListId], context.previous);
+      }
+      toast.error('Could not add the task');
+    },
+    onSuccess: (created) => {
+      queryClient.setQueryData<TodoListType | undefined>(
+        ['todoList', todoListId],
+        (current) =>
+          current
+            ? {
+                ...current,
+                todoItems: current.todoItems
+                  .filter((item) => item.name !== created.name || item.id === created.id)
+                  .map((item) => (item.id === created.id ? created : item)),
+              }
+            : current,
+      );
+      toast.success('Task added');
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['todoList', todoListId] });
+    },
+  });
+
+  const updateItemMutation = useMutation({
+    mutationFn: (params: {
+      todoItemId: number;
+      updates: { name?: string; description?: string; done?: boolean };
+    }) => updateTodoItem(todoListId, params.todoItemId, params.updates),
+    onMutate: async ({ todoItemId, updates }) => {
+      await queryClient.cancelQueries({ queryKey: ['todoList', todoListId] });
+      const previous = queryClient.getQueryData<TodoListType>([
+        'todoList',
+        todoListId,
+      ]);
+
+      if (previous) {
+        queryClient.setQueryData<TodoListType>(['todoList', todoListId], {
+          ...previous,
+          todoItems: previous.todoItems.map((item) =>
+            item.id === todoItemId ? { ...item, ...updates } : item,
+          ),
+        });
+      }
+
+      return { previous };
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(['todoList', todoListId], context.previous);
+      }
+      toast.error('Could not update the task');
+    },
+    onSuccess: (updatedItem) => {
+      queryClient.setQueryData<TodoListType | undefined>(
+        ['todoList', todoListId],
+        (current) =>
+          current
+            ? {
+                ...current,
+                todoItems: current.todoItems.map((item) =>
+                  item.id === updatedItem.id ? updatedItem : item,
+                ),
+              }
+            : current,
+      );
+      toast.success('Task updated');
+    },
+  });
+
+  const deleteItemMutation = useMutation({
+    mutationFn: (todoItemId: number) => deleteTodoItem(todoListId, todoItemId),
+    onMutate: async (todoItemId: number) => {
+      await queryClient.cancelQueries({ queryKey: ['todoList', todoListId] });
+      const previous = queryClient.getQueryData<TodoListType>([
+        'todoList',
+        todoListId,
+      ]);
+
+      if (previous) {
+        queryClient.setQueryData<TodoListType>(['todoList', todoListId], {
+          ...previous,
+          todoItems: previous.todoItems.filter((item) => item.id !== todoItemId),
+        });
+      }
+
+      return { previous };
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(['todoList', todoListId], context.previous);
+      }
+      toast.error('Could not delete the task');
+    },
+    onSuccess: () => {
+      toast.success('Task deleted');
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['todoList', todoListId] });
+    },
+  });
+
+  function handleUpdateName(name: string) {
+    updateNameMutation.mutate(name);
   }
 
-  async function handleAddItem(name: string) {
-    if (!todoList) return;
-    const newItem = await addTodoItem(todoListId, { name });
-    setTodoList({ ...todoList, todoItems: [...todoList.todoItems, newItem] });
+  function handleAddItem(name: string) {
+    addItemMutation.mutate(name);
   }
 
-  async function handleUpdateItem(
+  function handleUpdateItem(
     todoItemId: number,
     updates: { name?: string; description?: string; done?: boolean },
   ) {
-    if (!todoList) return;
-    const updatedItem = await updateTodoItem(todoListId, todoItemId, updates);
-    setTodoList({
-      ...todoList,
-      todoItems: todoList.todoItems.map((item) =>
-        item.id === todoItemId ? updatedItem : item,
-      ),
-    });
+    updateItemMutation.mutate({ todoItemId, updates });
   }
 
-  async function handleDeleteItem(todoItemId: number) {
-    if (!todoList) return;
-    await deleteTodoItem(todoListId, todoItemId);
-    setTodoList({
-      ...todoList,
-      todoItems: todoList.todoItems.filter((item) => item.id !== todoItemId),
-    });
+  function handleDeleteItem(todoItemId: number) {
+    deleteItemMutation.mutate(todoItemId);
   }
 
   return {
-    todoList,
+    todoList: todoList ?? null,
+    isLoading,
+    isError,
+    refetch,
     handleUpdateName,
     handleAddItem,
     handleUpdateItem,

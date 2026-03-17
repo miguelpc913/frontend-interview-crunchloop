@@ -22,13 +22,11 @@ export function useTodoListItem({ item, onUpdate, onDelete }: UseTodoListItemOpt
     onUpdate({ done: !item.done });
   }
 
-  const blockClass = item.done ? 'todo-list-item todo-list-item--done' : 'todo-list-item';
 
   return {
     nameField,
     descriptionField,
     handleToggleDone,
-    blockClass,
     onDelete,
   };
 }
