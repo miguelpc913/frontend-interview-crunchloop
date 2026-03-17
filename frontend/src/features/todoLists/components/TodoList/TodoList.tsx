@@ -30,13 +30,13 @@ export function TodoList({ todoListId }: TodoListProps) {
   }
 
   return (
-    <div className="w-full max-w-md mx-auto bg-white border-2 border-black rounded-2xl shadow-md overflow-hidden font-sans text-black">
+    <div className="w-full max-w-md mx-auto rounded-2xl border border-slate-200/80 bg-white/80 shadow-sm transition-shadow hover:shadow-md font-sans text-slate-900 overflow-hidden">
       <TodoListHeader
         name={todoList.name}
         onUpdateName={handleUpdateName}
         onAddItem={handleAddItem}
       />
-      <ul className="list-none m-0 p-4 md:p-6 flex flex-col gap-1">
+      <ul className="list-none m-0 p-4 md:p-5 flex flex-col gap-1.5">
         {todoList.todoItems.map((item: TodoItem) => (
           <TodoListItem
             key={item.id}

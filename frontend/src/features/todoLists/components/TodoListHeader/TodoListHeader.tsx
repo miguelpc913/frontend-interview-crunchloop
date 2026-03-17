@@ -1,3 +1,4 @@
+import { ListTodo, Plus } from 'lucide-react';
 import { useTodoListHeader } from './useTodoListHeader';
 
 export interface TodoListHeaderProps {
@@ -11,10 +12,13 @@ export function TodoListHeader({ name, onUpdateName, onAddItem }: TodoListHeader
     useTodoListHeader({ name, onUpdateName, onAddItem });
 
   return (
-    <div>
-      <div className="bg-black px-6 py-4 text-center">
+    <div className="px-4 pt-4 pb-2 border-b border-slate-100 bg-white/90">
+      <div className="flex items-center gap-2.5">
+        <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-slate-900 text-slate-50 shadow-sm">
+          <ListTodo className="h-4 w-4" aria-hidden="true" />
+        </span>
         <input
-          className="w-full bg-transparent border-none outline-none text-white text-2xl font-bold italic text-center font-sans"
+          className="w-full bg-transparent border-none outline-none text-xl font-semibold tracking-tight text-slate-900 font-sans placeholder:text-slate-400"
           type="text"
           name="listName"
           value={listNameField.value}
@@ -24,11 +28,11 @@ export function TodoListHeader({ name, onUpdateName, onAddItem }: TodoListHeader
         />
       </div>
       <form
-        className="flex items-center gap-2 px-6 py-4 border-b border-gray-200"
+        className="mt-3 flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50/80 px-3 py-2 focus-within:ring-2 focus-within:ring-slate-200"
         onSubmit={handleAddSubmit}
       >
         <input
-          className="flex-1 border-2 border-black rounded-full px-4 py-2 text-sm font-sans outline-none bg-white placeholder:italic placeholder:text-gray-400"
+          className="flex-1 bg-transparent border-none outline-none text-sm font-sans text-slate-900 placeholder:italic placeholder:text-slate-400"
           type="text"
           placeholder="Add your task..."
           value={newTaskName}
@@ -36,24 +40,11 @@ export function TodoListHeader({ name, onUpdateName, onAddItem }: TodoListHeader
           onChange={(e) => setNewTaskName(e.target.value)}
         />
         <button
-          className="w-9 h-9 rounded-full border-none bg-black text-white flex items-center justify-center cursor-pointer shrink-0 transition-opacity hover:opacity-80"
+          className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-900 text-slate-50 text-sm font-medium shadow-sm transition-colors hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 disabled:opacity-50"
           type="submit"
           aria-label="Add task"
         >
-          <svg
-            className="w-5 h-5"
-            viewBox="0 0 24 24"
-            width="20"
-            height="20"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <line x1="12" y1="5" x2="12" y2="19" />
-            <line x1="5" y1="12" x2="19" y2="12" />
-          </svg>
+          <Plus className="h-4 w-4" aria-hidden="true" />
         </button>
       </form>
     </div>

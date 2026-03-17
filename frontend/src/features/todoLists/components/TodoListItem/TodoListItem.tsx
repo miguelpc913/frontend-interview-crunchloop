@@ -1,3 +1,4 @@
+import { CheckCircle2, Circle, Trash2 } from 'lucide-react';
 import type { TodoItem, UpdateTodoItemDto } from '../../types/todoList';
 import { useTodoListItem } from './useTodoListItem';
 
@@ -16,51 +17,28 @@ export function TodoListItem({ item, onUpdate, onDelete }: TodoListItemProps) {
     });
 
   const baseClasses =
-    'flex items-center gap-3 py-2 border-b border-gray-100 last:border-b-0';
+    'flex items-start gap-3 px-2 py-2.5 rounded-lg transition-colors hover:bg-slate-50';
   const doneClasses = item.done ? ' opacity-70' : '';
 
   return (
     <li className={baseClasses + doneClasses}>
       <button
-        className="flex items-center justify-center p-0 bg-transparent border-0 cursor-pointer shrink-0"
+        className="flex h-6 w-6 items-center justify-center rounded-full text-slate-400 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 shrink-0"
         type="button"
         onClick={handleToggleDone}
         aria-label={item.done ? 'Mark as incomplete' : 'Mark as complete'}
       >
         {item.done ? (
-          <svg
-            className="w-6 h-6"
-            viewBox="0 0 24 24"
-            width="24"
-            height="24"
-            fill="none"
-          >
-            <circle cx="12" cy="12" r="11" fill="#000" stroke="#000" strokeWidth="2" />
-            <path
-              d="M7 12.5l3 3 7-7"
-              stroke="#fff"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          <CheckCircle2 className="h-5 w-5" aria-hidden="true" />
         ) : (
-          <svg
-            className="w-6 h-6"
-            viewBox="0 0 24 24"
-            width="24"
-            height="24"
-            fill="none"
-          >
-            <circle cx="12" cy="12" r="11" stroke="#000" strokeWidth="2" fill="none" />
-          </svg>
+          <Circle className="h-5 w-5" aria-hidden="true" />
         )}
       </button>
 
-      <div className="flex-1 flex flex-col gap-0.5 min-w-0">
+      <div className="flex-1 flex flex-col gap-1 min-w-0">
         <input
-          className={`w-full border-none outline-none text-base font-medium bg-transparent py-0.5 font-sans ${
-            item.done ? 'line-through italic text-gray-400' : 'text-black'
+          className={`w-full border-none outline-none bg-transparent py-0.5 font-sans text-sm font-medium ${
+            item.done ? 'line-through italic text-slate-400' : 'text-slate-900'
           }`}
           type="text"
           value={nameField.value}
@@ -69,8 +47,8 @@ export function TodoListItem({ item, onUpdate, onDelete }: TodoListItemProps) {
           onKeyDown={nameField.onKeyDown}
         />
         <input
-          className={`w-full border-none outline-none text-xs bg-transparent p-0 font-sans placeholder:italic placeholder:text-gray-300 ${
-            item.done ? 'line-through italic text-gray-300' : 'text-gray-500'
+          className={`w-full border-none outline-none text-xs bg-transparent p-0 font-sans placeholder:italic placeholder:text-slate-300 ${
+            item.done ? 'line-through italic text-slate-300' : 'text-slate-500'
           }`}
           type="text"
           value={descriptionField.value}
@@ -82,24 +60,12 @@ export function TodoListItem({ item, onUpdate, onDelete }: TodoListItemProps) {
       </div>
 
       <button
-        className="flex items-center justify-center p-1 bg-transparent border-0 cursor-pointer text-black shrink-0 transition-opacity hover:opacity-60"
+        className="flex items-center justify-center rounded-full p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-200"
         type="button"
         onClick={onDelete}
         aria-label="Delete task"
       >
-        <svg
-          viewBox="0 0 24 24"
-          width="18"
-          height="18"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <line x1="6" y1="6" x2="18" y2="18" />
-          <line x1="18" y1="6" x2="6" y2="18" />
-        </svg>
+        <Trash2 className="h-4 w-4" aria-hidden="true" />
       </button>
     </li>
   );

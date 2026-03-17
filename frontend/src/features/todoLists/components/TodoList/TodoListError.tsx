@@ -1,15 +1,20 @@
+import { AlertCircle } from 'lucide-react';
+
 interface TodoListErrorProps {
   onRetry: () => void;
 }
 
 export function TodoListError({ onRetry }: TodoListErrorProps) {
   return (
-    <div className="w-full max-w-md mx-auto bg-red-50 border-2 border-red-300 rounded-2xl p-4 text-red-800 flex items-center justify-between">
-      <span className="text-sm font-medium">Could not load this todo list.</span>
+    <div className="w-full max-w-md mx-auto rounded-2xl border border-red-200 bg-red-50/80 px-4 py-3 text-sm text-red-800 shadow-sm flex items-start gap-3">
+      <div className="mt-0.5 text-red-500">
+        <AlertCircle className="h-4 w-4" aria-hidden="true" />
+      </div>
+      <span className="flex-1 text-sm font-medium">Could not load this todo list.</span>
       <button
         type="button"
         onClick={onRetry}
-        className="ml-4 px-3 py-1 text-xs font-semibold rounded-full border border-red-400 text-red-800 hover:bg-red-100"
+        className="ml-2 inline-flex items-center rounded-full border border-red-300 px-3 py-1 text-xs font-medium text-red-700 hover:bg-red-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2 focus-visible:ring-offset-red-50"
       >
         Retry
       </button>
