@@ -21,12 +21,17 @@ export function TodoListItem({
   onDelete,
   isDraggable = false,
 }: TodoListItemProps) {
-  const { nameField, descriptionField, handleToggleDone } =
+  const { form, handleNameBlur, handleDescriptionBlur, handleKeyDown, handleToggleDone } =
     useTodoListItem({
       item,
       onUpdate,
       onDelete,
     });
+
+  const {
+    register,
+    formState: { errors },
+  } = form;
 
   const baseClasses =
     'group flex items-center gap-3 px-2.5 py-2.5 rounded-lg border border-transparent transition-colors transition-shadow duration-150 hover:bg-slate-50 hover:border-slate-200/80 dark:hover:bg-slate-800/80 dark:hover:border-slate-700/80';
@@ -74,31 +79,43 @@ export function TodoListItem({
       />
 
       <div className="flex-1 flex flex-col gap-1 min-w-0">
-        <Input
-          className={`h-7 w-full border-none bg-transparent px-0 py-0.5 font-sans text-sm font-semibold tracking-tight focus-visible:ring-0 focus-visible:border-transparent dark:bg-transparent ${
-            item.done
-              ? 'line-through italic text-slate-400 dark:text-slate-500'
-              : 'text-slate-900 dark:text-slate-50'
-          }`}
-          type="text"
-          value={nameField.value}
-          onChange={nameField.onChange}
-          onBlur={nameField.onBlur}
-          onKeyDown={nameField.onKeyDown}
-        />
-        <Input
-          className={`h-6 w-full border-none bg-transparent px-0 pt-0.5 text-xs font-sans leading-relaxed placeholder:italic placeholder:text-slate-300 focus-visible:ring-0 focus-visible:border-transparent dark:bg-transparent dark:placeholder:text-slate-500 ${
-            item.done
-              ? 'line-through italic text-slate-300 dark:text-slate-500'
-              : 'text-slate-500 dark:text-slate-400'
-          }`}
-          type="text"
-          value={descriptionField.value}
-          placeholder="Add a description..."
-          onChange={descriptionField.onChange}
-          onBlur={descriptionField.onBlur}
-          onKeyDown={descriptionField.onKeyDown}
-        />
+        <div>
+          <Input
+            className={`h-7 w-full border-none bg-transparent px-0 py-0.5 font-sans text-sm font-semibold tracking-tight focus-visible:ring-0 focus-visible:border-transparent dark:bg-transparent ${
+              item.done
+                ? 'line-through italic text-slate-400 dark:text-slate-500'
+                : 'text-slate-900 dark:text-slate-50'
+            }`}
+            type="text"
+            {...register('name')}
+            onBlur={handleNameBlur}
+            onKeyDown={handleKeyDown}
+          />
+          {errors.name && (
+            <p className="mt-0.5 text-xs text-red-500">
+              {errors.name.message}
+            </p>
+          )}
+        </div>
+        <div>
+          <Input
+            className={`h-6 w-full border-none bg-transparent px-0 pt-0.5 text-xs font-sans leading-relaxed placeholder:italic placeholder:text-slate-300 focus-visible:ring-0 focus-visible:border-transparent dark:bg-transparent dark:placeholder:text-slate-500 ${
+              item.done
+                ? 'line-through italic text-slate-300 dark:text-slate-500'
+                : 'text-slate-500 dark:text-slate-400'
+            }`}
+            type="text"
+            {...register('description')}
+            placeholder="Add a description..."
+            onBlur={handleDescriptionBlur}
+            onKeyDown={handleKeyDown}
+          />
+          {errors.description && (
+            <p className="mt-0.5 text-xs text-red-500">
+              {errors.description.message}
+            </p>
+          )}
+        </div>
       </div>
 
       <Tooltip>

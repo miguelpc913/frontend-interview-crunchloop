@@ -1,9 +1,14 @@
-import { useState, type FormEvent } from 'react';
+import { useForm } from 'react-hook-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
 import type { CreateTodoListDto, TodoList } from '../types/todoList';
 import { createTodoList } from '../services/todoListService';
+import {
+  createTodoListSchema,
+  type CreateTodoListFormValues,
+} from '../schemas/todoList.schemas';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 interface UseAddTodoListFormOptions {
   initialValue?: string;
@@ -18,7 +23,13 @@ export function useAddTodoListForm({
   initialValue = '',
 }: UseAddTodoListFormOptions = {}) {
   const queryClient = useQueryClient();
-  const [name, setName] = useState(initialValue);
+  const form = useForm<CreateTodoListFormValues>({
+    mode: 'onChange',
+    resolver: zodResolver(createTodoListSchema),
+    defaultValues: {
+      name: initialValue,
+    },
+  });
 
   const createMutation = useMutation<
     TodoList,
@@ -81,16 +92,13 @@ export function useAddTodoListForm({
       queryClient.setQueryData<TodoList>(['todoList', created.id], created);
       queryClient.removeQueries({ queryKey: ['todoList', context.tempId] });
 
-      setName('');
+      form.reset({ name: '' });
       toast.success('Todo list created');
     },
   });
 
-  function handleSubmit(event: FormEvent) {
-    event.preventDefault();
-    const trimmed = name.trim();
-    if (!trimmed) return;
-    createMutation.mutate({ name: trimmed });
+  function onValidSubmit(values: CreateTodoListFormValues) {
+    createMutation.mutate({ name: values.name.trim() });
   }
 
   const errorMessage =
@@ -99,9 +107,8 @@ export function useAddTodoListForm({
       : undefined;
 
   return {
-    name,
-    setName,
-    handleSubmit,
+    form,
+    handleSubmit: form.handleSubmit(onValidSubmit),
     isSubmitting: createMutation.isPending,
     errorMessage,
   };

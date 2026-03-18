@@ -8,10 +8,12 @@ import { Input } from '@/components/ui/input';
 import { useAddTodoListForm } from '../../hooks/useAddTodoListForm';
 
 export function AddTodoListForm() {
-  const { name, setName, handleSubmit, isSubmitting, errorMessage } =
+  const { form, handleSubmit, isSubmitting, errorMessage } =
     useAddTodoListForm();
-
-  const trimmedName = name.trim();
+  const {
+    register,
+    formState: { errors, isValid },
+  } = form;
 
   return (
     <Card className="w-full max-w-xl mx-auto font-sans text-slate-900 dark:text-slate-50 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
@@ -28,22 +30,29 @@ export function AddTodoListForm() {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3 md:flex-row md:items-center">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col gap-3 md:flex-row md:items-center"
+        >
           <label className="sr-only" htmlFor="new-todo-list-name">
             Todo list name
           </label>
           <Input
             id="new-todo-list-name"
             type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            {...register('name')}
             placeholder="e.g. Work projects"
             disabled={isSubmitting}
             className="h-9"
           />
+          {errors.name && (
+            <p className="mt-1 text-xs text-red-500">
+              {errors.name.message}
+            </p>
+          )}
           <Button
             type="submit"
-            disabled={!trimmedName || isSubmitting}
+            disabled={!isValid || isSubmitting}
             className="gap-2 md:w-auto"
           >
             <Plus className="h-4 w-4" aria-hidden="true" />
