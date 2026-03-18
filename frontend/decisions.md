@@ -122,6 +122,22 @@ Use this template for each new decision:
   - `src/features/todoLists/components/TodoList/useTodoList.ts`
   - `src/features/todoLists/useTodoListsPage.ts`
 
+### [2026-03-17] Drag-and-drop ordering with DnD Kit
+
+- **Context**
+  - Todo list items should be reorderable by users without requiring backend changes to support an explicit `order` field.
+- **Decision**
+  - Use DnD Kit (`@dnd-kit/core`, `@dnd-kit/sortable`) to implement drag-and-drop reordering on the client, persisting a per-list order of item IDs in `localStorage`.
+- **Rationale**
+  - Keeps the backend API unchanged while still allowing a rich drag-and-drop UX.
+  - Local persistence via `localStorage` is sufficient for this app and avoids adding server complexity.
+  - DnD Kit provides accessible keyboard and pointer interactions with minimal custom code.
+- **Status**: Accepted
+- **Related**
+  - `src/features/todoLists/hooks/use-item-order.ts`
+  - `src/features/todoLists/components/TodoList/TodoList.tsx`
+  - `src/features/todoLists/components/TodoListItem/TodoListItem.tsx`
+
 ---
 
 ## Testing & Quality

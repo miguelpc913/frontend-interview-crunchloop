@@ -1,14 +1,22 @@
-import { CheckCircle2, Circle, Trash2 } from 'lucide-react';
+import { CheckCircle2, Circle, GripVertical, Trash2 } from 'lucide-react';
 import type { TodoItem, UpdateTodoItemDto } from '../../types/todoList';
 import { useTodoListItem } from './useTodoListItem';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface TodoListItemProps {
   item: TodoItem;
   onUpdate: (updates: UpdateTodoItemDto) => void;
   onDelete: () => void;
+  isDraggable?: boolean;
 }
 
-export function TodoListItem({ item, onUpdate, onDelete }: TodoListItemProps) {
+export function TodoListItem({
+  item,
+  onUpdate,
+  onDelete,
+  isDraggable = false,
+}: TodoListItemProps) {
   const { nameField, descriptionField, handleToggleDone } =
     useTodoListItem({
       item,
@@ -20,8 +28,31 @@ export function TodoListItem({ item, onUpdate, onDelete }: TodoListItemProps) {
     'group flex items-start gap-3 px-2.5 py-2.5 rounded-lg border border-transparent transition-colors transition-shadow duration-150 hover:bg-slate-50 hover:border-slate-200/80 dark:hover:bg-slate-800/80 dark:hover:border-slate-700/80';
   const doneClasses = item.done ? ' opacity-80' : '';
 
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({
+      id: item.id,
+      disabled: !isDraggable,
+    });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.7 : 1,
+  };
+
   return (
-    <li className={baseClasses + doneClasses}>
+    <li ref={setNodeRef} style={style} className={baseClasses + doneClasses}>
+      {isDraggable && (
+        <button
+          type="button"
+          className="mt-0.5 flex h-6 w-6 items-center justify-center rounded-full text-slate-300 hover:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 shrink-0 dark:text-slate-600 dark:hover:text-slate-300 dark:focus-visible:ring-slate-500"
+          aria-label="Reorder task"
+          {...attributes}
+          {...listeners}
+        >
+          <GripVertical className="h-4 w-4" aria-hidden="true" />
+        </button>
+      )}
       <button
         className="flex h-6 w-6 items-center justify-center rounded-full border border-transparent text-slate-400 hover:text-slate-900 hover:border-slate-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 shrink-0 dark:text-slate-500 dark:hover:text-slate-100 dark:hover:border-slate-600 dark:focus-visible:ring-slate-500"
         type="button"

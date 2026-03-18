@@ -1,5 +1,18 @@
 import { useState } from 'react';
 import type { TodoItem } from '../../types/todoList';
+import {
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import { TodoListHeader } from '../TodoListHeader/TodoListHeader';
 import { TodoListItem } from '../TodoListItem/TodoListItem';
 import { TodoListSkeleton } from './TodoListSkeleton';
@@ -7,6 +20,7 @@ import { TodoListError } from './TodoListError';
 import { useTodoList } from './useTodoList';
 import { TodoListSearch } from './TodoListSearch';
 import { TodoListFilterDropdown } from './TodoListFilterDropdown';
+import { useItemOrder } from '../../hooks/use-item-order';
 
 interface TodoListProps {
   todoListId: number;
@@ -29,10 +43,20 @@ export function TodoList({ todoListId }: TodoListProps) {
   const [filterMode, setFilterMode] = useState<FilterMode>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor),
+  );
+
+  const { orderedItems, reorder } = useItemOrder(
+    todoListId,
+    todoList?.todoItems ?? [],
+  );
+
   const normalizedSearch = searchQuery.trim().toLowerCase();
 
   const filteredItems =
-    todoList?.todoItems.filter((item: TodoItem) => {
+    orderedItems.filter((item: TodoItem) => {
       if (filterMode === 'done' && !item.done) {
         return false;
       }
@@ -52,6 +76,17 @@ export function TodoList({ todoListId }: TodoListProps) {
         name.includes(normalizedSearch) || description.includes(normalizedSearch)
       );
     }) ?? [];
+
+  const isReorderEnabled = filterMode === 'all' && !normalizedSearch;
+
+  function handleDragEnd(event: DragEndEvent) {
+    if (!isReorderEnabled) return;
+
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    reorder(active.id as number, over.id as number);
+  }
 
   if (isLoading) {
     return <TodoListSkeleton />;
@@ -106,14 +141,38 @@ export function TodoList({ todoListId }: TodoListProps) {
             </div>
           </li>
         ) : (
-          filteredItems.map((item: TodoItem) => (
-            <TodoListItem
-              key={item.id}
-              item={item}
-              onUpdate={(updates) => handleUpdateItem(item.id, updates)}
-              onDelete={() => handleDeleteItem(item.id)}
-            />
-          ))
+          isReorderEnabled ? (
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={filteredItems.map((item) => item.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                {filteredItems.map((item: TodoItem) => (
+                  <TodoListItem
+                    key={item.id}
+                    item={item}
+                    onUpdate={(updates) => handleUpdateItem(item.id, updates)}
+                    onDelete={() => handleDeleteItem(item.id)}
+                    isDraggable
+                  />
+                ))}
+              </SortableContext>
+            </DndContext>
+          ) : (
+            filteredItems.map((item: TodoItem) => (
+              <TodoListItem
+                key={item.id}
+                item={item}
+                onUpdate={(updates) => handleUpdateItem(item.id, updates)}
+                onDelete={() => handleDeleteItem(item.id)}
+                isDraggable={false}
+              />
+            ))
+          )
         )}
       </ul>
     </div>
