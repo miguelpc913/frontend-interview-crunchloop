@@ -21,6 +21,8 @@ import { useTodoList } from './useTodoList';
 import { TodoListSearch } from './TodoListSearch';
 import { TodoListFilterDropdown } from './TodoListFilterDropdown';
 import { useItemOrder } from '../../hooks/use-item-order';
+import { Card, CardContent } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 
 interface TodoListProps {
   todoListId: number;
@@ -39,6 +41,8 @@ export function TodoList({ todoListId }: TodoListProps) {
     handleUpdateItem,
     handleDeleteItem,
   } = useTodoList(todoListId);
+
+  const isOptimistic = todoListId <= 0;
 
   const [filterMode, setFilterMode] = useState<FilterMode>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -97,29 +101,36 @@ export function TodoList({ todoListId }: TodoListProps) {
   }
 
   return (
-    <div className="w-full max-w-md mx-auto rounded-2xl border border-slate-200/70 bg-white/90 shadow-sm shadow-slate-900/5 ring-1 ring-slate-950/[0.02] transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 font-sans text-slate-900 overflow-hidden dark:border-slate-800/80 dark:bg-slate-900/90 dark:text-slate-50 dark:shadow-black/20 dark:ring-slate-50/5">
-      <TodoListHeader
-        name={todoList.name}
-        onUpdateName={handleUpdateName}
-        onAddItem={handleAddItem}
-      />
-      <div className="px-3.5 relative z-10  pt-3.5 md:px-4 md:pt-4 border-b border-slate-100/80 bg-slate-50/70 backdrop-blur-sm text-xs text-slate-600 dark:border-slate-800/80 dark:bg-slate-900/80 dark:text-slate-300">
-        <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-          <div className="flex-1">
-            <TodoListSearch
-              value={searchQuery}
-              onChange={setSearchQuery}
+    <Card className="w-full max-w-md mx-auto font-sans text-slate-900 dark:text-slate-50 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
+      
+    
+
+      <CardContent className="p-0">
+        <TodoListHeader
+          name={todoList.name}
+          onUpdateName={handleUpdateName}
+          onAddItem={handleAddItem}
+          disabled={isOptimistic}
+        />
+        <Separator className="bg-slate-100/80 dark:bg-slate-800/80" />
+        <div className="relative z-10 px-3.5 pt-3.5 text-xs text-slate-600 backdrop-blur-sm md:px-4 md:pt-4 dark:text-slate-300">
+          <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+            <div className="flex-1">
+              <TodoListSearch
+                value={searchQuery}
+                onChange={setSearchQuery}
+              />
+            </div>
+            <TodoListFilterDropdown
+              mode={filterMode}
+              onChangeMode={(mode) => {
+                setFilterMode(mode);
+              }}
             />
           </div>
-          <TodoListFilterDropdown
-            mode={filterMode}
-            onChangeMode={(mode) => {
-              setFilterMode(mode);
-            }}
-          />
         </div>
-      </div>
-      <ul className="list-none m-0 p-3.5 md:p-4 flex flex-col gap-1.5">
+        <Separator className="mt-3 bg-slate-100/80 md:mt-4 dark:bg-slate-800/80" />
+        <ul className="m-0 flex list-none flex-col gap-1.5 p-3.5 md:p-4">
         {todoList.todoItems.length === 0 ? (
           <li className="flex items-start gap-3 rounded-lg border border-dashed border-slate-200/80 bg-slate-50/60 px-3 py-3 text-xs text-slate-500 dark:border-slate-700/80 dark:bg-slate-900/60 dark:text-slate-400">
             <span className="mt-0.5 h-5 w-5 rounded-full border border-slate-300/70 bg-white/80 dark:border-slate-600/80 dark:bg-slate-900/90" />
@@ -174,8 +185,9 @@ export function TodoList({ todoListId }: TodoListProps) {
             ))
           )
         )}
-      </ul>
-    </div>
+        </ul>
+      </CardContent>
+    </Card>
   );
 }
 

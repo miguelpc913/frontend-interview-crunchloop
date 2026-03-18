@@ -1,16 +1,19 @@
 import { Moon, Sun, ListTodo, BarChart3 } from 'lucide-react';
 import { Link, Outlet } from '@tanstack/react-router';
 import { useTheme } from './theme/theme-context.tsx';
+import { Button } from '@/components/ui/button';
 
 function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
   const isDark = theme === 'dark';
 
   return (
-    <button
+    <Button
       type="button"
+      variant="outline"
+      size="sm"
       onClick={toggleTheme}
-      className="inline-flex items-center justify-center rounded-full border border-slate-200/80 bg-white/80 px-3 py-1.5 text-xs font-medium text-slate-700 shadow-sm hover:bg-slate-50 hover:border-slate-300 dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-100 dark:hover:bg-slate-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+      className="rounded-full bg-white/80 text-xs text-slate-700 shadow-sm hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-100 dark:hover:bg-slate-700"
       aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
     >
       <span className="mr-1.5 flex items-center">
@@ -23,7 +26,7 @@ function ThemeToggle() {
       <span className="hidden sm:inline">
         {isDark ? 'Light mode' : 'Dark mode'}
       </span>
-    </button>
+    </Button>
   );
 }
 

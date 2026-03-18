@@ -21,7 +21,9 @@ export function useTodoList(todoListId: number) {
   } = useQuery<TodoListType, Error>({
     queryKey: ['todoList', todoListId],
     queryFn: () => getTodoListById(todoListId),
-    enabled: !!todoListId,
+    // Prevent optimistic placeholder ids (we use <= 0 as temp ids)
+    // from triggering an API request for a list that doesn't exist yet.
+    enabled: todoListId > 0,
   });
 
   const todoList = data ?? null;
@@ -198,10 +200,12 @@ export function useTodoList(todoListId: number) {
   });
 
   function handleUpdateName(name: string) {
+    if (todoListId <= 0) return;
     updateNameMutation.mutate(name);
   }
 
   function handleAddItem(name: string) {
+    if (todoListId <= 0) return;
     addItemMutation.mutate(name);
   }
 
@@ -209,10 +213,12 @@ export function useTodoList(todoListId: number) {
     todoItemId: number,
     updates: { name?: string; description?: string; done?: boolean },
   ) {
+    if (todoListId <= 0) return;
     updateItemMutation.mutate({ todoItemId, updates });
   }
 
   function handleDeleteItem(todoItemId: number) {
+    if (todoListId <= 0) return;
     deleteItemMutation.mutate(todoItemId);
   }
 
