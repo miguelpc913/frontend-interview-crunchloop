@@ -50,7 +50,7 @@ export function TodoListItem({
   };
 
   return (
-    <li ref={setNodeRef} style={style} className={baseClasses + doneClasses}>
+    <li ref={setNodeRef} style={style} className={baseClasses + doneClasses} data-task-name={item.name}>
       {isDraggable && (
 
         

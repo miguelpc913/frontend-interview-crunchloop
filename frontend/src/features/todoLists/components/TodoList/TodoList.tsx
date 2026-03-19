@@ -101,7 +101,7 @@ export function TodoList({ todoListId }: TodoListProps) {
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto font-sans text-slate-900 dark:text-slate-50 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
+    <Card className="w-full max-w-md mx-auto font-sans text-slate-900 dark:text-slate-50 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md" data-list-name={todoList.name}>
       <CardContent className="p-0">
         <TodoListHeader
           name={todoList.name}
