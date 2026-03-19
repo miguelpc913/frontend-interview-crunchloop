@@ -38,6 +38,7 @@ export function useItemOrder(todoListId: number, items: TodoItem[]) {
   const [order, setOrder] = useState<number[]>(() => readStoredOrder(todoListId));
 
   useEffect(() => {
+    if(items.length === 0) return;
     const currentIds = items.map((item) => item.id);
 
     const dedupedOrder = Array.from(new Set(order));

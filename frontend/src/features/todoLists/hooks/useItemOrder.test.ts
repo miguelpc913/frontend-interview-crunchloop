@@ -1,7 +1,7 @@
 import { describe, expect, it, beforeEach } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
 
-import { useItemOrder } from './use-item-order'
+import { useItemOrder } from './useItemOrder'
 import type { TodoItem } from '../types/todoList'
 
 function makeItem(id: number, name = `Item ${id}`): TodoItem {

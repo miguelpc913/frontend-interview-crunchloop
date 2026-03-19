@@ -20,7 +20,7 @@ import { TodoListError } from './TodoListError';
 import { useTodoList } from './useTodoList';
 import { TodoListSearch } from './TodoListSearch';
 import { TodoListFilterDropdown } from './TodoListFilterDropdown';
-import { useItemOrder } from '../../hooks/use-item-order';
+import { useItemOrder } from '../../hooks/useItemOrder';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 
