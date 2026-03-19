@@ -17,11 +17,11 @@ const COLORS = [
   'oklch(0.546 0.245 262.881)',
 ];
 
-interface Props {
+interface CompletionRadialChartProps {
   data: ListChartData[];
 }
 
-export function CompletionRadialChart({ data }: Props) {
+export function CompletionRadialChart({ data }: CompletionRadialChartProps) {
   if (data.length === 0) {
     return (
       <Card>

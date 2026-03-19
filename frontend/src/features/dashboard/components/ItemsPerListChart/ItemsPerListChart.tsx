@@ -21,11 +21,11 @@ const chartConfig = {
   pending: { label: 'Pending', color: 'oklch(0.556 0 0)' },
 } satisfies ChartConfig;
 
-interface Props {
+interface ItemsPerListChartProps {
   data: ListChartData[];
 }
 
-export function ItemsPerListChart({ data }: Props) {
+export function ItemsPerListChart({ data }: ItemsPerListChartProps) {
   if (data.length === 0) {
     return (
       <Card>

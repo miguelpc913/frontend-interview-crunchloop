@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { TodoItem } from '../../../types/todoList';
+import type { TodoItem } from '@/shared/types/todoList';
 import { arrayMove } from '@dnd-kit/sortable';
 
 function getStorageKey(todoListId: number) {

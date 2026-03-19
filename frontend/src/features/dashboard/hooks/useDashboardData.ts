@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import type { TodoList } from '../../todoLists/types/todoList';
-import { getAllTodoLists } from '../../todoLists/services/todoListService';
+import type { TodoList } from '@/shared/types/todoList';
+import { getAllTodoLists } from '@/shared/api/todoLists';
+import { todoListQueryKeys, TODO_LIST_STALE_TIME_MS } from '@/shared/query/todoLists';
 
 const EMPTY_TODO_LISTS: TodoList[] = [];
 
@@ -16,9 +17,9 @@ export interface ListChartData {
 
 export function useDashboardData() {
   const { data, isLoading, isError } = useQuery<TodoList[]>({
-    queryKey: ['todoLists'],
+    queryKey: todoListQueryKeys.all,
     queryFn: getAllTodoLists,
-    staleTime: 1000 * 30,
+    staleTime: TODO_LIST_STALE_TIME_MS,
   });
 
   const todoLists = data ?? EMPTY_TODO_LISTS;

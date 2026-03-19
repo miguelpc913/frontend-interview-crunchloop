@@ -18,11 +18,11 @@ const chartConfig = {
   total: { label: 'Total Items', color: 'var(--chart-1)' },
 } satisfies ChartConfig;
 
-interface Props {
+interface LargestListsChartProps {
   data: ListChartData[];
 }
 
-export function LargestListsChart({ data }: Props) {
+export function LargestListsChart({ data }: LargestListsChartProps) {
   if (data.length === 0) {
     return (
       <Card>

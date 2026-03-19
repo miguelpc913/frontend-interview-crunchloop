@@ -1,14 +1,15 @@
 import { useForm } from 'react-hook-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-
-import type { CreateTodoListDto, TodoList } from '../../types/todoList';
-import { createTodoList } from '../../services/todoListService';
+import type { TodoList } from '@/shared/types/todoList';
+import { CreateTodoListDto } from '@/features/todoLists/types/todoList';
+import { createTodoList } from '@/shared/api/todoLists';
 import {
   createTodoListSchema,
   type CreateTodoListFormValues,
 } from '../../schemas/todoList.schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { todoListQueryKeys } from '../../api/queryKeys';
 
 interface UseAddTodoListFormOptions {
   initialValue?: string;
@@ -39,9 +40,9 @@ export function useAddTodoListForm({
   >({
     mutationFn: (dto) => createTodoList(dto),
     onMutate: async (dto) => {
-      await queryClient.cancelQueries({ queryKey: ['todoLists'] });
+      await queryClient.cancelQueries({ queryKey: todoListQueryKeys.all });
 
-      const previous = queryClient.getQueryData<TodoList[]>(['todoLists']);
+      const previous = queryClient.getQueryData<TodoList[]>(todoListQueryKeys.all);
       const tempId = -Date.now();
       const optimisticList: TodoList = {
         id: tempId,
@@ -49,14 +50,14 @@ export function useAddTodoListForm({
         todoItems: [],
       };
 
-      queryClient.setQueryData<TodoList[]>(['todoLists'], (old) => {
+      queryClient.setQueryData<TodoList[]>(todoListQueryKeys.all, (old) => {
         const current = old ?? [];
         return [...current, optimisticList];
       });
 
       // Seed the per-list cache so `TodoList` can render without fetching
       // (we also disable fetching for temporary ids in `useTodoList`).
-      queryClient.setQueryData<TodoList>(['todoList', tempId], optimisticList);
+      queryClient.setQueryData<TodoList>(todoListQueryKeys.detail(tempId), optimisticList);
 
       return { previous, tempId };
     },
@@ -64,16 +65,16 @@ export function useAddTodoListForm({
       if (!context) return;
 
       queryClient.setQueryData<TodoList[] | undefined>(
-        ['todoLists'],
+        todoListQueryKeys.all,
         context.previous,
       );
-      queryClient.removeQueries({ queryKey: ['todoList', context.tempId] });
+      queryClient.removeQueries({ queryKey: todoListQueryKeys.detail(context.tempId) });
       toast.error(err.message || 'Could not create todo list');
     },
     onSuccess: (created, _dto, context) => {
       if (!context) return;
 
-      queryClient.setQueryData<TodoList[]>(['todoLists'], (old) => {
+      queryClient.setQueryData<TodoList[]>(todoListQueryKeys.all, (old) => {
         const current = old ?? [];
         const hasOptimisticEntry = current.some(
           (list) => list.id === context.tempId,
@@ -89,8 +90,8 @@ export function useAddTodoListForm({
         return [...current, created];
       });
 
-      queryClient.setQueryData<TodoList>(['todoList', created.id], created);
-      queryClient.removeQueries({ queryKey: ['todoList', context.tempId] });
+      queryClient.setQueryData<TodoList>(todoListQueryKeys.detail(created.id), created);
+      queryClient.removeQueries({ queryKey: todoListQueryKeys.detail(context.tempId) });
 
       form.reset({ name: '' });
       toast.success('Todo list created');

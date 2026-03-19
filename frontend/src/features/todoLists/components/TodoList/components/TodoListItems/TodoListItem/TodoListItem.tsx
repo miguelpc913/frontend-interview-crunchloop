@@ -17,7 +17,7 @@ import {
   DialogTrigger,
 } from '@/shared/ui/dialog';
 import { cn } from '@/shared/lib/utils';
-import type { TodoItem } from '../../../../../types/todoList';
+import type { TodoItem } from '@/shared/types/todoList';
 import { useTodoListItemMutations } from './useTodoListItemMutations';
 import { useTodoListItem } from './useTodoListItem';
 
@@ -81,7 +81,7 @@ export function TodoListItem({
       style={style}
       className={cn(
         'group flex items-center gap-3 rounded-lg border border-transparent px-2.5 py-2.5 transition-[border-color,background-color] duration-150',
-        'hover:border-slate-200/80 hover:bg-slate-50 dark:hover:border-slate-700/80 dark:hover:bg-slate-800/80',
+        'hover:border-border hover:bg-muted/60',
         optimisticDone && 'opacity-80',
       )}
       data-task-name={item.name}
@@ -91,7 +91,7 @@ export function TodoListItem({
           <TooltipTrigger asChild>
             <button
               type="button"
-              className="inline-flex shrink-0 items-center justify-center rounded-md p-1 text-slate-300 hover:text-slate-500 dark:text-slate-600 dark:hover:text-slate-300"
+              className="inline-flex shrink-0 items-center justify-center rounded-md p-1 text-muted-foreground/70 hover:text-foreground"
               aria-label="Reorder task"
               {...attributes}
               {...listeners}
@@ -120,8 +120,8 @@ export function TodoListItem({
             className={cn(
               'h-7 w-full border-none bg-transparent px-0 py-0.5 font-sans text-sm font-semibold tracking-tight focus-visible:border-transparent focus-visible:ring-0 dark:bg-transparent',
               optimisticDone
-                ? 'italic text-slate-400 line-through dark:text-slate-500'
-                : 'text-slate-900 dark:text-slate-50',
+                ? 'text-muted-foreground line-through italic'
+                : 'text-foreground',
             )}
             type="text"
             aria-label="Task name"
@@ -143,10 +143,10 @@ export function TodoListItem({
           <Input
             id={`todo-item-description-${todoListId}-${item.id}`}
             className={cn(
-              'h-6 w-full border-none bg-transparent px-0 pt-0.5 font-sans text-xs leading-relaxed placeholder:italic placeholder:text-slate-300 focus-visible:border-transparent focus-visible:ring-0 dark:bg-transparent dark:placeholder:text-slate-500',
+              'h-6 w-full border-none bg-transparent px-0 pt-0.5 font-sans text-xs leading-relaxed placeholder:italic placeholder:text-muted-foreground/70 focus-visible:border-transparent focus-visible:ring-0 dark:bg-transparent',
               optimisticDone
-                ? 'italic text-slate-300 line-through dark:text-slate-500'
-                : 'text-slate-500 dark:text-slate-400',
+                ? 'text-muted-foreground/80 line-through italic'
+                : 'text-muted-foreground',
             )}
             type="text"
             aria-label="Task description"
@@ -169,7 +169,7 @@ export function TodoListItem({
                 type="button"
                 variant="ghost"
                 size="icon-xs"
-                className="p-1.5 text-slate-400 opacity-60 hover:bg-red-50 hover:text-red-500 group-hover:opacity-100 dark:text-slate-500 dark:hover:bg-red-500/10 dark:hover:text-red-400"
+                className="p-1.5 text-muted-foreground opacity-60 group-hover:opacity-100 hover:bg-destructive/10 hover:text-destructive"
                 aria-label="Delete task"
               >
                 <Trash2 className="h-4 w-4" aria-hidden="true" />

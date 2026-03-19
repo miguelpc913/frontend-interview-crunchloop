@@ -12,7 +12,7 @@ export function ThemeToggle() {
       variant="outline"
       size="sm"
       onClick={toggleTheme}
-      className="rounded-full bg-white/80 text-xs text-slate-700 shadow-sm hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-100 dark:hover:bg-slate-700"
+      className="rounded-full bg-card/80 text-xs text-foreground shadow-sm hover:bg-muted"
       aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
     >
       <span className="mr-1.5 flex items-center">

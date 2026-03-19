@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo, type KeyboardEvent } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -47,7 +47,7 @@ export function useTodoListHeader({
   }, [listNameForm, name, onUpdateName]);
 
   const handleListNameKeyDown = useCallback(
-    (event: React.KeyboardEvent<HTMLInputElement>) => {
+    (event: KeyboardEvent<HTMLInputElement>) => {
       if (event.key === 'Enter') {
         (event.target as HTMLInputElement).blur();
       }
@@ -62,12 +62,17 @@ export function useTodoListHeader({
     addTaskForm.reset({ name: '' });
   }, [addTaskForm, onAddItem]);
 
+  const submitAddTask = useMemo(
+    () => addTaskForm.handleSubmit(handleAddSubmit),
+    [addTaskForm, handleAddSubmit],
+  );
+
   return {
     listNameForm,
     addTaskForm,
     handleListNameBlur,
     handleListNameKeyDown,
-    handleAddSubmit: addTaskForm.handleSubmit(handleAddSubmit),
+    handleAddSubmit: submitAddTask,
   };
 }
 

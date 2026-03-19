@@ -1,31 +1,25 @@
-import { useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import type { TodoList } from '../../../types/todoList';
-import { getTodoListById } from '../../../services/todoListService';
-import toast from 'react-hot-toast';
+import type { TodoList } from '@/shared/types/todoList';
+import { getTodoListById } from '@/shared/api/todoLists';
+import { todoListQueryKeys } from '../../../api/queryKeys';
+import { TODO_LIST_STALE_TIME_MS } from '../../../api/queryOptions';
 
 export function useTodoListQuery(todoListId: number) {
   const queryClient = useQueryClient();
 
-  const cachedTodoLists = queryClient.getQueryData<TodoList[]>(['todoLists']);
+  const cachedTodoLists = queryClient.getQueryData<TodoList[]>(todoListQueryKeys.all);
   const initialData = cachedTodoLists?.find((l) => l.id === todoListId);
-  const todoListsQueryState = queryClient.getQueryState<TodoList[]>(['todoLists']);
+  const todoListsQueryState = queryClient.getQueryState<TodoList[]>(todoListQueryKeys.all);
   const initialDataUpdatedAt = todoListsQueryState?.dataUpdatedAt;
 
   const { data, isLoading, isError, refetch } = useQuery<TodoList, Error>({
-    queryKey: ['todoList', todoListId],
+    queryKey: todoListQueryKeys.detail(todoListId),
     queryFn: () => getTodoListById(todoListId),
     enabled: todoListId > 0,
     initialData,
     initialDataUpdatedAt,
-    staleTime: 1000 * 30,
+    staleTime: TODO_LIST_STALE_TIME_MS,
   });
-
-  useEffect(() => {
-    if (isError) {
-      toast.error('Failed to load todo list');
-    }
-  }, [isError]);
 
   return {
     todoList: data ?? null,

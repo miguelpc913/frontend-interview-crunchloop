@@ -34,9 +34,9 @@ describe('DashboardPage', () => {
       }),
     )
 
-    renderWithProviders(<DashboardPage />)
+    const { container } = renderWithProviders(<DashboardPage />)
 
-    expect(screen.getByText('Loading dashboard...')).toBeInTheDocument()
+    expect(container.querySelector('[data-slot="skeleton"]')).toBeTruthy()
     expect(
       await screen.findByText('Completion Status'),
     ).toBeInTheDocument()

@@ -1,16 +1,3 @@
-export interface TodoItem {
-  id: number;
-  name: string;
-  description?: string;
-  done: boolean;
-}
-
-export interface TodoList {
-  id: number;
-  name: string;
-  todoItems: TodoItem[];
-}
-
 export interface CreateTodoListDto {
   name: string;
 }
@@ -29,3 +16,8 @@ export interface UpdateTodoItemDto {
   description?: string;
   done?: boolean;
 }
+
+export type {
+  TodoItem,
+  TodoList
+} from '@/shared/types/todoList';

@@ -5,9 +5,10 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import type { TodoItem } from '../../../../types/todoList';
+import type { TodoItem } from '@/shared/types/todoList';
 import { TodoListItem } from './TodoListItem/TodoListItem';
 import { TodoListEmptyState } from './TodoListEmptyState/TodoListEmptyState';
+import { todoListQueryKeys } from '../../../../api/queryKeys';
 
 interface TodoListItemsProps {
   todoListId: number;
@@ -19,18 +20,23 @@ interface TodoListItemsProps {
 }
 
 const pendingItemClassName =
-  'opacity-50 rounded-lg border border-dashed border-slate-200/70 bg-slate-50/60 px-3 py-2.5 text-xs text-slate-600 dark:border-slate-700/80 dark:bg-slate-900/60 dark:text-slate-300';
+  'rounded-lg border border-dashed border-border bg-muted/60 px-3 py-2.5 text-xs text-muted-foreground opacity-50';
 
-function PendingItems({ names }: { names: string[] }) {
+interface PendingItem {
+  mutationId: number;
+  name: string;
+}
+
+function PendingItems({ items }: { items: PendingItem[] }) {
   return (
     <>
-      {names.map((name, index) => (
+      {items.map((item) => (
         <li
-          key={`${name}-${index}`}
+          key={item.mutationId}
           data-testid="pending-todo-item"
           className={pendingItemClassName}
         >
-          {name}
+          {item.name}
         </li>
       ))}
     </>
@@ -45,16 +51,19 @@ export function TodoListItems({
   sensors,
   onDragEnd,
 }: TodoListItemsProps) {
-  const pendingItemNames = useMutationState<string>({
+  const pendingItems = useMutationState<PendingItem>({
     filters: {
-      mutationKey: ['addTodoItem', todoListId],
+      mutationKey: todoListQueryKeys.addItem(todoListId),
       status: 'pending',
     },
-    select: (mutation) => mutation.state.variables as string,
+    select: (mutation) => ({
+      mutationId: mutation.mutationId,
+      name: mutation.state.variables as string,
+    }),
   });
 
   if (!hasItems) {
-    if (pendingItemNames.length === 0) {
+    if (pendingItems.length === 0) {
       return (
         <TodoListEmptyState
           title="No tasks yet."
@@ -63,11 +72,11 @@ export function TodoListItems({
       );
     }
 
-    return <PendingItems names={pendingItemNames} />;
+    return <PendingItems items={pendingItems} />;
   }
 
   if (filteredItems.length === 0) {
-    if (pendingItemNames.length === 0) {
+    if (pendingItems.length === 0) {
       return (
         <TodoListEmptyState
           title="No tasks match your filters."
@@ -82,7 +91,7 @@ export function TodoListItems({
           title="No tasks match your filters."
           description="Try changing the search term or done filter."
         />
-        <PendingItems names={pendingItemNames} />
+        <PendingItems items={pendingItems} />
       </>
     );
   }
@@ -98,7 +107,7 @@ export function TodoListItems({
             isDraggable={false}
           />
         ))}
-        <PendingItems names={pendingItemNames} />
+        <PendingItems items={pendingItems} />
       </>
     );
   }
@@ -122,7 +131,7 @@ export function TodoListItems({
           />
         ))}
       </SortableContext>
-      <PendingItems names={pendingItemNames} />
+      <PendingItems items={pendingItems} />
     </DndContext>
   );
 }

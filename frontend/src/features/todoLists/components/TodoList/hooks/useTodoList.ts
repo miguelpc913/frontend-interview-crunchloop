@@ -6,7 +6,7 @@ import {
   useSensors,
   type DragEndEvent,
 } from '@dnd-kit/core';
-import type { TodoItem } from '../../../types/todoList';
+import type { TodoItem } from '@/shared/types/todoList';
 import type { FilterMode } from '../types';
 import { useTodoListQuery } from './useTodoListQuery';
 import { useItemOrder } from './useItemOrder';

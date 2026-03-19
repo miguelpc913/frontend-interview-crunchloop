@@ -6,17 +6,23 @@ import {
   getAllTodoItems,
   getTodoItemById,
   deleteTodoItem,
-} from './todoListService'
+  getAllTodoLists,
+} from '@/shared/api/todoLists'
 import { server } from '@/test/server'
+import { ApiError } from '@/shared/api/apiClient'
 
 describe('todoListService', () => {
-  it('deleteTodoList sends DELETE', async () => {
+  it('deleteTodoList removes the list', async () => {
     await deleteTodoList(1)
+
+    const lists = await getAllTodoLists()
+    expect(lists.find((list) => list.id === 1)).toBeUndefined()
   })
 
-  it('getAllTodoItems returns items', async () => {
+  it('getAllTodoItems returns list items', async () => {
     const items = await getAllTodoItems(1)
-    expect(Array.isArray(items)).toBe(true)
+    expect(items).toHaveLength(2)
+    expect(items[0]).toHaveProperty('name')
   })
 
   it('getTodoItemById returns an item', async () => {
@@ -25,8 +31,11 @@ describe('todoListService', () => {
     expect(item).toHaveProperty('name', 'Task A')
   })
 
-  it('deleteTodoItem sends DELETE', async () => {
+  it('deleteTodoItem removes the item from the list', async () => {
     await deleteTodoItem(1, 1)
+
+    const items = await getAllTodoItems(1)
+    expect(items.find((item) => item.id === 1)).toBeUndefined()
   })
 
   it('throws a readable error when API responds with non-ok status', async () => {
@@ -37,5 +46,19 @@ describe('todoListService', () => {
     )
 
     await expect(getTodoItemById(999, 999)).rejects.toThrow('Task not found')
+  })
+
+  it('throws ApiError with status code for non-ok responses', async () => {
+    server.use(
+      http.get('*/api/todo-lists/500/todo-items/1', () =>
+        HttpResponse.text('Server exploded', { status: 500 }),
+      ),
+    )
+
+    await expect(getTodoItemById(500, 1)).rejects.toBeInstanceOf(ApiError)
+    await expect(getTodoItemById(500, 1)).rejects.toMatchObject({
+      status: 500,
+      message: 'Server exploded',
+    })
   })
 })

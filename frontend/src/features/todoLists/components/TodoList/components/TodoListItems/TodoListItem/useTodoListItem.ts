@@ -1,7 +1,8 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, type KeyboardEvent } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import type { TodoItem, UpdateTodoItemDto } from '../../../../../types/todoList';
+import type { TodoItem } from '@/shared/types/todoList';
+import type { UpdateTodoItemDto } from '../../../../../types/todoList';
 import {
   editTodoItemSchema,
   type EditTodoItemFormValues,
@@ -51,10 +52,10 @@ export function useTodoListItem({ item, onUpdate }: UseTodoListItemOptions) {
   }, [form, item.description, onUpdate]);
 
   const handleKeyDown = useCallback(
-    (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      (event.target as HTMLInputElement).blur();
-    }
+    (event: KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === 'Enter') {
+        (event.target as HTMLInputElement).blur();
+      }
     },
     [],
   );

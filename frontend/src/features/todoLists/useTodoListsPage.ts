@@ -1,24 +1,18 @@
-import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import type { TodoList as TodoListType } from './types/todoList';
-import { getAllTodoLists } from './services/todoListService';
-import toast from 'react-hot-toast';
+import type { TodoList as TodoListType } from '@/shared/types/todoList';
+import { getAllTodoLists } from '@/shared/api/todoLists';
+import { todoListQueryKeys } from './api/queryKeys';
+import { TODO_LIST_STALE_TIME_MS } from './api/queryOptions';
 
 export function useTodoListsPage() {
-  const { data, isLoading, isError, error, refetch } = useQuery<
+  const { data, isLoading, isError, refetch } = useQuery<
     TodoListType[],
     Error
   >({
-    queryKey: ['todoLists'],
+    queryKey: todoListQueryKeys.all,
     queryFn: getAllTodoLists,
-    staleTime: 1000 * 30,
+    staleTime: TODO_LIST_STALE_TIME_MS,
   });
-
-  useEffect(() => {
-    if (isError && error) {
-      toast.error('Failed to load todo lists');
-    }
-  }, [isError, error]);
 
   const todoLists: TodoListType[] = data ?? [];
 
@@ -26,7 +20,6 @@ export function useTodoListsPage() {
     todoLists,
     isLoading,
     isError,
-    error,
     refetch,
   };
 }

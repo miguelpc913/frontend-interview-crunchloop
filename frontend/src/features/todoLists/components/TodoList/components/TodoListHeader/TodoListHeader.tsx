@@ -45,9 +45,9 @@ export function TodoListHeader({ todoListId, name }: TodoListHeaderProps) {
   } = addTaskForm;
 
   return (
-    <div className="px-4 pt-4 pb-3 border-b border-border">
+    <div className="border-b border-border px-4 pt-4 pb-3">
       <div className="flex items-center gap-2.5">
-        <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-slate-900 text-slate-50 shadow-sm shadow-slate-900/10 dark:bg-slate-100 dark:text-slate-900 dark:shadow-black/20">
+        <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm">
           <ListTodo className="h-4 w-4" aria-hidden="true" />
         </span>
         <div className="flex-1">
@@ -56,7 +56,7 @@ export function TodoListHeader({ todoListId, name }: TodoListHeaderProps) {
           </label>
           <Input
             id={`todo-list-name-${todoListId}`}
-            className="h-9 w-full border-none bg-transparent px-0 text-xl md:text-2xl font-semibold tracking-tight text-slate-900 font-sans placeholder:text-slate-400 focus-visible:ring-0 focus-visible:border-transparent dark:bg-transparent dark:text-slate-50 dark:placeholder:text-slate-500"
+            className="h-9 w-full border-none bg-transparent px-0 font-sans text-xl font-semibold tracking-tight placeholder:text-muted-foreground focus-visible:border-transparent focus-visible:ring-0 dark:bg-transparent md:text-2xl"
             type="text"
             aria-label="Todo list name"
             {...registerListName('name')}
@@ -78,7 +78,7 @@ export function TodoListHeader({ todoListId, name }: TodoListHeaderProps) {
                   type="button"
                   variant="ghost"
                   size="icon-xs"
-                  className="p-1.5 text-slate-400 opacity-60 hover:text-red-500 hover:bg-red-50 dark:text-slate-500 dark:hover:text-red-400 dark:hover:bg-red-500/10"
+                  className="p-1.5 text-muted-foreground opacity-60 hover:bg-destructive/10 hover:text-destructive"
                   aria-label="Delete list"
                   disabled={disabled}
                 >
@@ -117,7 +117,7 @@ export function TodoListHeader({ todoListId, name }: TodoListHeaderProps) {
         </Dialog>
       </div>
       <form
-        className="mt-3 flex items-center gap-2 rounded-xl border border-border bg-muted/60 px-3 py-2.5 shadow-xs focus-within:ring-2 focus-within:ring-ring/50 focus-within:border-ring"
+        className="mt-3 flex items-center gap-2 rounded-xl border border-border bg-muted/60 px-3 py-2.5 shadow-xs focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/50"
         onSubmit={handleAddSubmit}
       >
         <div className="flex-1">
@@ -126,7 +126,7 @@ export function TodoListHeader({ todoListId, name }: TodoListHeaderProps) {
           </label>
           <Input
             id={`todo-list-add-task-${todoListId}`}
-            className="h-8 w-full border-none bg-transparent px-0 text-sm font-sans text-slate-900 placeholder:italic placeholder:text-slate-400 focus-visible:ring-0 focus-visible:border-transparent dark:bg-transparent dark:text-slate-50 dark:placeholder:text-slate-500"
+            className="h-8 w-full border-none bg-transparent px-0 font-sans text-sm placeholder:italic placeholder:text-muted-foreground focus-visible:border-transparent focus-visible:ring-0 dark:bg-transparent"
             type="text"
             placeholder="Add your task..."
             aria-label="Task name"
@@ -137,7 +137,7 @@ export function TodoListHeader({ todoListId, name }: TodoListHeaderProps) {
         <Button
           type="submit"
           size="icon"
-          className="h-9 w-9 bg-slate-900 text-slate-50 shadow-sm shadow-slate-900/20 hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200"
+          className="h-9 w-9 bg-primary text-primary-foreground shadow-sm hover:bg-primary/90"
           aria-label="Add task"
           disabled={disabled || !isAddTaskValid}
         >

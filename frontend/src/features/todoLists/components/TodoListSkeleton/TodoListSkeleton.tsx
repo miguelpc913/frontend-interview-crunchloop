@@ -3,11 +3,11 @@ import { Skeleton } from '@/shared/ui/skeleton';
 
 export function TodoListSkeleton() {
   return (
-    <Card className="w-full max-w-md mx-auto font-sans text-slate-900 dark:text-slate-50">
-      <CardHeader className="border-b border-slate-100 bg-white/90 pt-4 pb-3 dark:border-slate-800 dark:bg-slate-900/90">
+    <Card className="mx-auto w-full max-w-md font-sans text-foreground">
+      <CardHeader className="border-b border-border bg-card/90 pt-4 pb-3">
         <Skeleton className="h-6 w-1/2 rounded-full" />
       </CardHeader>
-      <CardContent className="border-b border-slate-100 px-4 py-3 dark:border-slate-800">
+      <CardContent className="border-b border-border px-4 py-3">
         <div className="flex items-center gap-2">
           <Skeleton className="h-9 flex-1 rounded-xl" />
           <Skeleton className="h-9 w-9 rounded-lg" />

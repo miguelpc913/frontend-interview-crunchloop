@@ -16,15 +16,15 @@ export function AddTodoListForm() {
   } = form;
 
   return (
-    <Card className="mx-auto w-full max-w-xl font-sans text-slate-900 dark:text-slate-50">
+    <Card className="mx-auto w-full max-w-xl font-sans text-foreground">
       <CardContent className="p-4">
         <div className="mb-3 flex items-center gap-2">
-          <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-slate-900 text-slate-50 shadow-sm shadow-slate-900/10 dark:bg-slate-100 dark:text-slate-900 dark:shadow-black/20">
+          <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm">
             <Plus className="h-4 w-4" aria-hidden="true" />
           </span>
           <div className="leading-tight">
             <p className="text-sm font-medium">Add a todo list</p>
-            <p className="text-xs text-slate-600 dark:text-slate-300">
+            <p className="text-xs text-muted-foreground">
               Create a list to start organizing tasks.
             </p>
           </div>

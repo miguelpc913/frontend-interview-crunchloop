@@ -37,7 +37,7 @@ export function TodoList({ todoListId }: TodoListProps) {
     >
       {todoList && (
         <Card
-          className="mx-auto w-full max-w-md font-sans text-slate-900 dark:text-slate-50"
+          className="mx-auto w-full max-w-md font-sans text-foreground"
           data-list-name={todoList.name}
         >
           <CardContent className="p-0">
@@ -45,14 +45,14 @@ export function TodoList({ todoListId }: TodoListProps) {
               todoListId={todoListId}
               name={todoList.name}
             />
-            <Separator className="bg-slate-100/80 dark:bg-slate-800/80" />
+            <Separator className="bg-border" />
             <TodoListToolbar
               searchQuery={searchQuery}
               onSearchChange={setSearchQuery}
               filterMode={filterMode}
               onFilterChange={setFilterMode}
             />
-            <Separator className="mt-3 bg-slate-100/80 md:mt-4 dark:bg-slate-800/80" />
+            <Separator className="mt-3 bg-border md:mt-4" />
             <ul className="m-0 flex list-none flex-col gap-1.5 p-3.5 md:p-4">
               <TodoListItems
                 todoListId={todoListId}

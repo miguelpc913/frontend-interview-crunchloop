@@ -21,13 +21,17 @@ const chartConfig = {
   pending: { label: 'Pending', color: 'oklch(0.556 0 0)' },
 } satisfies ChartConfig;
 
-interface Props {
+interface CompletionDonutChartProps {
   done: number;
   pending: number;
   total: number;
 }
 
-export function CompletionDonutChart({ done, pending, total }: Props) {
+export function CompletionDonutChart({
+  done,
+  pending,
+  total,
+}: CompletionDonutChartProps) {
   const data = [
     { status: 'done', count: done, fill: 'var(--color-done)' },
     { status: 'pending', count: pending, fill: 'var(--color-pending)' },
