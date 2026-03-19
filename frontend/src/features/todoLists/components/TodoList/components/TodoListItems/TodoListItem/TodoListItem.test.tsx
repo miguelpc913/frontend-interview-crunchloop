@@ -12,6 +12,10 @@ vi.mock('./useTodoListItemMutations', () => ({
   useTodoListItemMutations: () => ({
     handleUpdateItem: mockHandleUpdateItem,
     handleDeleteItem: mockHandleDeleteItem,
+    updateItemMutation: {
+      isPending: false,
+      variables: undefined,
+    },
   }),
 }))
 

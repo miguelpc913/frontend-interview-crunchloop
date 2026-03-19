@@ -14,44 +14,14 @@ export function useTodoListItemMutations(todoListId: number) {
       todoItemId: number;
       updates: { name?: string; description?: string; done?: boolean };
     }) => updateTodoItem(todoListId, params.todoItemId, params.updates),
-    onMutate: async ({ todoItemId, updates }) => {
-      await queryClient.cancelQueries({ queryKey: ['todoList', todoListId] });
-      const previous = queryClient.getQueryData<TodoList>([
-        'todoList',
-        todoListId,
-      ]);
-
-      if (previous) {
-        queryClient.setQueryData<TodoList>(['todoList', todoListId], {
-          ...previous,
-          todoItems: previous.todoItems.map((item) =>
-            item.id === todoItemId ? { ...item, ...updates } : item,
-          ),
-        });
-      }
-
-      return { previous };
-    },
-    onError: (_err, _variables, context) => {
-      if (context?.previous) {
-        queryClient.setQueryData(['todoList', todoListId], context.previous);
-      }
+    onError: () => {
       toast.error('Could not update the task');
     },
-    onSuccess: (updatedItem) => {
-      queryClient.setQueryData<TodoList | undefined>(
-        ['todoList', todoListId],
-        (current) =>
-          current
-            ? {
-                ...current,
-                todoItems: current.todoItems.map((item) =>
-                  item.id === updatedItem.id ? updatedItem : item,
-                ),
-              }
-            : current,
-      );
+    onSuccess: () => {
       toast.success('Task updated');
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['todoList', todoListId] });
     },
   });
 
@@ -100,5 +70,5 @@ export function useTodoListItemMutations(todoListId: number) {
     deleteItemMutation.mutate(todoItemId);
   }
 
-  return { handleUpdateItem, handleDeleteItem };
+  return { handleUpdateItem, handleDeleteItem, updateItemMutation };
 }

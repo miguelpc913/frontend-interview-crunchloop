@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import userEvent from '@testing-library/user-event'
-import { screen, waitFor } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import { HttpResponse, delay, http } from 'msw'
 
 import { TodoListsPage } from './TodoListsPage'
@@ -67,6 +67,34 @@ describe('TodoListsPage', () => {
     expect(await screen.findByDisplayValue('List One')).toBeInTheDocument()
     expect(screen.getByDisplayValue('Task A')).toBeInTheDocument()
     expect(screen.getByDisplayValue('Task B')).toBeInTheDocument()
+  })
+
+  it('does not fetch per-list data on initial mount when todo-lists are already cached', async () => {
+    let todoListByIdCallCount = 0
+
+    server.use(
+      http.get('*/api/todo-lists', () => {
+        return HttpResponse.json([listOne])
+      }),
+      http.get('*/api/todo-lists/:id', async () => {
+        todoListByIdCallCount += 1
+        // If this endpoint is called, the test should fail.
+        // We delay to make timing-related calls more observable.
+        await delay(25)
+        return HttpResponse.json(listOne)
+      }),
+    )
+
+    renderWithProviders(<TodoListsPage />)
+
+    expect(await screen.findByDisplayValue('List One')).toBeInTheDocument()
+    expect(screen.getByDisplayValue('Task A')).toBeInTheDocument()
+    expect(screen.getByDisplayValue('Task B')).toBeInTheDocument()
+
+    // Allow any potential late per-list refetch to occur.
+    await new Promise((resolve) => setTimeout(resolve, 50))
+
+    expect(todoListByIdCallCount).toBe(0)
   })
 })
 

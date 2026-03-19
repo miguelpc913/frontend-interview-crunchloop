@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import userEvent from '@testing-library/user-event'
-import { screen, waitFor } from '@testing-library/react'
+import { screen, waitFor, within } from '@testing-library/react'
 import { HttpResponse, delay, http } from 'msw'
 
 import { TodoList } from './TodoList'
@@ -165,6 +165,105 @@ describe('TodoList', () => {
     })
   })
 
+  it('optimistically toggles done immediately while update is pending', async () => {
+    resetTodoLists()
+
+    let resolvePut: ((resp: HttpResponse) => void) | undefined
+    let updatedItemForResponse: (typeof listOne.todoItems)[number] | undefined
+
+    server.use(
+      http.put('*/api/todo-lists/1/todo-items/1', async ({ request }) => {
+        const body = (await request.json()) as { done: boolean }
+
+        updatedItemForResponse = {
+          ...listOne.todoItems[0],
+          done: body.done,
+        }
+
+        const updatedList = {
+          ...listOne,
+          todoItems: [updatedItemForResponse, listOne.todoItems[1]],
+        }
+
+        setTodoLists([updatedList, listTwo, emptyList])
+
+        return await new Promise((resolve) => {
+          resolvePut = resolve
+        })
+      }),
+    )
+
+    renderWithProviders(<TodoList todoListId={1} />)
+    const user = userEvent.setup()
+
+    const checkbox = await screen.findByRole('checkbox', { name: 'Mark as complete' })
+    const nameInput = screen.getByDisplayValue('Task A')
+
+    await user.click(checkbox)
+
+    // The UI should update before the server response resolves.
+    expect(checkbox).toHaveAttribute('aria-checked', 'true')
+    expect(nameInput).toHaveClass('line-through')
+
+    resolvePut?.(HttpResponse.json(updatedItemForResponse!))
+
+    await waitFor(() => {
+      expect(checkbox).toHaveAttribute('aria-checked', 'true')
+      expect(screen.getByDisplayValue('Task A')).toHaveClass('line-through')
+    })
+  })
+
+  it('renders a pending add item as a ghost entry while request is pending', async () => {
+    resetTodoLists()
+
+    let resolvePost: ((resp: HttpResponse) => void) | undefined
+    let createdItemForResponse: (typeof listOne.todoItems)[number] | undefined
+
+    server.use(
+      http.post('*/api/todo-lists/1/todo-items', async ({ request }) => {
+        const body = (await request.json()) as { name: string }
+
+        const optimisticId = Math.max(...listOne.todoItems.map((i) => i.id)) + 1
+        createdItemForResponse = {
+          id: optimisticId,
+          name: body.name.trim(),
+          description: '',
+          done: false,
+        }
+
+        const updatedList = {
+          ...listOne,
+          todoItems: [...listOne.todoItems, createdItemForResponse],
+        }
+
+        setTodoLists([updatedList, listTwo, emptyList])
+
+        return await new Promise((resolve) => {
+          resolvePost = resolve
+        })
+      }),
+    )
+
+    renderWithProviders(<TodoList todoListId={1} />)
+    const user = userEvent.setup()
+
+    const addInput = await screen.findByPlaceholderText('Add your task...')
+    await user.type(addInput, 'New Ghost')
+    await user.click(screen.getByRole('button', { name: 'Add task' }))
+
+    const pendingItem = await screen.findByTestId('pending-todo-item')
+    expect(pendingItem).toHaveTextContent('New Ghost')
+    expect(pendingItem).toHaveClass('opacity-50')
+
+    resolvePost?.(HttpResponse.json(createdItemForResponse!))
+
+    expect(await screen.findByDisplayValue('New Ghost')).toBeInTheDocument()
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('pending-todo-item')).not.toBeInTheDocument()
+    })
+  })
+
   it('adds a new item via the header form', async () => {
     resetTodoLists()
     const postSpy = vi.fn()
@@ -212,6 +311,42 @@ describe('TodoList', () => {
       expect(deleteSpy).toHaveBeenCalledTimes(1)
       expect(deleteSpy).toHaveBeenLastCalledWith(1)
     })
+  })
+
+  it('optimistically removes a todo item immediately and rolls back on error', async () => {
+    resetTodoLists()
+
+    let resolveDelete: (() => void) | undefined
+
+    server.use(
+      http.delete('*/api/todo-lists/1/todo-items/1', async () => {
+        await new Promise<void>((resolve) => {
+          resolveDelete = resolve
+        })
+        throw new Error('Delete failed')
+      }),
+    )
+
+    renderWithProviders(<TodoList todoListId={1} />)
+    const user = userEvent.setup()
+
+    const taskAInput = await screen.findByDisplayValue('Task A')
+    const taskALi = taskAInput.closest('li')
+    expect(taskALi).toBeTruthy()
+
+    const deleteButton = within(taskALi as HTMLElement).getByRole('button', {
+      name: 'Delete task',
+    })
+
+    await user.click(deleteButton)
+
+    // Removed immediately while the mutation is still pending.
+    expect(screen.queryByDisplayValue('Task A')).not.toBeInTheDocument()
+
+    resolveDelete?.()
+
+    // After the error, the item should be restored.
+    expect(await screen.findByDisplayValue('Task A')).toBeInTheDocument()
   })
 
   it('updates item name via blur', async () => {

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import type { TodoItem, UpdateTodoItemDto } from '../../../types/todoList';
+import type { TodoItem, UpdateTodoItemDto } from '../../../../../types/todoList';
 import {
   editTodoItemSchema,
   type EditTodoItemFormValues,
@@ -10,10 +10,9 @@ import {
 interface UseTodoListItemOptions {
   item: TodoItem;
   onUpdate: (updates: UpdateTodoItemDto) => void;
-  onDelete: () => void;
 }
 
-export function useTodoListItem({ item, onUpdate, onDelete }: UseTodoListItemOptions) {
+export function useTodoListItem({ item, onUpdate }: UseTodoListItemOptions) {
   const form = useForm<EditTodoItemFormValues>({
     mode: 'onChange',
     resolver: zodResolver(editTodoItemSchema),
@@ -67,7 +66,6 @@ export function useTodoListItem({ item, onUpdate, onDelete }: UseTodoListItemOpt
     handleDescriptionBlur,
     handleKeyDown,
     handleToggleDone,
-    onDelete,
   };
 }
 
