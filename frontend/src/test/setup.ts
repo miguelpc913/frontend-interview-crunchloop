@@ -1,9 +1,9 @@
-import '@testing-library/jest-dom/vitest'
+import '@testing-library/jest-dom/vitest';
 
-import { afterAll, afterEach, beforeAll, vi } from 'vitest'
+import { afterAll, afterEach, beforeAll, vi } from 'vitest';
 
-import { server } from './server'
-import { resetTodoLists } from './handlers'
+import { server } from './server';
+import { resetTodoLists } from './handlers';
 
 vi.mock('@dnd-kit/core', () => {
   return {
@@ -13,8 +13,8 @@ vi.mock('@dnd-kit/core', () => {
     closestCenter: {},
     useSensor: () => ({}),
     useSensors: (...args: unknown[]) => args,
-  }
-})
+  };
+});
 
 vi.mock('@dnd-kit/sortable', () => {
   return {
@@ -28,16 +28,16 @@ vi.mock('@dnd-kit/sortable', () => {
         transform: null,
         transition: undefined,
         isDragging: false,
-      }
+      };
     },
-    arrayMove: <T,>(arr: T[], from: number, to: number) => {
-      const next = [...arr]
-      const [item] = next.splice(from, 1)
-      next.splice(to, 0, item)
-      return next
+    arrayMove: <T>(arr: T[], from: number, to: number) => {
+      const next = [...arr];
+      const [item] = next.splice(from, 1);
+      next.splice(to, 0, item);
+      return next;
     },
-  }
-})
+  };
+});
 
 vi.mock('@dnd-kit/utilities', () => {
   return {
@@ -46,18 +46,18 @@ vi.mock('@dnd-kit/utilities', () => {
         toString: () => undefined,
       },
     },
-  }
-})
+  };
+});
 
 vi.mock('recharts', async () => {
-  const React = await import('react')
-  const passthrough = (name: string) =>
+  const React = await import('react');
+  const passthrough =
+    (name: string) =>
     ({ children, ...props }: Record<string, unknown>) =>
-      React.createElement('div', { 'data-testid': name, ...props }, children as React.ReactNode)
+      React.createElement('div', { 'data-testid': name, ...props }, children as React.ReactNode);
 
-  const self = (name: string) =>
-    (props: Record<string, unknown>) =>
-      React.createElement('div', { 'data-testid': name, ...props })
+  const self = (name: string) => (props: Record<string, unknown>) =>
+    React.createElement('div', { 'data-testid': name, ...props });
 
   return {
     ResponsiveContainer: passthrough('responsive-container'),
@@ -72,26 +72,33 @@ vi.mock('recharts', async () => {
     YAxis: self('y-axis'),
     Tooltip: self('tooltip'),
     Legend: self('legend'),
-    Label: ({ content }: { content?: (props: { viewBox: { cx: number; cy: number } }) => React.ReactNode }) => {
+    Label: ({
+      content,
+    }: {
+      content?: (props: { viewBox: { cx: number; cy: number } }) => React.ReactNode;
+    }) => {
       if (typeof content === 'function') {
-        return React.createElement(React.Fragment, null, content({ viewBox: { cx: 100, cy: 100 } }))
+        return React.createElement(
+          React.Fragment,
+          null,
+          content({ viewBox: { cx: 100, cy: 100 } }),
+        );
       }
-      return null
+      return null;
     },
     PolarAngleAxis: self('polar-angle-axis'),
-  }
-})
+  };
+});
 
 beforeAll(() => {
-  server.listen({ onUnhandledRequest: 'error' })
-})
+  server.listen({ onUnhandledRequest: 'error' });
+});
 
 afterEach(() => {
-  server.resetHandlers()
-  resetTodoLists()
-})
+  server.resetHandlers();
+  resetTodoLists();
+});
 
 afterAll(() => {
-  server.close()
-})
-
+  server.close();
+});

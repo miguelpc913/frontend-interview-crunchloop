@@ -1,10 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { TodoList } from '@/shared/types/todoList';
-import {
-  updateTodoList,
-  deleteTodoList,
-  addTodoItem,
-} from '@/shared/api/todoLists';
+import { updateTodoList, deleteTodoList, addTodoItem } from '@/shared/api/todoLists';
 import toast from 'react-hot-toast';
 import { todoListMutationKeys, todoListQueryKeys } from '@/shared/query/todoLists';
 import {
@@ -27,10 +23,8 @@ export function useTodoListHeaderMutations(todoListId: number) {
         todoListQueryKeys.detail(todoListId),
         (current) => (current ? { ...current, name } : current),
       );
-      queryClient.setQueryData<TodoList[] | undefined>(
-        todoListQueryKeys.all,
-        (current) =>
-          current?.map((list) => (list.id === todoListId ? { ...list, name } : list)),
+      queryClient.setQueryData<TodoList[] | undefined>(todoListQueryKeys.all, (current) =>
+        current?.map((list) => (list.id === todoListId ? { ...list, name } : list)),
       );
 
       return { snapshot };
@@ -46,35 +40,17 @@ export function useTodoListHeaderMutations(todoListId: number) {
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: todoListQueryKeys.all });
       await queryClient.cancelQueries({ queryKey: todoListQueryKeys.detail(todoListId) });
+      const snapshot = snapshotTodoListCaches(queryClient, todoListId);
 
-      const previousTodoLists =
-        queryClient.getQueryData<TodoList[]>(todoListQueryKeys.all);
-      const previousTodoList = queryClient.getQueryData<TodoList>(
-        todoListQueryKeys.detail(todoListId),
+      queryClient.setQueryData<TodoList[] | undefined>(todoListQueryKeys.all, (current) =>
+        current?.filter((list) => list.id !== todoListId),
       );
+      queryClient.removeQueries({ queryKey: todoListQueryKeys.detail(todoListId) });
 
-      if (previousTodoLists) {
-        queryClient.setQueryData<TodoList[]>(
-          todoListQueryKeys.all,
-          previousTodoLists.filter((list) => list.id !== todoListId),
-        );
-      }
-
-      return { previousTodoLists, previousTodoList };
+      return { snapshot };
     },
     onError: (_err, _variables, context) => {
-      if (context?.previousTodoLists) {
-        queryClient.setQueryData<TodoList[]>(
-          todoListQueryKeys.all,
-          context.previousTodoLists,
-        );
-      }
-      if (context?.previousTodoList) {
-        queryClient.setQueryData<TodoList>(
-          todoListQueryKeys.detail(todoListId),
-          context.previousTodoList,
-        );
-      }
+      restoreTodoListCaches(queryClient, todoListId, context?.snapshot);
       toast.error('Could not delete the list');
     },
     onSuccess: () => {
@@ -116,19 +92,17 @@ export function useTodoListHeaderMutations(todoListId: number) {
             };
           },
         );
-        queryClient.setQueryData<TodoList[] | undefined>(
-          todoListQueryKeys.all,
-          (current) =>
-            current?.map((list) =>
-              list.id !== todoListId
-                ? list
-                : {
-                    ...list,
-                    todoItems: list.todoItems.map((item) =>
-                      item.id === context.optimisticId ? createdItem : item,
-                    ),
-                  },
-            ),
+        queryClient.setQueryData<TodoList[] | undefined>(todoListQueryKeys.all, (current) =>
+          current?.map((list) =>
+            list.id !== todoListId
+              ? list
+              : {
+                  ...list,
+                  todoItems: list.todoItems.map((item) =>
+                    item.id === context.optimisticId ? createdItem : item,
+                  ),
+                },
+          ),
         );
       } else {
         addTodoItemToCaches(queryClient, todoListId, createdItem);

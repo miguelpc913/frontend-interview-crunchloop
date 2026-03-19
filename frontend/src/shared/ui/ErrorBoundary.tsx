@@ -18,8 +18,8 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    void error;
-    void errorInfo;
+    // Replace with production error reporting integration (e.g. Sentry) in real deployments.
+    console.error('ErrorBoundary caught an error', error, errorInfo);
   }
 
   private handleReload = () => {

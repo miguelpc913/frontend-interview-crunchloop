@@ -21,9 +21,7 @@ export function useTodoListFilter(items: TodoItem[]) {
 
         const name = item.name?.toLowerCase() ?? '';
         const description = item.description?.toLowerCase() ?? '';
-        return (
-          name.includes(normalizedSearch) || description.includes(normalizedSearch)
-        );
+        return name.includes(normalizedSearch) || description.includes(normalizedSearch);
       }),
     [items, filterMode, normalizedSearch],
   );

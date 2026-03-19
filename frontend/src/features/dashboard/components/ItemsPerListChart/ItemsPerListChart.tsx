@@ -7,13 +7,7 @@ import {
   ChartLegendContent,
   type ChartConfig,
 } from '@/shared/ui/chart';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/shared/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card';
 import type { ListChartData } from '../../hooks/useDashboardData';
 
 const chartConfig = {
@@ -50,27 +44,12 @@ export function ItemsPerListChart({ data }: ItemsPerListChartProps) {
         <ChartContainer config={chartConfig}>
           <BarChart data={data} accessibilityLayer>
             <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="name"
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-            />
+            <XAxis dataKey="name" tickLine={false} tickMargin={10} axisLine={false} />
             <YAxis tickLine={false} axisLine={false} allowDecimals={false} />
             <ChartTooltip content={<ChartTooltipContent />} />
             <ChartLegend content={<ChartLegendContent />} />
-            <Bar
-              dataKey="done"
-              stackId="a"
-              fill="var(--color-done)"
-              radius={[0, 0, 4, 4]}
-            />
-            <Bar
-              dataKey="pending"
-              stackId="a"
-              fill="var(--color-pending)"
-              radius={[4, 4, 0, 0]}
-            />
+            <Bar dataKey="done" stackId="a" fill="var(--color-done)" radius={[0, 0, 4, 4]} />
+            <Bar dataKey="pending" stackId="a" fill="var(--color-pending)" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ChartContainer>
       </CardContent>

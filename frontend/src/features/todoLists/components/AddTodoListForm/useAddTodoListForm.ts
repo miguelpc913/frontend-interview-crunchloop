@@ -20,9 +20,7 @@ interface OptimisticContext {
   tempId: number;
 }
 
-export function useAddTodoListForm({
-  initialValue = '',
-}: UseAddTodoListFormOptions = {}) {
+export function useAddTodoListForm({ initialValue = '' }: UseAddTodoListFormOptions = {}) {
   const queryClient = useQueryClient();
   const form = useForm<CreateTodoListFormValues>({
     mode: 'onChange',
@@ -32,12 +30,7 @@ export function useAddTodoListForm({
     },
   });
 
-  const createMutation = useMutation<
-    TodoList,
-    Error,
-    CreateTodoListDto,
-    OptimisticContext
-  >({
+  const createMutation = useMutation<TodoList, Error, CreateTodoListDto, OptimisticContext>({
     mutationFn: (dto) => createTodoList(dto),
     onMutate: async (dto) => {
       await queryClient.cancelQueries({ queryKey: todoListQueryKeys.all });
@@ -64,10 +57,7 @@ export function useAddTodoListForm({
     onError: (err, _dto, context) => {
       if (!context) return;
 
-      queryClient.setQueryData<TodoList[] | undefined>(
-        todoListQueryKeys.all,
-        context.previous,
-      );
+      queryClient.setQueryData<TodoList[] | undefined>(todoListQueryKeys.all, context.previous);
       queryClient.removeQueries({ queryKey: todoListQueryKeys.detail(context.tempId) });
       toast.error(err.message || 'Could not create todo list');
     },
@@ -76,14 +66,10 @@ export function useAddTodoListForm({
 
       queryClient.setQueryData<TodoList[]>(todoListQueryKeys.all, (old) => {
         const current = old ?? [];
-        const hasOptimisticEntry = current.some(
-          (list) => list.id === context.tempId,
-        );
+        const hasOptimisticEntry = current.some((list) => list.id === context.tempId);
 
         if (hasOptimisticEntry) {
-          return current.map((list) =>
-            list.id === context.tempId ? created : list,
-          );
+          return current.map((list) => (list.id === context.tempId ? created : list));
         }
 
         // Fallback: if the optimistic entry is missing, still ensure the created list is present.
@@ -103,9 +89,7 @@ export function useAddTodoListForm({
   }
 
   const errorMessage =
-    createMutation.error instanceof Error
-      ? createMutation.error.message
-      : undefined;
+    createMutation.error instanceof Error ? createMutation.error.message : undefined;
 
   return {
     form,
@@ -114,4 +98,3 @@ export function useAddTodoListForm({
     errorMessage,
   };
 }
-

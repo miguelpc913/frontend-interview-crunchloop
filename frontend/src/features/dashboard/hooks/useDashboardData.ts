@@ -29,10 +29,7 @@ export function useDashboardData() {
       (sum, list) => sum + list.todoItems.filter((i) => i.done).length,
       0,
     );
-    const total = todoLists.reduce(
-      (sum, list) => sum + list.todoItems.length,
-      0,
-    );
+    const total = todoLists.reduce((sum, list) => sum + list.todoItems.length, 0);
     return { done, pending: total - done, total };
   }, [todoLists]);
 

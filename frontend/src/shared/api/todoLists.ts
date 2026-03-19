@@ -1,9 +1,17 @@
-import { CreateTodoListDto, UpdateTodoListDto, AddTodoItemDto, UpdateTodoItemDto } from '@/features/todoLists/types/todoList';
+import {
+  CreateTodoListDto,
+  UpdateTodoListDto,
+  AddTodoItemDto,
+  UpdateTodoItemDto,
+} from '@/features/todoLists/types/todoList';
 import { apiFetch } from '@/shared/api/apiClient';
-import type {
-  TodoList,
-  TodoItem
-} from '@/shared/types/todoList';
+import {
+  todoItemSchema,
+  todoItemsSchema,
+  todoListSchema,
+  todoListsSchema,
+} from '@/shared/schemas/todoList';
+import type { TodoList, TodoItem } from '@/shared/types/todoList';
 
 const API_URL = import.meta.env.VITE_API_URL;
 const jsonHeaders = { 'Content-Type': 'application/json' };
@@ -13,6 +21,7 @@ export async function createTodoList(dto: CreateTodoListDto): Promise<TodoList> 
     '/api/todo-lists',
     { method: 'POST', headers: jsonHeaders, body: JSON.stringify(dto) },
     API_URL,
+    todoListSchema,
   );
 }
 
@@ -21,6 +30,7 @@ export async function getAllTodoLists(): Promise<TodoList[]> {
     '/api/todo-lists',
     { method: 'GET', headers: jsonHeaders },
     API_URL,
+    todoListsSchema,
   );
 }
 
@@ -29,6 +39,7 @@ export async function getTodoListById(todoListId: number): Promise<TodoList> {
     `/api/todo-lists/${todoListId}`,
     { method: 'GET', headers: jsonHeaders },
     API_URL,
+    todoListSchema,
   );
 }
 
@@ -40,6 +51,7 @@ export async function updateTodoList(
     `/api/todo-lists/${todoListId}`,
     { method: 'PUT', headers: jsonHeaders, body: JSON.stringify(dto) },
     API_URL,
+    todoListSchema,
   );
 }
 
@@ -56,6 +68,7 @@ export async function addTodoItem(todoListId: number, dto: AddTodoItemDto): Prom
     `/api/todo-lists/${todoListId}/todo-items`,
     { method: 'POST', headers: jsonHeaders, body: JSON.stringify(dto) },
     API_URL,
+    todoItemSchema,
   );
 }
 
@@ -64,17 +77,16 @@ export async function getAllTodoItems(todoListId: number): Promise<TodoItem[]> {
     `/api/todo-lists/${todoListId}/todo-items`,
     { method: 'GET', headers: jsonHeaders },
     API_URL,
+    todoItemsSchema,
   );
 }
 
-export async function getTodoItemById(
-  todoListId: number,
-  todoItemId: number,
-): Promise<TodoItem> {
+export async function getTodoItemById(todoListId: number, todoItemId: number): Promise<TodoItem> {
   return apiFetch<TodoItem>(
     `/api/todo-lists/${todoListId}/todo-items/${todoItemId}`,
     { method: 'GET', headers: jsonHeaders },
     API_URL,
+    todoItemSchema,
   );
 }
 
@@ -87,6 +99,7 @@ export async function updateTodoItem(
     `/api/todo-lists/${todoListId}/todo-items/${todoItemId}`,
     { method: 'PUT', headers: jsonHeaders, body: JSON.stringify(dto) },
     API_URL,
+    todoItemSchema,
   );
 }
 

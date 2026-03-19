@@ -17,7 +17,4 @@ export interface UpdateTodoItemDto {
   done?: boolean;
 }
 
-export type {
-  TodoItem,
-  TodoList
-} from '@/shared/types/todoList';
+export type { TodoItem, TodoList } from '@/shared/types/todoList';

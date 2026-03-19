@@ -7,13 +7,7 @@ import {
   ChartLegendContent,
   type ChartConfig,
 } from '@/shared/ui/chart';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/shared/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card';
 
 const chartConfig = {
   count: { label: 'Items' },
@@ -27,11 +21,7 @@ interface CompletionDonutChartProps {
   total: number;
 }
 
-export function CompletionDonutChart({
-  done,
-  pending,
-  total,
-}: CompletionDonutChartProps) {
+export function CompletionDonutChart({ done, pending, total }: CompletionDonutChartProps) {
   const data = [
     { status: 'done', count: done, fill: 'var(--color-done)' },
     { status: 'pending', count: pending, fill: 'var(--color-pending)' },
@@ -58,14 +48,9 @@ export function CompletionDonutChart({
         <CardDescription>Done vs pending across all lists</CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer
-          config={chartConfig}
-          className="mx-auto aspect-square max-h-[280px]"
-        >
+        <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[280px]">
           <PieChart>
-            <ChartTooltip
-              content={<ChartTooltipContent nameKey="status" hideLabel />}
-            />
+            <ChartTooltip content={<ChartTooltipContent nameKey="status" hideLabel />} />
             <Pie
               data={data}
               dataKey="count"

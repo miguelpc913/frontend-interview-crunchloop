@@ -5,13 +5,7 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from '@/shared/ui/chart';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/shared/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card';
 import type { ListChartData } from '../../hooks/useDashboardData';
 
 const chartConfig = {
@@ -59,11 +53,7 @@ export function LargestListsChart({ data }: LargestListsChartProps) {
             />
             <XAxis type="number" tickLine={false} axisLine={false} allowDecimals={false} />
             <ChartTooltip content={<ChartTooltipContent />} />
-            <Bar
-              dataKey="total"
-              fill="var(--color-total)"
-              radius={[0, 4, 4, 0]}
-            />
+            <Bar dataKey="total" fill="var(--color-total)" radius={[0, 4, 4, 0]} />
           </BarChart>
         </ChartContainer>
       </CardContent>

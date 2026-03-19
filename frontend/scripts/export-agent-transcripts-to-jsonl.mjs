@@ -96,11 +96,8 @@ function main() {
   writeStream.end();
 
   writeStream.on('finish', () => {
-    console.log(
-      `Wrote ${totalMessages} messages from ${files.length} sessions to ${outputPath}`,
-    );
+    console.log(`Wrote ${totalMessages} messages from ${files.length} sessions to ${outputPath}`);
   });
 }
 
 main();
-

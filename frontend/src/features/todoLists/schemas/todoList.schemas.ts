@@ -1,14 +1,8 @@
 import { z } from 'zod';
 
-export const todoListNameSchema = z
-  .string()
-  .trim()
-  .min(1, 'Name should not be empty');
+export const todoListNameSchema = z.string().trim().min(1, 'Name should not be empty');
 
-export const todoItemNameSchema = z
-  .string()
-  .trim()
-  .min(1, 'Name should not be empty');
+export const todoItemNameSchema = z.string().trim().min(1, 'Name should not be empty');
 
 export const todoItemDescriptionSchema = z
   .string()
@@ -35,4 +29,3 @@ export type CreateTodoListFormValues = z.infer<typeof createTodoListSchema>;
 export type AddTodoItemFormValues = z.infer<typeof addTodoItemSchema>;
 export type EditTodoListNameFormValues = z.infer<typeof editTodoListNameSchema>;
 export type EditTodoItemFormValues = z.infer<typeof editTodoItemSchema>;
-

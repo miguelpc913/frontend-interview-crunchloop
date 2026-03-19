@@ -3,10 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { TodoItem } from '@/shared/types/todoList';
 import type { UpdateTodoItemDto } from '../../../types/todoList';
-import {
-  editTodoItemSchema,
-  type EditTodoItemFormValues,
-} from '../../../schemas/todoList.schemas';
+import { editTodoItemSchema, type EditTodoItemFormValues } from '../../../schemas/todoList.schemas';
 
 interface UseTodoListItemOptions {
   item: TodoItem;
@@ -51,14 +48,11 @@ export function useTodoListItem({ item, onUpdate }: UseTodoListItemOptions) {
     });
   }, [form, item.description, onUpdate]);
 
-  const handleKeyDown = useCallback(
-    (event: KeyboardEvent<HTMLInputElement>) => {
-      if (event.key === 'Enter') {
-        (event.target as HTMLInputElement).blur();
-      }
-    },
-    [],
-  );
+  const handleKeyDown = useCallback((event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      (event.target as HTMLInputElement).blur();
+    }
+  }, []);
 
   return {
     form,

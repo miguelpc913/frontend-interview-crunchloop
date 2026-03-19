@@ -23,17 +23,13 @@ describe('TodoListHeader', () => {
   });
 
   it('renders list name input', () => {
-    renderWithProviders(
-      <TodoListHeader todoListId={1} name='My List' />,
-    );
+    renderWithProviders(<TodoListHeader todoListId={1} name="My List" />);
 
     expect(screen.getByDisplayValue('My List')).toBeInTheDocument();
   });
 
   it('updates list name on blur when changed + valid', async () => {
-    renderWithProviders(
-      <TodoListHeader todoListId={1} name='My List' />,
-    );
+    renderWithProviders(<TodoListHeader todoListId={1} name="My List" />);
 
     const user = userEvent.setup();
     const nameInput = screen.getByDisplayValue('My List');
@@ -48,9 +44,7 @@ describe('TodoListHeader', () => {
   });
 
   it('does not call onUpdateName when blurred value is unchanged', async () => {
-    renderWithProviders(
-      <TodoListHeader todoListId={1} name='My List' />,
-    );
+    renderWithProviders(<TodoListHeader todoListId={1} name="My List" />);
 
     const user = userEvent.setup();
     const nameInput = screen.getByDisplayValue('My List');
@@ -63,9 +57,7 @@ describe('TodoListHeader', () => {
   });
 
   it('shows validation error and does not update when name is empty', async () => {
-    renderWithProviders(
-      <TodoListHeader todoListId={1} name='My List' />,
-    );
+    renderWithProviders(<TodoListHeader todoListId={1} name="My List" />);
 
     const user = userEvent.setup();
     const nameInput = screen.getByDisplayValue('My List');
@@ -78,9 +70,7 @@ describe('TodoListHeader', () => {
   });
 
   it('pressing Enter on list name triggers update via blur', async () => {
-    renderWithProviders(
-      <TodoListHeader todoListId={1} name='My List' />,
-    );
+    renderWithProviders(<TodoListHeader todoListId={1} name="My List" />);
 
     const user = userEvent.setup();
     const nameInput = screen.getByDisplayValue('My List');
@@ -94,9 +84,7 @@ describe('TodoListHeader', () => {
   });
 
   it('submits add-task form, calls onAddItem, and resets input', async () => {
-    renderWithProviders(
-      <TodoListHeader todoListId={1} name='My List' />,
-    );
+    renderWithProviders(<TodoListHeader todoListId={1} name="My List" />);
 
     const user = userEvent.setup();
     const input = screen.getByPlaceholderText('Add your task...');
@@ -112,9 +100,7 @@ describe('TodoListHeader', () => {
   });
 
   it('disables add-task submit when name is empty/whitespace', async () => {
-    renderWithProviders(
-      <TodoListHeader todoListId={1} name='My List' />,
-    );
+    renderWithProviders(<TodoListHeader todoListId={1} name="My List" />);
 
     const user = userEvent.setup();
     const input = screen.getByPlaceholderText('Add your task...');
@@ -127,9 +113,7 @@ describe('TodoListHeader', () => {
   });
 
   it('calls onDeleteList when delete button is clicked', async () => {
-    renderWithProviders(
-      <TodoListHeader todoListId={1} name='My List' />,
-    );
+    renderWithProviders(<TodoListHeader todoListId={1} name="My List" />);
 
     const user = userEvent.setup();
     const deleteButton = screen.getByRole('button', { name: 'Delete list' });

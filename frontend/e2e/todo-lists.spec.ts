@@ -19,9 +19,7 @@ import {
 async function selectFilter(card: Locator, page: Page, name: string) {
   await expect(async () => {
     await card.locator('[data-slot="dropdown-menu-trigger"]').click();
-    await page
-      .getByRole('menuitemradio', { name, exact: true })
-      .click({ timeout: 2000 });
+    await page.getByRole('menuitemradio', { name, exact: true }).click({ timeout: 2000 });
   }).toPass({ timeout: 10000 });
 }
 
@@ -35,16 +33,11 @@ test.describe('TodoLists', () => {
     }
   });
 
-  test('page loads and displays existing todo lists', async ({
-    page,
-    request,
-  }) => {
+  test('page loads and displays existing todo lists', async ({ page, request }) => {
     const list = await createTestList(request, 'E2E Display List');
     try {
       await page.goto('/');
-      await expect(
-        page.locator('[data-list-name="E2E Display List"]'),
-      ).toBeVisible();
+      await expect(page.locator('[data-list-name="E2E Display List"]')).toBeVisible();
     } finally {
       await deleteTestList(request, list.id);
     }
@@ -55,9 +48,7 @@ test.describe('TodoLists', () => {
     await page.goto('/');
     await page.getByLabel('Todo list name').fill(name);
     await page.getByRole('button', { name: 'Add list' }).click();
-    await expect(
-      page.locator(`[data-list-name="${name}"]`),
-    ).toBeVisible();
+    await expect(page.locator(`[data-list-name="${name}"]`)).toBeVisible();
 
     const lists = await getAllTestLists(request);
     const created = lists.find((l) => l.name === name);
@@ -90,13 +81,9 @@ test.describe('TodoLists', () => {
       const card = page.locator(`[data-list-name="${listName}"]`);
       const taskRow = card.locator('li[data-task-name="Task to toggle"]');
       await taskRow.getByRole('checkbox', { name: 'Mark as complete' }).click();
-      await expect(
-        taskRow.getByRole('checkbox', { name: 'Mark as incomplete' }),
-      ).toBeVisible();
+      await expect(taskRow.getByRole('checkbox', { name: 'Mark as incomplete' })).toBeVisible();
       await taskRow.getByRole('checkbox', { name: 'Mark as incomplete' }).click();
-      await expect(
-        taskRow.getByRole('checkbox', { name: 'Mark as complete' }),
-      ).toBeVisible();
+      await expect(taskRow.getByRole('checkbox', { name: 'Mark as complete' })).toBeVisible();
     } finally {
       await deleteTestList(request, list.id);
     }
@@ -114,9 +101,7 @@ test.describe('TodoLists', () => {
         .locator('li[data-task-name="Task to delete"]')
         .locator('button[aria-label="Delete task"]')
         .click();
-      await page
-        .getByRole('button', { name: 'Confirm delete task' })
-        .click();
+      await page.getByRole('button', { name: 'Confirm delete task' }).click();
       await expect(card.locator('[data-task-name="Task to delete"]')).not.toBeVisible();
     } finally {
       await deleteTestList(request, list.id);
@@ -149,10 +134,10 @@ test.describe('TodoLists', () => {
     await addTestItem(request, list.id, 'Incomplete one');
     const doneItem = await addTestItem(request, list.id, 'Done one');
     const baseUrl = getApiBaseUrl();
-    await request.put(
-      `${baseUrl}/api/todo-lists/${list.id}/todo-items/${doneItem.id}`,
-      { data: { done: true }, headers: { 'Content-Type': 'application/json' } },
-    );
+    await request.put(`${baseUrl}/api/todo-lists/${list.id}/todo-items/${doneItem.id}`, {
+      data: { done: true },
+      headers: { 'Content-Type': 'application/json' },
+    });
     try {
       await page.goto('/');
       const card = page.locator(`[data-list-name="${listName}"]`);

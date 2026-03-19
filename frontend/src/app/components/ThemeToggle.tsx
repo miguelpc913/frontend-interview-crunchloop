@@ -22,9 +22,7 @@ export function ThemeToggle() {
           <Moon className="h-3.5 w-3.5" aria-hidden="true" />
         )}
       </span>
-      <span className="hidden sm:inline">
-        {isDark ? 'Light mode' : 'Dark mode'}
-      </span>
+      <span className="hidden sm:inline">{isDark ? 'Light mode' : 'Dark mode'}</span>
     </Button>
   );
 }

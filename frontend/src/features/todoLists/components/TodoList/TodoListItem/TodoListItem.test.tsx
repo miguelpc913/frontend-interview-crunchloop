@@ -8,12 +8,21 @@ import { TodoListItem } from './TodoListItem';
 const mockHandleUpdateItem = vi.fn();
 const mockHandleDeleteItem = vi.fn();
 
-vi.mock('./useTodoListItemMutations', () => ({
-  useTodoListItemMutations: () => ({
-    handleUpdateItem: mockHandleUpdateItem,
-    handleDeleteItem: mockHandleDeleteItem,
-  }),
-}));
+function renderTodoListItem(item: {
+  id: number;
+  name: string;
+  description: string;
+  done: boolean;
+}) {
+  return renderWithProviders(
+    <TodoListItem
+      todoListId={1}
+      item={item}
+      onUpdateItem={mockHandleUpdateItem}
+      onDeleteItem={mockHandleDeleteItem}
+    />,
+  );
+}
 
 describe('TodoListItem', () => {
   beforeEach(() => {
@@ -28,7 +37,7 @@ describe('TodoListItem', () => {
       done: false,
     };
 
-    renderWithProviders(<TodoListItem todoListId={1} item={item} />);
+    renderTodoListItem(item);
 
     expect(screen.getByDisplayValue('Task A')).toBeInTheDocument();
     expect(screen.getByDisplayValue('Alpha description')).toBeInTheDocument();
@@ -45,7 +54,7 @@ describe('TodoListItem', () => {
       done: false,
     };
 
-    renderWithProviders(<TodoListItem todoListId={1} item={item} />);
+    renderTodoListItem(item);
 
     const user = userEvent.setup();
     const checkbox = screen.getByRole('checkbox', { name: 'Mark as complete' });
@@ -62,7 +71,7 @@ describe('TodoListItem', () => {
       done: false,
     };
 
-    renderWithProviders(<TodoListItem todoListId={1} item={item} />);
+    renderTodoListItem(item);
 
     const user = userEvent.setup();
     const nameInput = screen.getByDisplayValue('Task A');
@@ -84,7 +93,7 @@ describe('TodoListItem', () => {
       done: false,
     };
 
-    renderWithProviders(<TodoListItem todoListId={1} item={item} />);
+    renderTodoListItem(item);
 
     const user = userEvent.setup();
     const nameInput = screen.getByDisplayValue('Task A');
@@ -104,7 +113,7 @@ describe('TodoListItem', () => {
       done: false,
     };
 
-    renderWithProviders(<TodoListItem todoListId={1} item={item} />);
+    renderTodoListItem(item);
 
     const user = userEvent.setup();
     const nameInput = screen.getByDisplayValue('Task A');
@@ -112,9 +121,7 @@ describe('TodoListItem', () => {
     await user.clear(nameInput);
     await user.tab();
 
-    expect(
-      await screen.findByText('Name should not be empty'),
-    ).toBeInTheDocument();
+    expect(await screen.findByText('Name should not be empty')).toBeInTheDocument();
     expect(mockHandleUpdateItem).not.toHaveBeenCalled();
   });
 
@@ -126,7 +133,7 @@ describe('TodoListItem', () => {
       done: false,
     };
 
-    renderWithProviders(<TodoListItem todoListId={1} item={item} />);
+    renderTodoListItem(item);
 
     const user = userEvent.setup();
     const descInput = screen.getByDisplayValue('Alpha description');
@@ -148,7 +155,7 @@ describe('TodoListItem', () => {
       done: false,
     };
 
-    renderWithProviders(<TodoListItem todoListId={1} item={item} />);
+    renderTodoListItem(item);
 
     const user = userEvent.setup();
     const descInput = screen.getByDisplayValue('Alpha description');
@@ -172,7 +179,7 @@ describe('TodoListItem', () => {
       done: false,
     };
 
-    renderWithProviders(<TodoListItem todoListId={1} item={item} />);
+    renderTodoListItem(item);
 
     const user = userEvent.setup();
     await user.click(screen.getByRole('button', { name: 'Delete task' }));
@@ -189,7 +196,7 @@ describe('TodoListItem', () => {
       done: false,
     };
 
-    renderWithProviders(<TodoListItem todoListId={1} item={item} />);
+    renderTodoListItem(item);
 
     const user = userEvent.setup();
     const nameInput = screen.getByDisplayValue('Task A');
@@ -210,7 +217,7 @@ describe('TodoListItem', () => {
       done: true,
     };
 
-    renderWithProviders(<TodoListItem todoListId={1} item={item} />);
+    renderTodoListItem(item);
 
     const nameInput = screen.getByDisplayValue('Task A');
     expect(nameInput).toHaveClass('line-through');

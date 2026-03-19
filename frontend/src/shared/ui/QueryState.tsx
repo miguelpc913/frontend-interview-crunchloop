@@ -1,12 +1,7 @@
 import type { ReactNode } from 'react';
 import { AlertCircle } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-  AlertAction,
-} from '@/shared/ui/alert';
+import { Alert, AlertDescription, AlertTitle, AlertAction } from '@/shared/ui/alert';
 
 interface QueryStateProps {
   isLoading: boolean;
@@ -71,13 +66,7 @@ export function QueryState({
   children,
 }: QueryStateProps) {
   if (isError) {
-    return (
-      <ErrorFallback
-        title={errorTitle}
-        message={errorMessage}
-        onRetry={onRetry}
-      />
-    );
+    return <ErrorFallback title={errorTitle} message={errorMessage} onRetry={onRetry} />;
   }
 
   if (isLoading) {

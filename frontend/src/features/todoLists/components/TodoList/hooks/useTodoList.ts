@@ -6,10 +6,7 @@ import { useTodoListDnd } from './useTodoListDnd';
 export function useTodoList(todoListId: number) {
   const { todoList, isLoading, isError, refetch } = useTodoListQuery(todoListId);
 
-  const { orderedItems, reorder } = useItemOrder(
-    todoListId,
-    todoList?.todoItems ?? [],
-  );
+  const { orderedItems, reorder } = useItemOrder(todoListId, todoList?.todoItems ?? []);
 
   const {
     filterMode,

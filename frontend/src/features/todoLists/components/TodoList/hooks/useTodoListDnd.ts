@@ -12,10 +12,7 @@ interface UseTodoListDndOptions {
   reorder: (activeId: number, overId: number) => void;
 }
 
-export function useTodoListDnd({
-  isReorderEnabled,
-  reorder,
-}: UseTodoListDndOptions) {
+export function useTodoListDnd({ isReorderEnabled, reorder }: UseTodoListDndOptions) {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: { distance: 8 },
@@ -23,12 +20,15 @@ export function useTodoListDnd({
     useSensor(KeyboardSensor),
   );
 
-  const handleDragEnd = useCallback((event: DragEndEvent) => {
-    if (!isReorderEnabled) return;
-    const { active, over } = event;
-    if (!over || active.id === over.id) return;
-    reorder(active.id as number, over.id as number);
-  }, [isReorderEnabled, reorder]);
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      if (!isReorderEnabled) return;
+      const { active, over } = event;
+      if (!over || active.id === over.id) return;
+      reorder(active.id as number, over.id as number);
+    },
+    [isReorderEnabled, reorder],
+  );
 
   return {
     sensors,

@@ -1,11 +1,4 @@
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-  type ReactNode,
-} from 'react';
+import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react';
 
 type Theme = 'light' | 'dark';
 
@@ -29,9 +22,7 @@ function getInitialTheme(): Theme {
     return stored;
   }
 
-  const prefersDark = window.matchMedia?.(
-    '(prefers-color-scheme: dark)',
-  ).matches;
+  const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches;
 
   return prefersDark ? 'dark' : 'light';
 }
@@ -79,4 +70,3 @@ export function useTheme(): ThemeContextValue {
 
   return ctx;
 }
-

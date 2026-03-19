@@ -4,10 +4,7 @@ import { getAllTodoLists } from '@/shared/api/todoLists';
 import { TODO_LIST_STALE_TIME_MS, todoListQueryKeys } from '@/shared/query/todoLists';
 
 export function useTodoListsPage() {
-  const { data, isLoading, isError, refetch } = useQuery<
-    TodoListType[],
-    Error
-  >({
+  const { data, isLoading, isError, refetch } = useQuery<TodoListType[], Error>({
     queryKey: todoListQueryKeys.all,
     queryFn: getAllTodoLists,
     staleTime: TODO_LIST_STALE_TIME_MS,
@@ -22,4 +19,3 @@ export function useTodoListsPage() {
     refetch,
   };
 }
-

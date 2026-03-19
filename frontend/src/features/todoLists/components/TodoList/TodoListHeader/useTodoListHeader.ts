@@ -14,11 +14,7 @@ interface UseTodoListHeaderOptions {
   onAddItem: (name: string) => void;
 }
 
-export function useTodoListHeader({
-  name,
-  onUpdateName,
-  onAddItem,
-}: UseTodoListHeaderOptions) {
+export function useTodoListHeader({ name, onUpdateName, onAddItem }: UseTodoListHeaderOptions) {
   const listNameForm = useForm<EditTodoListNameFormValues>({
     mode: 'onChange',
     resolver: zodResolver(editTodoListNameSchema),
@@ -46,21 +42,21 @@ export function useTodoListHeader({
     });
   }, [listNameForm, name, onUpdateName]);
 
-  const handleListNameKeyDown = useCallback(
-    (event: KeyboardEvent<HTMLInputElement>) => {
-      if (event.key === 'Enter') {
-        (event.target as HTMLInputElement).blur();
-      }
-    },
-    [],
-  );
+  const handleListNameKeyDown = useCallback((event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      (event.target as HTMLInputElement).blur();
+    }
+  }, []);
 
-  const handleAddSubmit = useCallback((values: AddTodoItemFormValues) => {
-    const trimmed = values.name.trim();
-    if (!trimmed) return;
-    onAddItem(trimmed);
-    addTaskForm.reset({ name: '' });
-  }, [addTaskForm, onAddItem]);
+  const handleAddSubmit = useCallback(
+    (values: AddTodoItemFormValues) => {
+      const trimmed = values.name.trim();
+      if (!trimmed) return;
+      onAddItem(trimmed);
+      addTaskForm.reset({ name: '' });
+    },
+    [addTaskForm, onAddItem],
+  );
 
   const submitAddTask = useMemo(
     () => addTaskForm.handleSubmit(handleAddSubmit),

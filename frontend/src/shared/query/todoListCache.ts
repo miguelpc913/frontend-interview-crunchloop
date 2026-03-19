@@ -43,29 +43,24 @@ export function updateTodoItemInCaches(
       if (!current) return current;
       return {
         ...current,
-        todoItems: current.todoItems.map((item) =>
-          item.id === todoItemId ? updater(item) : item,
-        ),
+        todoItems: current.todoItems.map((item) => (item.id === todoItemId ? updater(item) : item)),
       };
     },
   );
 
-  queryClient.setQueryData<TodoList[] | undefined>(
-    todoListQueryKeys.all,
-    (current) => {
-      if (!current) return current;
-      return current.map((list) =>
-        list.id !== todoListId
-          ? list
-          : {
-              ...list,
-              todoItems: list.todoItems.map((item) =>
-                item.id === todoItemId ? updater(item) : item,
-              ),
-            },
-      );
-    },
-  );
+  queryClient.setQueryData<TodoList[] | undefined>(todoListQueryKeys.all, (current) => {
+    if (!current) return current;
+    return current.map((list) =>
+      list.id !== todoListId
+        ? list
+        : {
+            ...list,
+            todoItems: list.todoItems.map((item) =>
+              item.id === todoItemId ? updater(item) : item,
+            ),
+          },
+    );
+  });
 }
 
 export function addTodoItemToCaches(
@@ -85,22 +80,19 @@ export function addTodoItemToCaches(
     },
   );
 
-  queryClient.setQueryData<TodoList[] | undefined>(
-    todoListQueryKeys.all,
-    (current) => {
-      if (!current) return current;
-      return current.map((list) =>
-        list.id !== todoListId
-          ? list
-          : {
-              ...list,
-              todoItems: list.todoItems.some((item) => item.id === todoItem.id)
-                ? list.todoItems
-                : [...list.todoItems, todoItem],
-            },
-      );
-    },
-  );
+  queryClient.setQueryData<TodoList[] | undefined>(todoListQueryKeys.all, (current) => {
+    if (!current) return current;
+    return current.map((list) =>
+      list.id !== todoListId
+        ? list
+        : {
+            ...list,
+            todoItems: list.todoItems.some((item) => item.id === todoItem.id)
+              ? list.todoItems
+              : [...list.todoItems, todoItem],
+          },
+    );
+  });
 }
 
 export function removeTodoItemFromCaches(
@@ -119,18 +111,15 @@ export function removeTodoItemFromCaches(
     },
   );
 
-  queryClient.setQueryData<TodoList[] | undefined>(
-    todoListQueryKeys.all,
-    (current) => {
-      if (!current) return current;
-      return current.map((list) =>
-        list.id !== todoListId
-          ? list
-          : {
-              ...list,
-              todoItems: list.todoItems.filter((item) => item.id !== todoItemId),
-            },
-      );
-    },
-  );
+  queryClient.setQueryData<TodoList[] | undefined>(todoListQueryKeys.all, (current) => {
+    if (!current) return current;
+    return current.map((list) =>
+      list.id !== todoListId
+        ? list
+        : {
+            ...list,
+            todoItems: list.todoItems.filter((item) => item.id !== todoItemId),
+          },
+    );
+  });
 }

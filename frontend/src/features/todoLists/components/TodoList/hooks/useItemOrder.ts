@@ -86,33 +86,35 @@ export function useItemOrder(todoListId: number, items: TodoItem[]) {
     return ordered;
   }, [items, order]);
 
-  const reorder = useCallback((activeId: number, overId: number) => {
-    if (activeId === overId) return;
+  const reorder = useCallback(
+    (activeId: number, overId: number) => {
+      if (activeId === overId) return;
 
-    const currentIds = items.map((item) => item.id);
-    const baseOrder = order.length ? order.slice() : currentIds;
+      const currentIds = items.map((item) => item.id);
+      const baseOrder = order.length ? order.slice() : currentIds;
 
-    if (!baseOrder.includes(activeId)) {
-      baseOrder.push(activeId);
-    }
-    if (!baseOrder.includes(overId)) {
-      baseOrder.push(overId);
-    }
-    const oldIndex = baseOrder.indexOf(activeId);
-    const newIndex = baseOrder.indexOf(overId);
+      if (!baseOrder.includes(activeId)) {
+        baseOrder.push(activeId);
+      }
+      if (!baseOrder.includes(overId)) {
+        baseOrder.push(overId);
+      }
+      const oldIndex = baseOrder.indexOf(activeId);
+      const newIndex = baseOrder.indexOf(overId);
 
-    if (oldIndex === -1 || newIndex === -1 || oldIndex === newIndex) {
-      return;
-    }
+      if (oldIndex === -1 || newIndex === -1 || oldIndex === newIndex) {
+        return;
+      }
 
-    const nextOrder = arrayMove(baseOrder, oldIndex, newIndex);
-    setOrder(nextOrder);
-    writeStoredOrder(todoListId, nextOrder);
-  }, [items, order, todoListId]);
+      const nextOrder = arrayMove(baseOrder, oldIndex, newIndex);
+      setOrder(nextOrder);
+      writeStoredOrder(todoListId, nextOrder);
+    },
+    [items, order, todoListId],
+  );
 
   return {
     orderedItems,
     reorder,
   };
 }
-

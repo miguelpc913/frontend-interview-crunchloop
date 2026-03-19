@@ -57,7 +57,7 @@ Use this template for each new decision:
   - File-based or code-based route trees keep the routing configuration co-located and easy to extend.
 - **Status**: Accepted
 - **Related**
-  - `src/router.tsx`
+  - `src/app/router.tsx`
   - `package.json` `@tanstack/react-router` dependency.
 
 ### [2026-03-17] React Query hooks for todo features
@@ -72,7 +72,7 @@ Use this template for each new decision:
 - **Status**: Accepted
 - **Related**
   - `src/features/todoLists/useTodoListsPage.ts`
-  - `src/features/todoLists/components/TodoList/useTodoList.ts`
+  - `src/features/todoLists/components/TodoList/hooks/useTodoList.ts`
 
 ---
 
@@ -104,7 +104,7 @@ Use this template for each new decision:
   - CVA + clsx + tailwind-merge keep variant logic and class merging clean and predictable.
 - **Status**: Accepted
 - **Related**
-  - `src/components/ui/` directory.
+  - `src/shared/ui/` directory.
   - `components.json` shadcn/ui configuration.
   - `package.json` `radix-ui`, `lucide-react`, `class-variance-authority`, `clsx`, `tailwind-merge` dependencies.
 
@@ -151,7 +151,7 @@ Use this template for each new decision:
   - Toasts provide clear, non-blocking feedback without cluttering the views with error text.
 - **Status**: Accepted
 - **Related**
-  - `src/features/todoLists/components/TodoList/useTodoList.ts`
+  - `src/features/todoLists/components/TodoList/hooks/useTodoList.ts`
   - `src/features/todoLists/useTodoListsPage.ts`
 
 ### [2026-03-18] React Hook Form with Zod validation
@@ -167,7 +167,7 @@ Use this template for each new decision:
 - **Status**: Accepted
 - **Related**
   - `src/features/todoLists/schemas/todoList.schemas.ts`
-  - `src/features/todoLists/hooks/useAddTodoListForm.ts`
+  - `src/features/todoLists/components/AddTodoListForm/useAddTodoListForm.ts`
   - `src/features/todoLists/components/AddTodoListForm/AddTodoListForm.tsx`
   - `package.json` `react-hook-form`, `@hookform/resolvers`, `zod` dependencies.
 
@@ -184,7 +184,7 @@ Use this template for each new decision:
 - **Status**: Accepted
 - **Related**
   - `src/features/dashboard/DashboardPage.tsx`
-  - `src/components/ui/chart.tsx`
+  - `src/shared/ui/chart.tsx`
   - `package.json` `recharts` dependency.
 
 ### [2026-03-17] Drag-and-drop ordering with DnD Kit
@@ -199,9 +199,9 @@ Use this template for each new decision:
   - DnD Kit provides accessible keyboard and pointer interactions with minimal custom code.
 - **Status**: Accepted
 - **Related**
-  - `src/features/todoLists/hooks/use-item-order.ts`
+  - `src/features/todoLists/components/TodoList/hooks/useItemOrder.ts`
   - `src/features/todoLists/components/TodoList/TodoList.tsx`
-  - `src/features/todoLists/components/TodoListItem/TodoListItem.tsx`
+  - `src/features/todoLists/components/TodoList/TodoListItem/TodoListItem.tsx`
 
 ---
 
@@ -249,7 +249,5 @@ Use this template for each new decision:
 - **Status**: Accepted
 - **Related**
   - `tailwind.config.ts`
-  - `src/theme/ThemeProvider.tsx`
-  - `src/main.tsx`
-
-
+  - `src/shared/theme/theme-context.tsx`
+  - `src/app/main.tsx`

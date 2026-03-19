@@ -9,9 +9,7 @@ import { vi } from 'vitest';
 
 describe('TodoListFilterDropdown', () => {
   it('renders current mode label and no Filter badge for "all"', () => {
-    renderWithProviders(
-      <TodoListFilterDropdown mode='all' onChangeMode={() => {}} />,
-    );
+    renderWithProviders(<TodoListFilterDropdown mode="all" onChangeMode={() => {}} />);
 
     expect(screen.getByText('All tasks')).toBeInTheDocument();
     expect(screen.queryByText('Filter')).not.toBeInTheDocument();
@@ -48,9 +46,7 @@ describe('TodoListFilterDropdown', () => {
   it('selects "Not done"', async () => {
     function Wrapper() {
       const [mode, setMode] = useState<'all' | 'done' | 'not-done'>('all');
-      return (
-        <TodoListFilterDropdown mode={mode} onChangeMode={setMode} />
-      );
+      return <TodoListFilterDropdown mode={mode} onChangeMode={setMode} />;
     }
 
     renderWithProviders(<Wrapper />);

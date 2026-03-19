@@ -1,12 +1,6 @@
 import { Label, PolarAngleAxis, RadialBar, RadialBarChart } from 'recharts';
 import { ChartContainer, type ChartConfig } from '@/shared/ui/chart';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/shared/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card';
 import type { ListChartData } from '../../hooks/useDashboardData';
 
 const COLORS = [
@@ -79,10 +73,7 @@ function RadialProgressItem({
 
   return (
     <div className="flex flex-col items-center gap-1">
-      <ChartContainer
-        config={chartConfig}
-        className="aspect-square h-[120px]"
-      >
+      <ChartContainer config={chartConfig} className="aspect-square h-[120px]">
         <RadialBarChart
           data={[{ progress: percentage, fill: 'var(--color-progress)' }]}
           startAngle={90}
@@ -90,18 +81,8 @@ function RadialProgressItem({
           innerRadius={38}
           outerRadius={52}
         >
-          <PolarAngleAxis
-            type="number"
-            domain={[0, 100]}
-            tick={false}
-            angleAxisId={0}
-          />
-          <RadialBar
-            dataKey="progress"
-            background
-            cornerRadius={10}
-            angleAxisId={0}
-          />
+          <PolarAngleAxis type="number" domain={[0, 100]} tick={false} angleAxisId={0} />
+          <RadialBar dataKey="progress" background cornerRadius={10} angleAxisId={0} />
           <Label
             content={({ viewBox }) => {
               if (viewBox && 'cx' in viewBox && 'cy' in viewBox) {
@@ -121,9 +102,7 @@ function RadialProgressItem({
           />
         </RadialBarChart>
       </ChartContainer>
-      <span className="max-w-full truncate text-sm font-medium text-foreground">
-        {name}
-      </span>
+      <span className="max-w-full truncate text-sm font-medium text-foreground">{name}</span>
       <span className="text-xs text-muted-foreground">
         {done}/{total} done
       </span>

@@ -1,3 +1,5 @@
+import type { ZodType } from 'zod';
+
 export class ApiError extends Error {
   readonly status: number;
 
@@ -29,13 +31,12 @@ async function parseErrorMessage(response: Response): Promise<string> {
   }
 }
 
-export async function apiFetch(path: string, init: RequestInit, baseUrl: string): Promise<void>;
-export async function apiFetch<T>(path: string, init: RequestInit, baseUrl: string): Promise<T>;
-export async function apiFetch<T>(
+export async function apiFetch<T = void>(
   path: string,
   init: RequestInit,
   baseUrl: string,
-): Promise<T | void> {
+  schema?: ZodType<T>,
+): Promise<T> {
   const response = await fetch(`${baseUrl}${path}`, init);
 
   if (!response.ok) {
@@ -43,8 +44,19 @@ export async function apiFetch<T>(
   }
 
   if (response.status === 204) {
-    return;
+    return undefined as T;
   }
 
-  return (await response.json()) as T;
+  const data = await response.json();
+
+  if (!schema) {
+    return data as T;
+  }
+
+  const parsed = schema.safeParse(data);
+  if (!parsed.success) {
+    throw new ApiError('Invalid response payload from server', response.status);
+  }
+
+  return parsed.data;
 }

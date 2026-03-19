@@ -14,9 +14,7 @@ function App() {
               <span className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
                 Tasks
               </span>
-              <h1 className="text-base font-semibold">
-                Todo lists
-              </h1>
+              <h1 className="text-base font-semibold">Todo lists</h1>
             </div>
             <nav className="ml-4 flex items-center gap-1 rounded-xl border border-border bg-muted/70 p-1">
               <NavLink to="/">

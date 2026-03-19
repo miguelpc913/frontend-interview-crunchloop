@@ -3,6 +3,7 @@ import { TodoListSkeleton } from '../TodoListSkeleton/TodoListSkeleton';
 import { TodoListToolbar } from './TodoListToolbar/TodoListToolbar';
 import { TodoListItems } from './TodoListItems/TodoListItems';
 import { useTodoList } from './hooks/useTodoList';
+import { useTodoListItemMutations } from './TodoListItem/useTodoListItemMutations';
 import { QueryState } from '@/shared/ui/QueryState';
 import { Card, CardContent } from '@/shared/ui/card';
 import { Separator } from '@/shared/ui/separator';
@@ -12,6 +13,7 @@ interface TodoListProps {
 }
 
 export function TodoList({ todoListId }: TodoListProps) {
+  const { handleUpdateItem, handleDeleteItem } = useTodoListItemMutations(todoListId);
   const {
     todoList,
     isLoading,
@@ -41,10 +43,7 @@ export function TodoList({ todoListId }: TodoListProps) {
           data-list-name={todoList.name}
         >
           <CardContent className="p-0">
-            <TodoListHeader
-              todoListId={todoListId}
-              name={todoList.name}
-            />
+            <TodoListHeader todoListId={todoListId} name={todoList.name} />
             <Separator className="bg-border" />
             <TodoListToolbar
               searchQuery={searchQuery}
@@ -61,6 +60,8 @@ export function TodoList({ todoListId }: TodoListProps) {
                 isReorderEnabled={isReorderEnabled}
                 sensors={sensors}
                 onDragEnd={handleDragEnd}
+                onUpdateItem={handleUpdateItem}
+                onDeleteItem={handleDeleteItem}
               />
             </ul>
           </CardContent>

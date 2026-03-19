@@ -8,8 +8,7 @@ import { Input } from '@/shared/ui/input';
 import { useAddTodoListForm } from './useAddTodoListForm';
 
 export function AddTodoListForm() {
-  const { form, handleSubmit, isSubmitting, errorMessage } =
-    useAddTodoListForm();
+  const { form, handleSubmit, isSubmitting, errorMessage } = useAddTodoListForm();
   const {
     register,
     formState: { errors, isValid },
@@ -30,10 +29,7 @@ export function AddTodoListForm() {
           </div>
         </div>
 
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col gap-3 md:flex-row md:items-center"
-        >
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3 md:flex-row md:items-center">
           <label className="sr-only" htmlFor="new-todo-list-name">
             Todo list name
           </label>
@@ -45,16 +41,8 @@ export function AddTodoListForm() {
             disabled={isSubmitting}
             className="h-9"
           />
-          {errors.name && (
-            <p className="mt-1 text-xs text-red-500">
-              {errors.name.message}
-            </p>
-          )}
-          <Button
-            type="submit"
-            disabled={!isValid || isSubmitting}
-            className="gap-2 md:w-auto"
-          >
+          {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name.message}</p>}
+          <Button type="submit" disabled={!isValid || isSubmitting} className="gap-2 md:w-auto">
             <Plus className="h-4 w-4" aria-hidden="true" />
             {isSubmitting ? 'Adding...' : 'Add list'}
           </Button>
@@ -69,4 +57,3 @@ export function AddTodoListForm() {
     </Card>
   );
 }
-

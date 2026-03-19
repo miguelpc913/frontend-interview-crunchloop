@@ -3,6 +3,7 @@
 A production-style frontend for managing todo lists and visualizing completion data.
 
 Built as a take-home submission with a strong focus on:
+
 - feature-oriented architecture
 - type-safe React patterns
 - resilient async state management with TanStack Query
@@ -51,6 +52,7 @@ The project follows a feature-first structure:
 - `src/app`: router setup and layout shell
 
 Key design decisions:
+
 - API calls are centralized in a typed service layer with consistent error handling.
 - Query cache is the source of truth for server state.
 - Mutations use optimistic updates where it improves perceived responsiveness.
@@ -75,6 +77,7 @@ Key design decisions:
 ## Tradeoffs and Next Steps
 
 Given more time, the highest-value improvements would be:
+
 - persist task order on the backend instead of localStorage-only
 - replace `window.confirm` with a richer confirmation dialog pattern
 - introduce typed API client tests around retries and network failures

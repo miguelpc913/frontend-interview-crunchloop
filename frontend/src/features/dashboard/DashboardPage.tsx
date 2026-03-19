@@ -53,8 +53,7 @@ function DashboardSkeleton() {
 }
 
 export function DashboardPage() {
-  const { globalCompletion, perListData, largestLists, isLoading, isError } =
-    useDashboardData();
+  const { globalCompletion, perListData, largestLists, isLoading, isError } = useDashboardData();
 
   return (
     <QueryState
