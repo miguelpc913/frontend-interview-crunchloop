@@ -119,8 +119,8 @@ Use this template for each new decision:
   - Makes it easy to reuse consistent skeletons and error treatments across the app.
 - **Status**: Accepted
 - **Related**
-  - `src/features/todoLists/TodoListsPageSkeleton.tsx`
-  - `src/features/todoLists/TodoListsPageError.tsx`
+  - `src/shared/ui/QueryState.tsx`
+  - `src/features/todoLists/components/TodoListSkeleton/TodoListSkeleton.tsx`
   - `src/features/todoLists/components/TodoList/TodoList.tsx`
 
 ---
@@ -248,6 +248,6 @@ Use this template for each new decision:
   - Respects users’ system theme by default and remembers explicit choices via `localStorage`.
 - **Status**: Accepted
 - **Related**
-  - `tailwind.config.ts`
+  - `src/index.css`
   - `src/shared/theme/theme-context.tsx`
   - `src/app/main.tsx`

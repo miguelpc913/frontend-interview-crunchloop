@@ -7,11 +7,13 @@
 
 @layer base {
   body {
-    @apply dark:bg-slate-900 dark:text-slate-100 bg-background text-foreground;
+    @apply bg-background text-foreground;
   }
+
   * {
     @apply border-border outline-ring/50;
   }
+
   html {
     @apply font-sans;
   }

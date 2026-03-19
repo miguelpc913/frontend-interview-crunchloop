@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { TodoList } from '@/shared/types/todoList';
 import { updateTodoList, deleteTodoList, addTodoItem } from '@/shared/api/todoLists';
@@ -7,6 +8,7 @@ import {
   addTodoItemToCaches,
   restoreTodoListCaches,
   snapshotTodoListCaches,
+  updateTodoItemInCaches,
 } from '@/shared/query/todoListCache';
 
 export function useTodoListHeaderMutations(todoListId: number) {
@@ -16,7 +18,6 @@ export function useTodoListHeaderMutations(todoListId: number) {
     mutationFn: (name: string) => updateTodoList(todoListId, { name }),
     onMutate: async (name: string) => {
       await queryClient.cancelQueries({ queryKey: todoListQueryKeys.detail(todoListId) });
-      await queryClient.cancelQueries({ queryKey: todoListQueryKeys.all });
       const snapshot = snapshotTodoListCaches(queryClient, todoListId);
 
       queryClient.setQueryData<TodoList | undefined>(
@@ -28,6 +29,15 @@ export function useTodoListHeaderMutations(todoListId: number) {
       );
 
       return { snapshot };
+    },
+    onSuccess: (updated) => {
+      queryClient.setQueryData<TodoList | undefined>(
+        todoListQueryKeys.detail(todoListId),
+        (current) => (current ? { ...current, name: updated.name } : current),
+      );
+      queryClient.setQueryData<TodoList[] | undefined>(todoListQueryKeys.all, (current) =>
+        current?.map((list) => (list.id === todoListId ? { ...list, name: updated.name } : list)),
+      );
     },
     onError: (_err, _variables, context) => {
       restoreTodoListCaches(queryClient, todoListId, context?.snapshot);
@@ -56,9 +66,6 @@ export function useTodoListHeaderMutations(todoListId: number) {
     onSuccess: () => {
       toast.success('List deleted');
     },
-    onSettled: () => {
-      queryClient.removeQueries({ queryKey: todoListQueryKeys.detail(todoListId) });
-    },
   });
 
   const addItemMutation = useMutation({
@@ -66,7 +73,6 @@ export function useTodoListHeaderMutations(todoListId: number) {
     mutationKey: todoListMutationKeys.addItem(todoListId),
     onMutate: async (name: string) => {
       await queryClient.cancelQueries({ queryKey: todoListQueryKeys.detail(todoListId) });
-      await queryClient.cancelQueries({ queryKey: todoListQueryKeys.all });
       const snapshot = snapshotTodoListCaches(queryClient, todoListId);
       const optimisticId = -Date.now();
       addTodoItemToCaches(queryClient, todoListId, {
@@ -80,30 +86,7 @@ export function useTodoListHeaderMutations(todoListId: number) {
     },
     onSuccess: (createdItem, _name, context) => {
       if (context?.optimisticId) {
-        queryClient.setQueryData<TodoList | undefined>(
-          todoListQueryKeys.detail(todoListId),
-          (current) => {
-            if (!current) return current;
-            return {
-              ...current,
-              todoItems: current.todoItems.map((item) =>
-                item.id === context.optimisticId ? createdItem : item,
-              ),
-            };
-          },
-        );
-        queryClient.setQueryData<TodoList[] | undefined>(todoListQueryKeys.all, (current) =>
-          current?.map((list) =>
-            list.id !== todoListId
-              ? list
-              : {
-                  ...list,
-                  todoItems: list.todoItems.map((item) =>
-                    item.id === context.optimisticId ? createdItem : item,
-                  ),
-                },
-          ),
-        );
+        updateTodoItemInCaches(queryClient, todoListId, context.optimisticId, () => createdItem);
       } else {
         addTodoItemToCaches(queryClient, todoListId, createdItem);
       }
@@ -115,18 +98,26 @@ export function useTodoListHeaderMutations(todoListId: number) {
     },
   });
 
-  return {
-    handleUpdateName: (name: string) => {
+  const handleUpdateName = useCallback(
+    (name: string) => {
       if (todoListId <= 0) return;
       updateNameMutation.mutate(name);
     },
-    handleDeleteList: () => {
-      if (todoListId <= 0) return;
-      deleteListMutation.mutate();
-    },
-    handleAddItem: (name: string) => {
+    [todoListId, updateNameMutation],
+  );
+
+  const handleDeleteList = useCallback(() => {
+    if (todoListId <= 0) return;
+    deleteListMutation.mutate();
+  }, [todoListId, deleteListMutation]);
+
+  const handleAddItem = useCallback(
+    (name: string) => {
       if (todoListId <= 0) return;
       addItemMutation.mutate(name);
     },
-  };
+    [todoListId, addItemMutation],
+  );
+
+  return { handleUpdateName, handleDeleteList, handleAddItem };
 }

@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { UpdateTodoItemDto } from '@/features/todoLists/types/todoList';
 import { updateTodoItem, deleteTodoItem } from '@/shared/api/todoLists';
@@ -18,7 +19,6 @@ export function useTodoListItemMutations(todoListId: number) {
       updateTodoItem(todoListId, params.todoItemId, params.updates),
     onMutate: async ({ todoItemId, updates }) => {
       await queryClient.cancelQueries({ queryKey: todoListQueryKeys.detail(todoListId) });
-      await queryClient.cancelQueries({ queryKey: todoListQueryKeys.all });
       const snapshot = snapshotTodoListCaches(queryClient, todoListId);
       updateTodoItemInCaches(queryClient, todoListId, todoItemId, (current) => ({
         ...current,
@@ -39,7 +39,6 @@ export function useTodoListItemMutations(todoListId: number) {
     mutationFn: (todoItemId: number) => deleteTodoItem(todoListId, todoItemId),
     onMutate: async (todoItemId: number) => {
       await queryClient.cancelQueries({ queryKey: todoListQueryKeys.detail(todoListId) });
-      await queryClient.cancelQueries({ queryKey: todoListQueryKeys.all });
       const snapshot = snapshotTodoListCaches(queryClient, todoListId);
       removeTodoItemFromCaches(queryClient, todoListId, todoItemId);
 
@@ -54,14 +53,21 @@ export function useTodoListItemMutations(todoListId: number) {
     },
   });
 
-  return {
-    handleUpdateItem: (todoItemId: number, updates: UpdateTodoItemDto) => {
+  const handleUpdateItem = useCallback(
+    (todoItemId: number, updates: UpdateTodoItemDto) => {
       if (todoListId <= 0) return;
       updateItemMutation.mutate({ todoItemId, updates });
     },
-    handleDeleteItem: (todoItemId: number) => {
+    [todoListId, updateItemMutation],
+  );
+
+  const handleDeleteItem = useCallback(
+    (todoItemId: number) => {
       if (todoListId <= 0) return;
       deleteItemMutation.mutate(todoItemId);
     },
-  };
+    [todoListId, deleteItemMutation],
+  );
+
+  return { handleUpdateItem, handleDeleteItem };
 }

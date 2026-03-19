@@ -71,7 +71,7 @@ Key design decisions:
 
 - Accessibility: labeled inputs, keyboard-friendly controls, and semantic interactive elements.
 - Resilience: failed HTTP responses are surfaced as typed errors instead of silent JSON parsing failures.
-- Performance: deferred search filtering and minimized unnecessary memoization.
+- Performance: deferred search filtering and stable mutation callback identities to preserve `React.memo` effectiveness.
 - Maintainability: reduced duplication and clarified mutation/state boundaries.
 
 ## Tradeoffs and Next Steps
@@ -79,6 +79,5 @@ Key design decisions:
 Given more time, the highest-value improvements would be:
 
 - persist task order on the backend instead of localStorage-only
-- replace `window.confirm` with a richer confirmation dialog pattern
 - introduce typed API client tests around retries and network failures
 - add virtualization if task counts grow significantly

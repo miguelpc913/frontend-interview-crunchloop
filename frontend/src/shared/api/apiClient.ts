@@ -31,12 +31,19 @@ async function parseErrorMessage(response: Response): Promise<string> {
   }
 }
 
-export async function apiFetch<T = void>(
+export function apiFetch(path: string, init: RequestInit, baseUrl: string): Promise<void>;
+export function apiFetch<T>(
+  path: string,
+  init: RequestInit,
+  baseUrl: string,
+  schema: ZodType<T>,
+): Promise<T>;
+export async function apiFetch<T>(
   path: string,
   init: RequestInit,
   baseUrl: string,
   schema?: ZodType<T>,
-): Promise<T> {
+): Promise<T | void> {
   const response = await fetch(`${baseUrl}${path}`, init);
 
   if (!response.ok) {
@@ -44,7 +51,7 @@ export async function apiFetch<T = void>(
   }
 
   if (response.status === 204) {
-    return undefined as T;
+    return;
   }
 
   const data = await response.json();
