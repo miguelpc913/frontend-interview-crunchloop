@@ -53,7 +53,7 @@ export function TodoListItem({
       ref={setNodeRef}
       style={style}
       className={cn(
-        'group flex items-center gap-3 rounded-lg border border-transparent px-2.5 py-2.5 transition-all duration-150',
+        'group flex items-center gap-3 rounded-lg border border-transparent px-2.5 py-2.5 transition-[border-color,background-color] duration-150',
         'hover:border-slate-200/80 hover:bg-slate-50 dark:hover:border-slate-700/80 dark:hover:bg-slate-800/80',
         optimisticDone && 'opacity-80',
       )}
@@ -61,18 +61,16 @@ export function TodoListItem({
     >
       {isDraggable && (
         <Tooltip>
-          <TooltipTrigger>
-            <Button
+          <TooltipTrigger asChild>
+            <button
               type="button"
-              variant="ghost"
-              size="icon-xs"
-              className="text-slate-300 hover:text-slate-500 dark:text-slate-600 dark:hover:text-slate-300"
+              className="inline-flex shrink-0 items-center justify-center rounded-md p-1 text-slate-300 hover:text-slate-500 dark:text-slate-600 dark:hover:text-slate-300"
               aria-label="Reorder task"
               {...attributes}
               {...listeners}
             >
               <GripVertical className="h-4 w-4" aria-hidden="true" />
-            </Button>
+            </button>
           </TooltipTrigger>
           <TooltipContent side="top">Reorder task</TooltipContent>
         </Tooltip>

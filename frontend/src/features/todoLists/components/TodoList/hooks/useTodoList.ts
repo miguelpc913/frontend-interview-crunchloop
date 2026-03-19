@@ -18,7 +18,9 @@ export function useTodoList(todoListId: number) {
   const [searchQuery, setSearchQuery] = useState('');
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 8 },
+    }),
     useSensor(KeyboardSensor),
   );
 
