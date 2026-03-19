@@ -4,8 +4,16 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createElement } from 'react'
 import type { ReactNode } from 'react'
 import { http, HttpResponse } from 'msw'
+import { useTodoListQuery } from './useTodoListQuery'
+import { useTodoListHeaderMutations } from '../components/TodoListHeader/useTodoListHeaderMutations'
+import { useTodoListItemMutations } from '../components/TodoListItem/useTodoListItemMutations'
 
-import { useTodoList } from './useTodoList'
+function useTodoList(todoListId: number) {
+  const query = useTodoListQuery(todoListId)
+  const headerMutations = useTodoListHeaderMutations(todoListId)
+  const itemMutations = useTodoListItemMutations(todoListId)
+  return { ...query, ...headerMutations, ...itemMutations }
+}
 import { server } from '@/test/server'
 import { resetTodoLists } from '@/test/handlers'
 import type { TodoList } from '../../../types/todoList'

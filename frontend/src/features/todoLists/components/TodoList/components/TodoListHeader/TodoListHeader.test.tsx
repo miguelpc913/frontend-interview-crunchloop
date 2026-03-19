@@ -1,35 +1,38 @@
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { renderWithProviders } from '@/test/test-utils'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 import { TodoListHeader } from './TodoListHeader'
 
+const mockHandleUpdateName = vi.fn()
+const mockHandleDeleteList = vi.fn()
+const mockHandleAddItem = vi.fn()
+
+vi.mock('./useTodoListHeaderMutations', () => ({
+  useTodoListHeaderMutations: () => ({
+    handleUpdateName: mockHandleUpdateName,
+    handleDeleteList: mockHandleDeleteList,
+    handleAddItem: mockHandleAddItem,
+  }),
+}))
+
 describe('TodoListHeader', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
   it('renders list name input', () => {
     renderWithProviders(
-      <TodoListHeader
-        name="My List"
-        onUpdateName={() => {}}
-        onAddItem={() => {}}
-        onDeleteList={() => {}}
-      />,
+      <TodoListHeader todoListId={1} name="My List" />,
     )
 
     expect(screen.getByDisplayValue('My List')).toBeInTheDocument()
   })
 
   it('updates list name on blur when changed + valid', async () => {
-    const onUpdateName = vi.fn()
-    const onAddItem = vi.fn()
-
     renderWithProviders(
-      <TodoListHeader
-        name="My List"
-        onUpdateName={onUpdateName}
-        onAddItem={onAddItem}
-        onDeleteList={() => {}}
-      />,
+      <TodoListHeader todoListId={1} name="My List" />,
     )
 
     const user = userEvent.setup()
@@ -40,21 +43,13 @@ describe('TodoListHeader', () => {
     await user.tab()
 
     await waitFor(() => {
-      expect(onUpdateName).toHaveBeenLastCalledWith('Updated List')
+      expect(mockHandleUpdateName).toHaveBeenLastCalledWith('Updated List')
     })
   })
 
   it('does not call onUpdateName when blurred value is unchanged', async () => {
-    const onUpdateName = vi.fn()
-    const onAddItem = vi.fn()
-
     renderWithProviders(
-      <TodoListHeader
-        name="My List"
-        onUpdateName={onUpdateName}
-        onAddItem={onAddItem}
-        onDeleteList={() => {}}
-      />,
+      <TodoListHeader todoListId={1} name="My List" />,
     )
 
     const user = userEvent.setup()
@@ -64,20 +59,12 @@ describe('TodoListHeader', () => {
     await user.type(nameInput, 'My List')
     await user.tab()
 
-    expect(onUpdateName).not.toHaveBeenCalled()
+    expect(mockHandleUpdateName).not.toHaveBeenCalled()
   })
 
   it('shows validation error and does not update when name is empty', async () => {
-    const onUpdateName = vi.fn()
-    const onAddItem = vi.fn()
-
     renderWithProviders(
-      <TodoListHeader
-        name="My List"
-        onUpdateName={onUpdateName}
-        onAddItem={onAddItem}
-        onDeleteList={() => {}}
-      />,
+      <TodoListHeader todoListId={1} name="My List" />,
     )
 
     const user = userEvent.setup()
@@ -87,20 +74,12 @@ describe('TodoListHeader', () => {
     await user.tab()
 
     expect(await screen.findByText('Name should not be empty')).toBeInTheDocument()
-    expect(onUpdateName).not.toHaveBeenCalled()
+    expect(mockHandleUpdateName).not.toHaveBeenCalled()
   })
 
   it('pressing Enter on list name triggers update via blur', async () => {
-    const onUpdateName = vi.fn()
-    const onAddItem = vi.fn()
-
     renderWithProviders(
-      <TodoListHeader
-        name="My List"
-        onUpdateName={onUpdateName}
-        onAddItem={onAddItem}
-        onDeleteList={() => {}}
-      />,
+      <TodoListHeader todoListId={1} name="My List" />,
     )
 
     const user = userEvent.setup()
@@ -110,21 +89,13 @@ describe('TodoListHeader', () => {
     await user.type(nameInput, 'Entered List{enter}')
 
     await waitFor(() => {
-      expect(onUpdateName).toHaveBeenLastCalledWith('Entered List')
+      expect(mockHandleUpdateName).toHaveBeenLastCalledWith('Entered List')
     })
   })
 
   it('submits add-task form, calls onAddItem, and resets input', async () => {
-    const onUpdateName = vi.fn()
-    const onAddItem = vi.fn()
-
     renderWithProviders(
-      <TodoListHeader
-        name="My List"
-        onUpdateName={onUpdateName}
-        onAddItem={onAddItem}
-        onDeleteList={() => {}}
-      />,
+      <TodoListHeader todoListId={1} name="My List" />,
     )
 
     const user = userEvent.setup()
@@ -136,18 +107,13 @@ describe('TodoListHeader', () => {
 
     await user.click(submit)
 
-    expect(onAddItem).toHaveBeenLastCalledWith('Task 1')
+    expect(mockHandleAddItem).toHaveBeenLastCalledWith('Task 1')
     expect(input).toHaveValue('')
   })
 
   it('disables add-task submit when name is empty/whitespace', async () => {
     renderWithProviders(
-      <TodoListHeader
-        name="My List"
-        onUpdateName={() => {}}
-        onAddItem={() => {}}
-        onDeleteList={() => {}}
-      />,
+      <TodoListHeader todoListId={1} name="My List" />,
     )
 
     const user = userEvent.setup()
@@ -161,22 +127,14 @@ describe('TodoListHeader', () => {
   })
 
   it('calls onDeleteList when delete button is clicked', async () => {
-    const onDeleteList = vi.fn()
-
     renderWithProviders(
-      <TodoListHeader
-        name="My List"
-        onUpdateName={() => {}}
-        onAddItem={() => {}}
-        onDeleteList={onDeleteList}
-      />,
+      <TodoListHeader todoListId={1} name="My List" />,
     )
 
     const user = userEvent.setup()
     const deleteButton = screen.getByRole('button', { name: 'Delete list' })
     await user.click(deleteButton)
 
-    expect(onDeleteList).toHaveBeenCalledTimes(1)
+    expect(mockHandleDeleteList).toHaveBeenCalledTimes(1)
   })
 })
-

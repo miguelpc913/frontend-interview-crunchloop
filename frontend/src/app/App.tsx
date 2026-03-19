@@ -1,52 +1,7 @@
-import { Moon, Sun, ListTodo, BarChart3 } from 'lucide-react';
-import { Link, Outlet } from '@tanstack/react-router';
-import { useTheme } from '@/shared/theme/theme-context';
-import { Button } from '@/shared/ui/button';
-
-function ThemeToggle() {
-  const { theme, toggleTheme } = useTheme();
-  const isDark = theme === 'dark';
-
-  return (
-    <Button
-      type="button"
-      variant="outline"
-      size="sm"
-      onClick={toggleTheme}
-      className="rounded-full bg-white/80 text-xs text-slate-700 shadow-sm hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-100 dark:hover:bg-slate-700"
-      aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
-    >
-      <span className="mr-1.5 flex items-center">
-        {isDark ? (
-          <Sun className="h-3.5 w-3.5" aria-hidden="true" />
-        ) : (
-          <Moon className="h-3.5 w-3.5" aria-hidden="true" />
-        )}
-      </span>
-      <span className="hidden sm:inline">
-        {isDark ? 'Light mode' : 'Dark mode'}
-      </span>
-    </Button>
-  );
-}
-
-function NavLink({
-  to,
-  children,
-}: {
-  to: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <Link
-      to={to}
-      className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium text-slate-500 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 [&.active]:bg-white [&.active]:text-slate-900 [&.active]:shadow-sm dark:[&.active]:bg-slate-800 dark:[&.active]:text-slate-100"
-      activeProps={{ className: 'active' }}
-    >
-      {children}
-    </Link>
-  );
-}
+import { ListTodo, BarChart3 } from 'lucide-react';
+import { Outlet } from '@tanstack/react-router';
+import { ThemeToggle } from './components/ThemeToggle';
+import { NavLink } from './components/NavLink';
 
 function App() {
   return (

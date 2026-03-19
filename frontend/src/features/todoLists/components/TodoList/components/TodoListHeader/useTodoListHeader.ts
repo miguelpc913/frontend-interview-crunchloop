@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import type { TodoListHeaderProps } from './TodoListHeader';
 import {
   addTodoItemSchema,
   editTodoListNameSchema,
@@ -9,10 +8,11 @@ import {
   type EditTodoListNameFormValues,
 } from '../../../../schemas/todoList.schemas';
 
-type UseTodoListHeaderOptions = Pick<
-  TodoListHeaderProps,
-  'name' | 'onUpdateName' | 'onAddItem'
->;
+interface UseTodoListHeaderOptions {
+  name: string;
+  onUpdateName: (name: string) => void;
+  onAddItem: (name: string) => void;
+}
 
 export function useTodoListHeader({
   name,

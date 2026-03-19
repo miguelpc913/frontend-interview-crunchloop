@@ -5,27 +5,28 @@ import { Button } from '@/shared/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui/tooltip';
 import { Checkbox } from '@/shared/ui/checkbox';
 import { Input } from '@/shared/ui/input';
-import type { TodoItem, UpdateTodoItemDto } from '../../../types/todoList';
+import type { TodoItem } from '../../../../types/todoList';
+import { useTodoListItemMutations } from './useTodoListItemMutations';
 import { useTodoListItem } from './useTodoListItem';
 
 interface TodoListItemProps {
+  todoListId: number;
   item: TodoItem;
-  onUpdate: (updates: UpdateTodoItemDto) => void;
-  onDelete: () => void;
   isDraggable?: boolean;
 }
 
 export function TodoListItem({
+  todoListId,
   item,
-  onUpdate,
-  onDelete,
   isDraggable = false,
 }: TodoListItemProps) {
+  const { handleUpdateItem, handleDeleteItem } = useTodoListItemMutations(todoListId);
+
   const { form, handleNameBlur, handleDescriptionBlur, handleKeyDown, handleToggleDone } =
     useTodoListItem({
       item,
-      onUpdate,
-      onDelete,
+      onUpdate: (updates) => handleUpdateItem(item.id, updates),
+      onDelete: () => handleDeleteItem(item.id),
     });
 
   const {
@@ -52,8 +53,6 @@ export function TodoListItem({
   return (
     <li ref={setNodeRef} style={style} className={baseClasses + doneClasses} data-task-name={item.name}>
       {isDraggable && (
-
-        
         <Tooltip>
           <TooltipTrigger>
             <Button
@@ -125,7 +124,7 @@ export function TodoListItem({
             variant="ghost"
             size="icon-xs"
             className="p-1.5 text-slate-400 opacity-60 group-hover:opacity-100 hover:text-red-500 hover:bg-red-50 dark:text-slate-500 dark:hover:text-red-400 dark:hover:bg-red-500/10"
-            onClick={onDelete}
+            onClick={() => handleDeleteItem(item.id)}
             aria-label="Delete task"
           >
             <Trash2 className="h-4 w-4" aria-hidden="true" />

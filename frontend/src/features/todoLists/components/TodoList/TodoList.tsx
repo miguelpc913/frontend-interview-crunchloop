@@ -19,7 +19,7 @@ import { TodoListSkeleton } from './components/TodoListSkeleton/TodoListSkeleton
 import { TodoListError } from './components/TodoListError/TodoListError';
 import { TodoListSearch } from './components/TodoListSearch/TodoListSearch';
 import { TodoListFilterDropdown } from './components/TodoListFilterDropdown/TodoListFilterDropdown';
-import { useTodoList } from './hooks/useTodoList';
+import { useTodoListQuery } from './hooks/useTodoListQuery';
 import { useItemOrder } from './hooks/useItemOrder';
 import { Card, CardContent } from '@/shared/ui/card';
 import { Separator } from '@/shared/ui/separator';
@@ -31,19 +31,7 @@ interface TodoListProps {
 type FilterMode = 'all' | 'done' | 'not-done';
 
 export function TodoList({ todoListId }: TodoListProps) {
-  const {
-    todoList,
-    isLoading,
-    isError,
-    refetch,
-    handleUpdateName,
-    handleAddItem,
-    handleUpdateItem,
-    handleDeleteItem,
-    handleDeleteList,
-  } = useTodoList(todoListId);
-
-  const isOptimistic = todoListId <= 0;
+  const { todoList, isLoading, isError, refetch } = useTodoListQuery(todoListId);
 
   const [filterMode, setFilterMode] = useState<FilterMode>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -105,11 +93,8 @@ export function TodoList({ todoListId }: TodoListProps) {
     <Card className="w-full max-w-md mx-auto font-sans text-slate-900 dark:text-slate-50 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md" data-list-name={todoList.name}>
       <CardContent className="p-0">
         <TodoListHeader
+          todoListId={todoListId}
           name={todoList.name}
-          onUpdateName={handleUpdateName}
-          onAddItem={handleAddItem}
-          onDeleteList={handleDeleteList}
-          disabled={isOptimistic}
         />
         <Separator className="bg-slate-100/80 dark:bg-slate-800/80" />
         <div className="relative z-10 px-3.5 pt-3.5 text-xs text-slate-600 backdrop-blur-sm md:px-4 md:pt-4 dark:text-slate-300">
@@ -164,9 +149,8 @@ export function TodoList({ todoListId }: TodoListProps) {
                 {filteredItems.map((item: TodoItem) => (
                   <TodoListItem
                     key={item.id}
+                    todoListId={todoListId}
                     item={item}
-                    onUpdate={(updates) => handleUpdateItem(item.id, updates)}
-                    onDelete={() => handleDeleteItem(item.id)}
                     isDraggable
                   />
                 ))}
@@ -176,9 +160,8 @@ export function TodoList({ todoListId }: TodoListProps) {
             filteredItems.map((item: TodoItem) => (
               <TodoListItem
                 key={item.id}
+                todoListId={todoListId}
                 item={item}
-                onUpdate={(updates) => handleUpdateItem(item.id, updates)}
-                onDelete={() => handleDeleteItem(item.id)}
                 isDraggable={false}
               />
             ))

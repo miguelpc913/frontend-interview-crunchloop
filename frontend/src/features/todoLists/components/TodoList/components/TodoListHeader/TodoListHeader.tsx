@@ -2,30 +2,25 @@ import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Trash2, ListTodo, Plus } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui/tooltip';
+import { useTodoListHeaderMutations } from './useTodoListHeaderMutations';
 import { useTodoListHeader } from './useTodoListHeader';
 
 export interface TodoListHeaderProps {
+  todoListId: number;
   name: string;
-  onUpdateName: (name: string) => void;
-  onAddItem: (name: string) => void;
-  onDeleteList: () => void;
-  disabled?: boolean;
 }
 
-export function TodoListHeader({
-  name,
-  onUpdateName,
-  onAddItem,
-  onDeleteList,
-  disabled = false,
-}: TodoListHeaderProps) {
+export function TodoListHeader({ todoListId, name }: TodoListHeaderProps) {
+  const { handleUpdateName, handleDeleteList, handleAddItem } = useTodoListHeaderMutations(todoListId);
+  const disabled = todoListId <= 0;
+
   const {
     listNameForm,
     addTaskForm,
     handleListNameBlur,
     handleListNameKeyDown,
     handleAddSubmit,
-  } = useTodoListHeader({ name, onUpdateName, onAddItem });
+  } = useTodoListHeader({ name, onUpdateName: handleUpdateName, onAddItem: handleAddItem });
 
   const {
     register: registerListName,
@@ -66,7 +61,7 @@ export function TodoListHeader({
               size="icon-xs"
               className="p-1.5 text-slate-400 opacity-60 hover:text-red-500 hover:bg-red-50 dark:text-slate-500 dark:hover:text-red-400 dark:hover:bg-red-500/10"
               aria-label="Delete list"
-              onClick={onDeleteList}
+              onClick={handleDeleteList}
               disabled={disabled}
             >
               <Trash2 className="h-4 w-4" aria-hidden="true" />
