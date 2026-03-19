@@ -1,11 +1,11 @@
 import { Plus } from 'lucide-react';
 
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+import { Alert, AlertDescription } from '@/shared/ui/alert';
+import { Button } from '@/shared/ui/button';
+import { Card, CardContent } from '@/shared/ui/card';
+import { Input } from '@/shared/ui/input';
 
-import { useAddTodoListForm } from '../../hooks/useAddTodoListForm';
+import { useAddTodoListForm } from './useAddTodoListForm';
 
 export function AddTodoListForm() {
   const { form, handleSubmit, isSubmitting, errorMessage } =

@@ -3,8 +3,8 @@ import { render } from '@testing-library/react'
 import { Toaster } from 'react-hot-toast'
 import type { ReactElement, ReactNode } from 'react'
 
-import { TooltipProvider } from '@/components/ui/tooltip'
-import { ThemeProvider } from '@/theme/theme-context'
+import { TooltipProvider } from '@/shared/ui/tooltip'
+import { ThemeProvider } from '@/shared/theme/theme-context'
 
 export function renderWithProviders(ui: ReactElement) {
   const queryClient = new QueryClient({

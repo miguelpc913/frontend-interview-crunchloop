@@ -1,4 +1,4 @@
-import { TodoListSkeleton } from './components/TodoList/TodoListSkeleton';
+import { TodoListSkeleton } from './components/TodoList/components/TodoListSkeleton/TodoListSkeleton';
 
 export function TodoListsPageSkeleton() {
   return (

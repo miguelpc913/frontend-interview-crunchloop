@@ -2,24 +2,24 @@ import { AlertCircle } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import {
   Alert,
+  AlertAction,
   AlertDescription,
   AlertTitle,
-  AlertAction,
 } from '@/shared/ui/alert';
 
-interface TodoListsPageErrorProps {
+interface TodoListErrorProps {
   onRetry: () => void;
 }
 
-export function TodoListsPageError({ onRetry }: TodoListsPageErrorProps) {
+export function TodoListError({ onRetry }: TodoListErrorProps) {
   return (
-    <div className="mx-auto w-full max-w-xl">
+    <div className="w-full max-w-md mx-auto">
       <Alert variant="destructive" className="flex items-start gap-3">
         <AlertCircle className="mt-0.5 h-4 w-4" aria-hidden="true" />
         <div className="flex-1 space-y-1">
-          <AlertTitle>Something went wrong</AlertTitle>
+          <AlertTitle>Could not load this todo list</AlertTitle>
           <AlertDescription>
-            We could not load your todo lists. Please try again.
+            There was a problem loading this list. You can try again.
           </AlertDescription>
         </div>
         <AlertAction>
@@ -30,7 +30,7 @@ export function TodoListsPageError({ onRetry }: TodoListsPageErrorProps) {
             onClick={onRetry}
             className="border-red-300 text-red-700 hover:bg-red-100 dark:border-red-500/70 dark:text-red-100 dark:hover:bg-red-500/20"
           >
-            Try again
+            Retry
           </Button>
         </AlertAction>
       </Alert>

@@ -13,16 +13,16 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { TodoListHeader } from '../TodoListHeader/TodoListHeader';
-import { TodoListItem } from '../TodoListItem/TodoListItem';
-import { TodoListSkeleton } from './TodoListSkeleton';
-import { TodoListError } from './TodoListError';
-import { useTodoList } from './useTodoList';
-import { TodoListSearch } from './TodoListSearch';
-import { TodoListFilterDropdown } from './TodoListFilterDropdown';
-import { useItemOrder } from '../../hooks/useItemOrder';
-import { Card, CardContent } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
+import { TodoListHeader } from './components/TodoListHeader/TodoListHeader';
+import { TodoListItem } from './components/TodoListItem/TodoListItem';
+import { TodoListSkeleton } from './components/TodoListSkeleton/TodoListSkeleton';
+import { TodoListError } from './components/TodoListError/TodoListError';
+import { TodoListSearch } from './components/TodoListSearch/TodoListSearch';
+import { TodoListFilterDropdown } from './components/TodoListFilterDropdown/TodoListFilterDropdown';
+import { useTodoList } from './hooks/useTodoList';
+import { useItemOrder } from './hooks/useItemOrder';
+import { Card, CardContent } from '@/shared/ui/card';
+import { Separator } from '@/shared/ui/separator';
 
 interface TodoListProps {
   todoListId: number;

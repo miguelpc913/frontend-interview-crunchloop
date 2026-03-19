@@ -1,8 +1,8 @@
 import { useDashboardData } from './hooks/useDashboardData';
-import { CompletionDonutChart } from './components/CompletionDonutChart';
-import { ItemsPerListChart } from './components/ItemsPerListChart';
-import { CompletionRadialChart } from './components/CompletionRadialChart';
-import { LargestListsChart } from './components/LargestListsChart';
+import { CompletionDonutChart } from './components/CompletionDonutChart/CompletionDonutChart';
+import { ItemsPerListChart } from './components/ItemsPerListChart/ItemsPerListChart';
+import { CompletionRadialChart } from './components/CompletionRadialChart/CompletionRadialChart';
+import { LargestListsChart } from './components/LargestListsChart/LargestListsChart';
 
 export function DashboardPage() {
   const { globalCompletion, perListData, largestLists, isLoading, isError } =
