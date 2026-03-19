@@ -45,6 +45,21 @@ Use this template for each new decision:
 - **Related**
   - `package.json` React 18 setup.
 
+### [2026-03-18] TanStack Router for client-side routing
+
+- **Context**
+  - The app grew beyond a single page (todo lists + dashboard) and needed a proper routing solution with type-safe navigation.
+- **Decision**
+  - Use TanStack Router (`@tanstack/react-router`) for all client-side routing and navigation.
+- **Rationale**
+  - Provides fully type-safe route definitions and navigation, catching broken links at compile time.
+  - Integrates naturally with the existing TanStack ecosystem (TanStack Query).
+  - File-based or code-based route trees keep the routing configuration co-located and easy to extend.
+- **Status**: Accepted
+- **Related**
+  - `src/router.tsx`
+  - `package.json` `@tanstack/react-router` dependency.
+
 ### [2026-03-17] React Query hooks for todo features
 
 - **Context**
@@ -75,6 +90,23 @@ Use this template for each new decision:
 - **Status**: Accepted
 - **Related**
   - `package.json` Tailwind dependencies.
+
+### [2026-03-18] shadcn/ui with Radix UI and Lucide icons
+
+- **Context**
+  - We needed a consistent, accessible component library that could be customized without fighting upstream abstractions.
+- **Decision**
+  - Use shadcn/ui as the primary component library, built on Radix UI primitives, styled with TailwindCSS, and using Lucide React for iconography. Supporting utilities include `class-variance-authority`, `clsx`, and `tailwind-merge`.
+- **Rationale**
+  - shadcn/ui copies component source into the project, giving full ownership and easy customization without version-lock to a package.
+  - Radix UI provides accessible, unstyled primitives (dropdowns, checkboxes, tooltips, etc.) so we don't have to build accessibility from scratch.
+  - Lucide React offers a large, tree-shakable icon set with consistent design.
+  - CVA + clsx + tailwind-merge keep variant logic and class merging clean and predictable.
+- **Status**: Accepted
+- **Related**
+  - `src/components/ui/` directory.
+  - `components.json` shadcn/ui configuration.
+  - `package.json` `radix-ui`, `lucide-react`, `class-variance-authority`, `clsx`, `tailwind-merge` dependencies.
 
 ### [2026-03-17] Separate skeleton and error views
 
@@ -121,6 +153,39 @@ Use this template for each new decision:
 - **Related**
   - `src/features/todoLists/components/TodoList/useTodoList.ts`
   - `src/features/todoLists/useTodoListsPage.ts`
+
+### [2026-03-18] React Hook Form with Zod validation
+
+- **Context**
+  - The app now has multiple forms (create todo list, add todo item, edit names/descriptions) and we needed a consistent, performant form handling strategy with schema-based validation.
+- **Decision**
+  - Use React Hook Form (`react-hook-form`) with Zod schemas via `@hookform/resolvers` for all form state management and validation.
+- **Rationale**
+  - React Hook Form minimizes re-renders by using uncontrolled inputs under the hood, keeping forms fast even as complexity grows.
+  - Zod schemas provide a single source of truth for validation rules that can be shared between forms, and the resolver integration wires them into React Hook Form seamlessly.
+  - Type inference from Zod schemas (`z.infer`) keeps form value types in sync with validation rules automatically.
+- **Status**: Accepted
+- **Related**
+  - `src/features/todoLists/schemas/todoList.schemas.ts`
+  - `src/features/todoLists/hooks/useAddTodoListForm.ts`
+  - `src/features/todoLists/components/AddTodoListForm/AddTodoListForm.tsx`
+  - `package.json` `react-hook-form`, `@hookform/resolvers`, `zod` dependencies.
+
+### [2026-03-18] Recharts for dashboard visualizations
+
+- **Context**
+  - A new dashboard page was added to show completion metrics and per-list statistics, requiring chart components.
+- **Decision**
+  - Use Recharts (`recharts`) for all data visualization in the dashboard feature.
+- **Rationale**
+  - Recharts is a composable, React-native charting library built on D3 that fits naturally into a component-based architecture.
+  - Provides responsive, declarative chart components (bar, pie, radial, etc.) with minimal configuration.
+  - Works well with shadcn/ui's chart wrapper components for consistent theming.
+- **Status**: Accepted
+- **Related**
+  - `src/features/dashboard/DashboardPage.tsx`
+  - `src/components/ui/chart.tsx`
+  - `package.json` `recharts` dependency.
 
 ### [2026-03-17] Drag-and-drop ordering with DnD Kit
 
