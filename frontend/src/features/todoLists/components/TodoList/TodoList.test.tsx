@@ -62,8 +62,8 @@ describe('TodoList', () => {
 
     renderWithProviders(<TodoList todoListId={1} />)
 
-    expect(await screen.findByText('Could not load this todo list')).toBeInTheDocument()
-    const retry = screen.getByRole('button', { name: 'Retry' })
+    expect(await screen.findByText('We could not load this list. Please try again.')).toBeInTheDocument()
+    const retry = screen.getByRole('button', { name: 'Try again' })
 
     const user = userEvent.setup()
     await user.click(retry)

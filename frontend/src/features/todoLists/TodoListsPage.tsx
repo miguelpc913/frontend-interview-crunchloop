@@ -2,7 +2,7 @@ import { TodoList } from './components/TodoList/TodoList';
 import { AddTodoListForm } from './components/AddTodoListForm/AddTodoListForm';
 import { QueryState } from '@/shared/ui/QueryState';
 import { useTodoListsPage } from './useTodoListsPage';
-import { TodoListSkeleton } from './components/TodoList/components/TodoListSkeleton/TodoListSkeleton';
+import { TodoListSkeleton } from './components/TodoListSkeleton/TodoListSkeleton';
 
 export function TodoListsPage() {
   const { todoLists, isLoading, isError, refetch } = useTodoListsPage();

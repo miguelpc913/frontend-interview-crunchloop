@@ -5,7 +5,7 @@ import { Button } from '@/shared/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui/tooltip';
 import { Checkbox } from '@/shared/ui/checkbox';
 import { Input } from '@/shared/ui/input';
-import type { TodoItem } from '../../../../types/todoList';
+import type { TodoItem } from '../../../../../types/todoList';
 import { useTodoListItemMutations } from './useTodoListItemMutations';
 import { useTodoListItem } from './useTodoListItem';
 

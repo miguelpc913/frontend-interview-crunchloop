@@ -5,7 +5,7 @@ import type { TodoItem, UpdateTodoItemDto } from '../../../types/todoList';
 import {
   editTodoItemSchema,
   type EditTodoItemFormValues,
-} from '../../../../schemas/todoList.schemas';
+} from '../../../../../schemas/todoList.schemas';
 
 interface UseTodoListItemOptions {
   item: TodoItem;

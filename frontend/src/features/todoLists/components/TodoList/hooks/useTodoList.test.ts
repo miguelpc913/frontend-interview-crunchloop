@@ -6,7 +6,7 @@ import type { ReactNode } from 'react'
 import { http, HttpResponse } from 'msw'
 import { useTodoListQuery } from './useTodoListQuery'
 import { useTodoListHeaderMutations } from '../components/TodoListHeader/useTodoListHeaderMutations'
-import { useTodoListItemMutations } from '../components/TodoListItem/useTodoListItemMutations'
+import { useTodoListItemMutations } from '../components/TodoListItems/TodoListItem/useTodoListItemMutations'
 
 function useTodoList(todoListId: number) {
   const query = useTodoListQuery(todoListId)

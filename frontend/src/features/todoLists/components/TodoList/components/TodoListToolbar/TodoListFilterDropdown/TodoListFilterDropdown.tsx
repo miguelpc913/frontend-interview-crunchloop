@@ -10,8 +10,7 @@ import {
   DropdownMenuTrigger,
 } from '@/shared/ui/dropdown-menu';
 import { Badge } from '@/shared/ui/badge';
-
-type FilterMode = 'all' | 'done' | 'not-done';
+import type { FilterMode } from '../../../types';
 
 interface TodoListFilterDropdownProps {
   mode: FilterMode;

@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import type { TodoList } from '../../../../types/todoList';
+import type { TodoList } from '../../../../../types/todoList';
 import {
   updateTodoItem,
   deleteTodoItem,
-} from '../../../../services/todoListService';
+} from '../../../../../services/todoListService';
 import toast from 'react-hot-toast';
 
 export function useTodoListItemMutations(todoListId: number) {
