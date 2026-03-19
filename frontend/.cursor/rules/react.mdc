@@ -46,7 +46,7 @@ This is a **modern React application** with the following characteristics:
 - **React Hook Form** for form handling
 
 ## Code Conventions
-- **File naming:** kebab-case ('user-profile.tsx')  
+- **File naming:** Camel case ('userProfile.tsx')  
 - '*.tsx' → React components  
 - '*.ts' → utilities, types, and configs  
 - **Named exports** for components and utilities

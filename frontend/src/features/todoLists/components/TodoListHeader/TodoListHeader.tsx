@@ -1,12 +1,14 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ListTodo, Plus } from 'lucide-react';
+import { Trash2, ListTodo, Plus } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useTodoListHeader } from './useTodoListHeader';
 
 export interface TodoListHeaderProps {
   name: string;
   onUpdateName: (name: string) => void;
   onAddItem: (name: string) => void;
+  onDeleteList: () => void;
   disabled?: boolean;
 }
 
@@ -14,6 +16,7 @@ export function TodoListHeader({
   name,
   onUpdateName,
   onAddItem,
+  onDeleteList,
   disabled = false,
 }: TodoListHeaderProps) {
   const {
@@ -55,6 +58,22 @@ export function TodoListHeader({
             </p>
           )}
         </div>
+        <Tooltip>
+          <TooltipTrigger>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-xs"
+              className="p-1.5 text-slate-400 opacity-60 hover:text-red-500 hover:bg-red-50 dark:text-slate-500 dark:hover:text-red-400 dark:hover:bg-red-500/10"
+              aria-label="Delete list"
+              onClick={onDeleteList}
+              disabled={disabled}
+            >
+              <Trash2 className="h-4 w-4" aria-hidden="true" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="top">Delete list</TooltipContent>
+        </Tooltip>
       </div>
       <form
         className="mt-3 flex items-center gap-2 rounded-xl border border-border bg-muted/60 px-3 py-2.5 shadow-xs focus-within:ring-2 focus-within:ring-ring/50 focus-within:border-ring"

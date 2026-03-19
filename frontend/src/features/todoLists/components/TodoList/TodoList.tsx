@@ -40,6 +40,7 @@ export function TodoList({ todoListId }: TodoListProps) {
     handleAddItem,
     handleUpdateItem,
     handleDeleteItem,
+    handleDeleteList,
   } = useTodoList(todoListId);
 
   const isOptimistic = todoListId <= 0;
@@ -107,6 +108,7 @@ export function TodoList({ todoListId }: TodoListProps) {
           name={todoList.name}
           onUpdateName={handleUpdateName}
           onAddItem={handleAddItem}
+          onDeleteList={handleDeleteList}
           disabled={isOptimistic}
         />
         <Separator className="bg-slate-100/80 dark:bg-slate-800/80" />

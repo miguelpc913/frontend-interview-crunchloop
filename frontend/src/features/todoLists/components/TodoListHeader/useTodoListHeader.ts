@@ -9,11 +9,16 @@ import {
   type EditTodoListNameFormValues,
 } from '../../schemas/todoList.schemas';
 
+type UseTodoListHeaderOptions = Pick<
+  TodoListHeaderProps,
+  'name' | 'onUpdateName' | 'onAddItem'
+>;
+
 export function useTodoListHeader({
   name,
   onUpdateName,
   onAddItem,
-}: TodoListHeaderProps) {
+}: UseTodoListHeaderOptions) {
   const listNameForm = useForm<EditTodoListNameFormValues>({
     mode: 'onChange',
     resolver: zodResolver(editTodoListNameSchema),

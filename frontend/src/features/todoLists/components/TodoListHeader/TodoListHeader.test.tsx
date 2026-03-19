@@ -12,6 +12,7 @@ describe('TodoListHeader', () => {
         name="My List"
         onUpdateName={() => {}}
         onAddItem={() => {}}
+        onDeleteList={() => {}}
       />,
     )
 
@@ -27,6 +28,7 @@ describe('TodoListHeader', () => {
         name="My List"
         onUpdateName={onUpdateName}
         onAddItem={onAddItem}
+        onDeleteList={() => {}}
       />,
     )
 
@@ -51,6 +53,7 @@ describe('TodoListHeader', () => {
         name="My List"
         onUpdateName={onUpdateName}
         onAddItem={onAddItem}
+        onDeleteList={() => {}}
       />,
     )
 
@@ -73,6 +76,7 @@ describe('TodoListHeader', () => {
         name="My List"
         onUpdateName={onUpdateName}
         onAddItem={onAddItem}
+        onDeleteList={() => {}}
       />,
     )
 
@@ -95,6 +99,7 @@ describe('TodoListHeader', () => {
         name="My List"
         onUpdateName={onUpdateName}
         onAddItem={onAddItem}
+        onDeleteList={() => {}}
       />,
     )
 
@@ -118,6 +123,7 @@ describe('TodoListHeader', () => {
         name="My List"
         onUpdateName={onUpdateName}
         onAddItem={onAddItem}
+        onDeleteList={() => {}}
       />,
     )
 
@@ -136,7 +142,12 @@ describe('TodoListHeader', () => {
 
   it('disables add-task submit when name is empty/whitespace', async () => {
     renderWithProviders(
-      <TodoListHeader name="My List" onUpdateName={() => {}} onAddItem={() => {}} />,
+      <TodoListHeader
+        name="My List"
+        onUpdateName={() => {}}
+        onAddItem={() => {}}
+        onDeleteList={() => {}}
+      />,
     )
 
     const user = userEvent.setup()
@@ -147,6 +158,25 @@ describe('TodoListHeader', () => {
 
     await user.type(input, '   ')
     expect(submit).toBeDisabled()
+  })
+
+  it('calls onDeleteList when delete button is clicked', async () => {
+    const onDeleteList = vi.fn()
+
+    renderWithProviders(
+      <TodoListHeader
+        name="My List"
+        onUpdateName={() => {}}
+        onAddItem={() => {}}
+        onDeleteList={onDeleteList}
+      />,
+    )
+
+    const user = userEvent.setup()
+    const deleteButton = screen.getByRole('button', { name: 'Delete list' })
+    await user.click(deleteButton)
+
+    expect(onDeleteList).toHaveBeenCalledTimes(1)
   })
 })
 

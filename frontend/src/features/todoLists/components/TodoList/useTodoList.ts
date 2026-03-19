@@ -7,6 +7,7 @@ import {
   addTodoItem,
   updateTodoItem,
   deleteTodoItem,
+  deleteTodoList,
 } from '../../services/todoListService';
 import toast from 'react-hot-toast';
 
@@ -199,6 +200,48 @@ export function useTodoList(todoListId: number) {
     },
   });
 
+  const deleteListMutation = useMutation({
+    mutationFn: () => deleteTodoList(todoListId),
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ['todoLists'] });
+      await queryClient.cancelQueries({ queryKey: ['todoList', todoListId] });
+
+      const previousTodoLists =
+        queryClient.getQueryData<TodoListType[]>(['todoLists']);
+      const previousTodoList = queryClient.getQueryData<TodoListType>([
+        'todoList',
+        todoListId,
+      ]);
+
+      if (previousTodoLists) {
+        queryClient.setQueryData<TodoListType[]>(
+          ['todoLists'],
+          previousTodoLists.filter((list) => list.id !== todoListId),
+        );
+      }
+
+      return { previousTodoLists, previousTodoList };
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousTodoLists) {
+        queryClient.setQueryData<TodoListType[]>(
+          ['todoLists'],
+          context.previousTodoLists,
+        );
+      }
+      if (context?.previousTodoList) {
+        queryClient.setQueryData<TodoListType>(
+          ['todoList', todoListId],
+          context.previousTodoList,
+        );
+      }
+      toast.error('Could not delete the list');
+    },
+    onSuccess: () => {
+      toast.success('List deleted');
+    },
+  });
+
   function handleUpdateName(name: string) {
     if (todoListId <= 0) return;
     updateNameMutation.mutate(name);
@@ -222,6 +265,11 @@ export function useTodoList(todoListId: number) {
     deleteItemMutation.mutate(todoItemId);
   }
 
+  function handleDeleteList() {
+    if (todoListId <= 0) return;
+    deleteListMutation.mutate();
+  }
+
   return {
     todoList,
     isLoading,
@@ -231,6 +279,7 @@ export function useTodoList(todoListId: number) {
     handleAddItem,
     handleUpdateItem,
     handleDeleteItem,
+    handleDeleteList,
   };
 }
 
