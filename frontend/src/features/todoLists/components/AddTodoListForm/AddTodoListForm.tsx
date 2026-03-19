@@ -40,6 +40,8 @@ export function AddTodoListForm() {
             placeholder="e.g. Work projects"
             disabled={isSubmitting}
             className="h-9"
+            name='name'
+            autoComplete='off'
           />
           {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name.message}</p>}
           <Button type="submit" disabled={!isValid || isSubmitting} className="gap-2 md:w-auto">

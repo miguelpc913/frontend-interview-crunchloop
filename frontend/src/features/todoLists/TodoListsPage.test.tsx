@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import { screen } from '@testing-library/react';
 import { HttpResponse, delay, http } from 'msw';
-
 import { TodoListsPage } from './TodoListsPage';
 import { renderWithProviders } from '@/test/test-utils';
 import { server } from '@/test/server';

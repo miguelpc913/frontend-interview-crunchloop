@@ -112,6 +112,7 @@ function TodoListItemComponent({
             )}
             type="text"
             aria-label="Task name"
+            autoComplete='off'
             {...register('name')}
             onBlur={handleNameBlur}
             onKeyDown={handleKeyDown}

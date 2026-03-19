@@ -31,7 +31,7 @@ export function TodoListHeader({ todoListId, name }: TodoListHeaderProps) {
   } = addTaskForm;
 
   return (
-    <div className="border-b border-border px-4 pt-4 pb-3">
+    <div className="border-border px-4 pt-4 pb-3">
       <div className="flex items-center gap-2.5">
         <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm">
           <ListTodo className="h-4 w-4" aria-hidden="true" />
@@ -49,6 +49,8 @@ export function TodoListHeader({ todoListId, name }: TodoListHeaderProps) {
             onBlur={handleListNameBlur}
             onKeyDown={handleListNameKeyDown}
             disabled={disabled}
+            name='name'
+            autoComplete='off'
           />
           {listNameErrors.name && (
             <p className="mt-1 text-xs text-red-500">{listNameErrors.name.message}</p>
@@ -95,6 +97,7 @@ export function TodoListHeader({ todoListId, name }: TodoListHeaderProps) {
             aria-label="Task name"
             {...registerAddTask('name')}
             disabled={disabled}
+            autoComplete='off'
           />
         </div>
         <Button

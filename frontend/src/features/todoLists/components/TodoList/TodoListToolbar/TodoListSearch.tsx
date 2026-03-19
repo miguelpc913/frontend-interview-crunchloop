@@ -13,6 +13,7 @@ export function TodoListSearch({ value, onChange }: TodoListSearchProps) {
       placeholder="Search in this list..."
       aria-label="Search tasks"
       value={value}
+      name='search'
       onChange={(event) => onChange(event.target.value)}
     />
   );
