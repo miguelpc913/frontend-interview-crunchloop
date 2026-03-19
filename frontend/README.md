@@ -1,50 +1,81 @@
-# React + TypeScript + Vite
+# Todo Lists UI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A production-style frontend for managing todo lists and visualizing completion data.
 
-Currently, two official plugins are available:
+Built as a take-home submission with a strong focus on:
+- feature-oriented architecture
+- type-safe React patterns
+- resilient async state management with TanStack Query
+- accessible and responsive UI behavior
+- meaningful unit/integration/E2E coverage
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech Stack
 
-## Expanding the ESLint configuration
+- React 18 + TypeScript
+- Vite
+- TanStack Query + TanStack Router
+- React Hook Form + Zod
+- shadcn/ui + Tailwind CSS
+- Vitest + React Testing Library + MSW
+- Playwright
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Local Development
 
-- Configure the top-level `parserOptions` property like this:
+Install dependencies:
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```bash
+npm install
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+Run app:
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+```bash
+npm run dev
 ```
+
+Run quality checks:
+
+```bash
+npm run lint
+npm run test:run
+npm run test:e2e
+```
+
+## Architecture
+
+The project follows a feature-first structure:
+
+- `src/features/todoLists`: list/task domain, hooks, mutations, schemas, and page orchestration
+- `src/features/dashboard`: derived analytics and chart rendering
+- `src/shared`: UI primitives, shared utilities, and theme provider
+- `src/app`: router setup and layout shell
+
+Key design decisions:
+- API calls are centralized in a typed service layer with consistent error handling.
+- Query cache is the source of truth for server state.
+- Mutations use optimistic updates where it improves perceived responsiveness.
+- UI components stay focused on rendering; state orchestration lives in hooks.
+
+## Product Behaviors
+
+- Create, rename, delete lists
+- Add, edit, delete, and reorder tasks
+- Filter and search tasks per list
+- Theme toggle with persisted preference
+- Dashboard with completion and size visualizations
+- Loading/empty/error states for primary flows
+
+## Quality Notes
+
+- Accessibility: labeled inputs, keyboard-friendly controls, and semantic interactive elements.
+- Resilience: failed HTTP responses are surfaced as typed errors instead of silent JSON parsing failures.
+- Performance: deferred search filtering and minimized unnecessary memoization.
+- Maintainability: reduced duplication and clarified mutation/state boundaries.
+
+## Tradeoffs and Next Steps
+
+Given more time, the highest-value improvements would be:
+- persist task order on the backend instead of localStorage-only
+- replace `window.confirm` with a richer confirmation dialog pattern
+- introduce typed API client tests around retries and network failures
+- add virtualization if task counts grow significantly

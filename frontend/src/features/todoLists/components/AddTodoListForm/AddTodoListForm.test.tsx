@@ -77,7 +77,7 @@ describe('AddTodoListForm', () => {
     await user.click(submit)
 
     const alert = await screen.findByRole('alert')
-    expect(alert).toHaveTextContent('Unexpected token')
+    expect(alert).toHaveTextContent('Internal Server Error')
   })
 
   it('optimistically adds a new list to TodoListsPage', async () => {

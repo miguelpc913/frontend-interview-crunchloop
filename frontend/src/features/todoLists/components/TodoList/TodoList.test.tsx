@@ -7,6 +7,7 @@ import { TodoList } from './TodoList'
 import { renderWithProviders } from '@/test/test-utils'
 import { server } from '@/test/server'
 import { resetTodoLists, setTodoLists } from '@/test/handlers'
+import { TodoItem } from '../../types/todoList'
 
 const listOne = {
   id: 1,
@@ -168,7 +169,7 @@ describe('TodoList', () => {
   it('optimistically toggles done immediately while update is pending', async () => {
     resetTodoLists()
 
-    let resolvePut: ((resp: HttpResponse) => void) | undefined
+    let resolvePut: ((resp: HttpResponse<TodoItem>) => void) | undefined
     let updatedItemForResponse: (typeof listOne.todoItems)[number] | undefined
 
     server.use(
@@ -216,7 +217,7 @@ describe('TodoList', () => {
   it('renders a pending add item as a ghost entry while request is pending', async () => {
     resetTodoLists()
 
-    let resolvePost: ((resp: HttpResponse) => void) | undefined
+    let resolvePost: ((resp: HttpResponse<TodoItem>) => void) | undefined
     let createdItemForResponse: (typeof listOne.todoItems)[number] | undefined
 
     server.use(
@@ -306,6 +307,7 @@ describe('TodoList', () => {
 
     const deleteButtons = await screen.findAllByRole('button', { name: 'Delete task' })
     await user.click(deleteButtons[0])
+    await user.click(screen.getByRole('button', { name: 'Confirm delete task' }))
 
     await waitFor(() => {
       expect(deleteSpy).toHaveBeenCalledTimes(1)
@@ -339,6 +341,7 @@ describe('TodoList', () => {
     })
 
     await user.click(deleteButton)
+    await user.click(screen.getByRole('button', { name: 'Confirm delete task' }))
 
     // Removed immediately while the mutation is still pending.
     expect(screen.queryByDisplayValue('Task A')).not.toBeInTheDocument()

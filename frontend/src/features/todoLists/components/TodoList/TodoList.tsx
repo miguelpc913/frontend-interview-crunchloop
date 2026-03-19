@@ -31,12 +31,15 @@ export function TodoList({ todoListId }: TodoListProps) {
     <QueryState
       isLoading={isLoading}
       isError={isError}
-      onRetry={() => refetch()}
+      onRetry={refetch}
       loadingFallback={<TodoListSkeleton />}
       errorMessage="We could not load this list. Please try again."
     >
       {todoList && (
-        <Card className="w-full max-w-md mx-auto font-sans text-slate-900 dark:text-slate-50 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md" data-list-name={todoList.name}>
+        <Card
+          className="mx-auto w-full max-w-md font-sans text-slate-900 dark:text-slate-50"
+          data-list-name={todoList.name}
+        >
           <CardContent className="p-0">
             <TodoListHeader
               todoListId={todoListId}

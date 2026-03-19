@@ -3,6 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 import type { TodoList } from '../../todoLists/types/todoList';
 import { getAllTodoLists } from '../../todoLists/services/todoListService';
 
+const EMPTY_TODO_LISTS: TodoList[] = [];
+
 export interface ListChartData {
   id: number;
   name: string;
@@ -19,7 +21,7 @@ export function useDashboardData() {
     staleTime: 1000 * 30,
   });
 
-  const todoLists = data ?? [];
+  const todoLists = data ?? EMPTY_TODO_LISTS;
 
   const globalCompletion = useMemo(() => {
     const done = todoLists.reduce(

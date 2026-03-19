@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useDeferredValue, useMemo, useState } from 'react';
 import {
   KeyboardSensor,
   PointerSensor,
@@ -16,6 +16,7 @@ export function useTodoList(todoListId: number) {
 
   const [filterMode, setFilterMode] = useState<FilterMode>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const deferredSearchQuery = useDeferredValue(searchQuery);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -30,8 +31,8 @@ export function useTodoList(todoListId: number) {
   );
 
   const normalizedSearch = useMemo(
-    () => searchQuery.trim().toLowerCase(),
-    [searchQuery],
+    () => deferredSearchQuery.trim().toLowerCase(),
+    [deferredSearchQuery],
   );
 
   const filteredItems = useMemo(
@@ -50,10 +51,7 @@ export function useTodoList(todoListId: number) {
     [orderedItems, filterMode, normalizedSearch],
   );
 
-  const isReorderEnabled = useMemo(
-    () => filterMode === 'all' && !normalizedSearch,
-    [filterMode, normalizedSearch],
-  );
+  const isReorderEnabled = filterMode === 'all' && !normalizedSearch;
 
   const handleDragEnd = useCallback((event: DragEndEvent) => {
     if (!isReorderEnabled) return;

@@ -1,7 +1,18 @@
+import { useState } from 'react';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Trash2, ListTodo, Plus } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui/tooltip';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/shared/ui/dialog';
 import { useTodoListHeaderMutations } from './useTodoListHeaderMutations';
 import { useTodoListHeader } from './useTodoListHeader';
 
@@ -11,6 +22,7 @@ export interface TodoListHeaderProps {
 }
 
 export function TodoListHeader({ todoListId, name }: TodoListHeaderProps) {
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const { handleUpdateName, handleDeleteList, handleAddItem } = useTodoListHeaderMutations(todoListId);
   const disabled = todoListId <= 0;
 
@@ -39,9 +51,14 @@ export function TodoListHeader({ todoListId, name }: TodoListHeaderProps) {
           <ListTodo className="h-4 w-4" aria-hidden="true" />
         </span>
         <div className="flex-1">
+          <label htmlFor={`todo-list-name-${todoListId}`} className="sr-only">
+            Todo list name
+          </label>
           <Input
+            id={`todo-list-name-${todoListId}`}
             className="h-9 w-full border-none bg-transparent px-0 text-xl md:text-2xl font-semibold tracking-tight text-slate-900 font-sans placeholder:text-slate-400 focus-visible:ring-0 focus-visible:border-transparent dark:bg-transparent dark:text-slate-50 dark:placeholder:text-slate-500"
             type="text"
+            aria-label="Todo list name"
             {...registerListName('name')}
             onBlur={handleListNameBlur}
             onKeyDown={handleListNameKeyDown}
@@ -53,32 +70,66 @@ export function TodoListHeader({ todoListId, name }: TodoListHeaderProps) {
             </p>
           )}
         </div>
-        <Tooltip>
-          <TooltipTrigger>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon-xs"
-              className="p-1.5 text-slate-400 opacity-60 hover:text-red-500 hover:bg-red-50 dark:text-slate-500 dark:hover:text-red-400 dark:hover:bg-red-500/10"
-              aria-label="Delete list"
-              onClick={handleDeleteList}
-              disabled={disabled}
-            >
-              <Trash2 className="h-4 w-4" aria-hidden="true" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent side="top">Delete list</TooltipContent>
-        </Tooltip>
+        <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <DialogTrigger asChild>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-xs"
+                  className="p-1.5 text-slate-400 opacity-60 hover:text-red-500 hover:bg-red-50 dark:text-slate-500 dark:hover:text-red-400 dark:hover:bg-red-500/10"
+                  aria-label="Delete list"
+                  disabled={disabled}
+                >
+                  <Trash2 className="h-4 w-4" aria-hidden="true" />
+                </Button>
+              </DialogTrigger>
+            </TooltipTrigger>
+            <TooltipContent side="top">Delete list</TooltipContent>
+          </Tooltip>
+          <DialogContent showCloseButton={false}>
+            <DialogHeader>
+              <DialogTitle>Delete list?</DialogTitle>
+              <DialogDescription>
+                This will permanently delete the list and all of its tasks.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button type="button" variant="outline">
+                  Cancel
+                </Button>
+              </DialogClose>
+              <Button
+                type="button"
+                variant="destructive"
+                aria-label="Confirm delete list"
+                onClick={() => {
+                  handleDeleteList();
+                  setIsDeleteDialogOpen(false);
+                }}
+              >
+                Delete list
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
       <form
         className="mt-3 flex items-center gap-2 rounded-xl border border-border bg-muted/60 px-3 py-2.5 shadow-xs focus-within:ring-2 focus-within:ring-ring/50 focus-within:border-ring"
         onSubmit={handleAddSubmit}
       >
         <div className="flex-1">
+          <label htmlFor={`todo-list-add-task-${todoListId}`} className="sr-only">
+            Task name
+          </label>
           <Input
+            id={`todo-list-add-task-${todoListId}`}
             className="h-8 w-full border-none bg-transparent px-0 text-sm font-sans text-slate-900 placeholder:italic placeholder:text-slate-400 focus-visible:ring-0 focus-visible:border-transparent dark:bg-transparent dark:text-slate-50 dark:placeholder:text-slate-500"
             type="text"
             placeholder="Add your task..."
+            aria-label="Task name"
             {...registerAddTask('name')}
             disabled={disabled}
           />

@@ -134,6 +134,7 @@ describe('TodoListHeader', () => {
     const user = userEvent.setup()
     const deleteButton = screen.getByRole('button', { name: 'Delete list' })
     await user.click(deleteButton)
+    await user.click(screen.getByRole('button', { name: 'Confirm delete list' }))
 
     expect(mockHandleDeleteList).toHaveBeenCalledTimes(1)
   })

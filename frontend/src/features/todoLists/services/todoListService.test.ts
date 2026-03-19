@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { http, HttpResponse } from 'msw'
 
 import {
   deleteTodoList,
@@ -6,6 +7,7 @@ import {
   getTodoItemById,
   deleteTodoItem,
 } from './todoListService'
+import { server } from '@/test/server'
 
 describe('todoListService', () => {
   it('deleteTodoList sends DELETE', async () => {
@@ -25,5 +27,15 @@ describe('todoListService', () => {
 
   it('deleteTodoItem sends DELETE', async () => {
     await deleteTodoItem(1, 1)
+  })
+
+  it('throws a readable error when API responds with non-ok status', async () => {
+    server.use(
+      http.get('*/api/todo-lists/999/todo-items/999', () =>
+        HttpResponse.json({ message: 'Task not found' }, { status: 404 }),
+      ),
+    )
+
+    await expect(getTodoItemById(999, 999)).rejects.toThrow('Task not found')
   })
 })

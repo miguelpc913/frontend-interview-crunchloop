@@ -16,9 +16,6 @@ export function useTodoListHeaderMutations(todoListId: number) {
     onError: () => {
       toast.error('Could not rename the list');
     },
-    onSuccess: () => {
-      toast.success('List name updated');
-    },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['todoList', todoListId] });
     },

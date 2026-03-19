@@ -59,16 +59,11 @@ export function useTodoListItem({ item, onUpdate }: UseTodoListItemOptions) {
     [],
   );
 
-  const handleToggleDone = useCallback(() => {
-    onUpdate({ done: !item.done });
-  }, [item.done, onUpdate]);
-
   return {
     form,
     handleNameBlur,
     handleDescriptionBlur,
     handleKeyDown,
-    handleToggleDone,
   };
 }
 

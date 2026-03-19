@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import type { TodoList } from '../../../../../types/todoList';
+import type { TodoList, UpdateTodoItemDto } from '../../../../../types/todoList';
 import {
   updateTodoItem,
   deleteTodoItem,
@@ -13,13 +13,10 @@ export function useTodoListItemMutations(todoListId: number) {
   const updateItemMutation = useMutation({
     mutationFn: (params: {
       todoItemId: number;
-      updates: { name?: string; description?: string; done?: boolean };
+      updates: UpdateTodoItemDto;
     }) => updateTodoItem(todoListId, params.todoItemId, params.updates),
     onError: () => {
       toast.error('Could not update the task');
-    },
-    onSuccess: () => {
-      toast.success('Task updated');
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['todoList', todoListId] });
@@ -60,7 +57,7 @@ export function useTodoListItemMutations(todoListId: number) {
 
   const handleUpdateItem = useCallback((
     todoItemId: number,
-    updates: { name?: string; description?: string; done?: boolean },
+    updates: UpdateTodoItemDto,
   ) => {
     if (todoListId <= 0) return;
     updateItemMutation.mutate({ todoItemId, updates });

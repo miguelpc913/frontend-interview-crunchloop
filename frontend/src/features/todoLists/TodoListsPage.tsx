@@ -14,20 +14,20 @@ export function TodoListsPage() {
         <QueryState
           isLoading={isLoading}
           isError={isError}
-          onRetry={() => refetch()}
-          loadingFallback={    
-          <div className="mx-auto w-full max-w-5xl grid gap-6 md:gap-8 md:grid-cols-2">
-            <TodoListSkeleton />
-            <TodoListSkeleton />
-          </div>
+          onRetry={refetch}
+          loadingFallback={
+            <div className="mx-auto grid w-full max-w-5xl gap-6 md:grid-cols-2 md:gap-8">
+              <TodoListSkeleton />
+              <TodoListSkeleton />
+            </div>
           }
           errorTitle="Something went wrong"
           errorMessage="We could not load your todo lists. Please try again."
         >
-        <div className="mx-auto w-full max-w-5xl grid gap-6 md:gap-8 md:grid-cols-2">
-          {todoLists.map((list) => (
-            <TodoList key={list.id} todoListId={list.id} />
-          ))}
+          <div className="mx-auto grid w-full max-w-5xl gap-6 md:grid-cols-2 md:gap-8">
+            {todoLists.map((list) => (
+              <TodoList key={list.id} todoListId={list.id} />
+            ))}
           </div>
         </QueryState>
       </div>

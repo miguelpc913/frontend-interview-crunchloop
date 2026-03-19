@@ -1,7 +1,6 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { TodoItem } from '../../../types/todoList';
 import { arrayMove } from '@dnd-kit/sortable';
-import toast from 'react-hot-toast';
 
 function getStorageKey(todoListId: number) {
   return `todo-order-${todoListId}`;
@@ -37,22 +36,32 @@ function writeStoredOrder(todoListId: number, order: number[]) {
 
 export function useItemOrder(todoListId: number, items: TodoItem[]) {
   const [order, setOrder] = useState<number[]>(() => readStoredOrder(todoListId));
+  const orderRef = useRef(order);
 
   useEffect(() => {
-    if(items.length === 0) return;
+    orderRef.current = order;
+  }, [order]);
+
+  useEffect(() => {
+    if (items.length === 0) return;
+
+    const currentOrder = orderRef.current;
     const currentIds = items.map((item) => item.id);
 
-    const dedupedOrder = Array.from(new Set(order));
+    const dedupedOrder = Array.from(new Set(currentOrder));
     const filteredOrder = dedupedOrder.filter((id) => currentIds.includes(id));
 
     const missingIds = currentIds.filter((id) => !filteredOrder.includes(id));
     const nextOrder = [...filteredOrder, ...missingIds];
 
-    if (nextOrder.length !== order.length || nextOrder.some((id, idx) => id !== order[idx])) {
+    if (
+      nextOrder.length !== currentOrder.length ||
+      nextOrder.some((id, idx) => id !== currentOrder[idx])
+    ) {
       setOrder(nextOrder);
       writeStoredOrder(todoListId, nextOrder);
     }
-  }, [items, order, todoListId]);
+  }, [items, todoListId]);
 
   const orderedItems = useMemo(() => {
     if (order.length === 0) {
@@ -89,9 +98,6 @@ export function useItemOrder(todoListId: number, items: TodoItem[]) {
     if (!baseOrder.includes(overId)) {
       baseOrder.push(overId);
     }
-    
-    
-    
     const oldIndex = baseOrder.indexOf(activeId);
     const newIndex = baseOrder.indexOf(overId);
 
@@ -102,7 +108,6 @@ export function useItemOrder(todoListId: number, items: TodoItem[]) {
     const nextOrder = arrayMove(baseOrder, oldIndex, newIndex);
     setOrder(nextOrder);
     writeStoredOrder(todoListId, nextOrder);
-    toast.success('Task reordered');
   }, [items, order, todoListId]);
 
   return {

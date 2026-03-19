@@ -13,92 +13,115 @@ const headers: HeadersInit = {
   'Content-Type': 'application/json',
 };
 
-// ── Todo Lists ──────────────────────────────────────────────
+class ApiError extends Error {
+  readonly status: number;
+
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+  }
+}
+
+async function parseErrorMessage(response: Response): Promise<string> {
+  const fallbackMessage = `Request failed with status ${response.status}`;
+  const contentType = response.headers.get('content-type');
+
+  if (contentType?.includes('application/json')) {
+    try {
+      const body = (await response.json()) as { message?: string; error?: string };
+      return body.message ?? body.error ?? fallbackMessage;
+    } catch {
+      return fallbackMessage;
+    }
+  }
+
+  try {
+    const text = await response.text();
+    return text.trim() || fallbackMessage;
+  } catch {
+    return fallbackMessage;
+  }
+}
+
+async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
+  const response = await fetch(`${API_URL}${path}`, {
+    ...init,
+    headers,
+  });
+
+  if (!response.ok) {
+    throw new ApiError(await parseErrorMessage(response), response.status);
+  }
+
+  if (response.status === 204) {
+    return undefined as T;
+  }
+
+  return (await response.json()) as T;
+}
 
 export async function createTodoList(dto: CreateTodoListDto): Promise<TodoList> {
-  const response = await fetch(`${API_URL}/api/todo-lists`, {
+  return apiFetch<TodoList>('/api/todo-lists', {
     method: 'POST',
-    headers,
     body: JSON.stringify(dto),
   });
-  return response.json();
 }
 
 export async function getAllTodoLists(): Promise<TodoList[]> {
-  const response = await fetch(`${API_URL}/api/todo-lists`, {
+  return apiFetch<TodoList[]>('/api/todo-lists', {
     method: 'GET',
-    headers,
   });
-  return response.json();
 }
 
 export async function getTodoListById(todoListId: number): Promise<TodoList> {
-  const response = await fetch(`${API_URL}/api/todo-lists/${todoListId}`, {
+  return apiFetch<TodoList>(`/api/todo-lists/${todoListId}`, {
     method: 'GET',
-    headers,
   });
-  return response.json();
 }
 
 export async function updateTodoList(
   todoListId: number,
   dto: UpdateTodoListDto,
 ): Promise<TodoList> {
-  const response = await fetch(`${API_URL}/api/todo-lists/${todoListId}`, {
+  return apiFetch<TodoList>(`/api/todo-lists/${todoListId}`, {
     method: 'PUT',
-    headers,
     body: JSON.stringify(dto),
   });
-  return response.json();
 }
 
 export async function deleteTodoList(todoListId: number): Promise<void> {
-  await fetch(`${API_URL}/api/todo-lists/${todoListId}`, {
+  await apiFetch<void>(`/api/todo-lists/${todoListId}`, {
     method: 'DELETE',
-    headers,
   });
 }
-
-// ── Todo Items ──────────────────────────────────────────────
 
 export async function addTodoItem(
   todoListId: number,
   dto: AddTodoItemDto,
 ): Promise<TodoItem> {
-  const response = await fetch(
-    `${API_URL}/api/todo-lists/${todoListId}/todo-items`,
-    {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(dto),
-    },
-  );
-  return response.json();
+  return apiFetch<TodoItem>(`/api/todo-lists/${todoListId}/todo-items`, {
+    method: 'POST',
+    body: JSON.stringify(dto),
+  });
 }
 
 export async function getAllTodoItems(todoListId: number): Promise<TodoItem[]> {
-  const response = await fetch(
-    `${API_URL}/api/todo-lists/${todoListId}/todo-items`,
-    {
-      method: 'GET',
-      headers,
-    },
-  );
-  return response.json();
+  return apiFetch<TodoItem[]>(`/api/todo-lists/${todoListId}/todo-items`, {
+    method: 'GET',
+  });
 }
 
 export async function getTodoItemById(
   todoListId: number,
   todoItemId: number,
 ): Promise<TodoItem> {
-  const response = await fetch(
-    `${API_URL}/api/todo-lists/${todoListId}/todo-items/${todoItemId}`,
+  return apiFetch<TodoItem>(
+    `/api/todo-lists/${todoListId}/todo-items/${todoItemId}`,
     {
       method: 'GET',
-      headers,
     },
   );
-  return response.json();
 }
 
 export async function updateTodoItem(
@@ -106,26 +129,20 @@ export async function updateTodoItem(
   todoItemId: number,
   dto: UpdateTodoItemDto,
 ): Promise<TodoItem> {
-  const response = await fetch(
-    `${API_URL}/api/todo-lists/${todoListId}/todo-items/${todoItemId}`,
+  return apiFetch<TodoItem>(
+    `/api/todo-lists/${todoListId}/todo-items/${todoItemId}`,
     {
       method: 'PUT',
-      headers,
       body: JSON.stringify(dto),
     },
   );
-  return response.json();
 }
 
 export async function deleteTodoItem(
   todoListId: number,
   todoItemId: number,
 ): Promise<void> {
-  await fetch(
-    `${API_URL}/api/todo-lists/${todoListId}/todo-items/${todoItemId}`,
-    {
-      method: 'DELETE',
-      headers,
-    },
-  );
+  await apiFetch<void>(`/api/todo-lists/${todoListId}/todo-items/${todoItemId}`, {
+    method: 'DELETE',
+  });
 }

@@ -1,4 +1,3 @@
-import { useCallback, type ChangeEvent } from 'react';
 import { Input } from '@/shared/ui/input';
 
 interface TodoListSearchProps {
@@ -7,17 +6,14 @@ interface TodoListSearchProps {
 }
 
 export function TodoListSearch({ value, onChange }: TodoListSearchProps) {
-  const handleChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    onChange(event.target.value);
-  }, [onChange]);
-
   return (
     <Input
       className="h-8 w-full text-xs font-sans placeholder:italic"
       type="text"
       placeholder="Search in this list..."
+      aria-label="Search tasks"
       value={value}
-      onChange={handleChange}
+      onChange={(event) => onChange(event.target.value)}
     />
   );
 }

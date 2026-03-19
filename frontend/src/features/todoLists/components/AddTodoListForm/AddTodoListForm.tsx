@@ -16,7 +16,7 @@ export function AddTodoListForm() {
   } = form;
 
   return (
-    <Card className="w-full max-w-xl mx-auto font-sans text-slate-900 dark:text-slate-50 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
+    <Card className="mx-auto w-full max-w-xl font-sans text-slate-900 dark:text-slate-50">
       <CardContent className="p-4">
         <div className="mb-3 flex items-center gap-2">
           <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-slate-900 text-slate-50 shadow-sm shadow-slate-900/10 dark:bg-slate-100 dark:text-slate-900 dark:shadow-black/20">

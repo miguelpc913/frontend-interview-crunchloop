@@ -25,10 +25,15 @@ export function TodoListFilterDropdown({
     mode === 'all' ? 'All tasks' : mode === 'done' ? 'Done' : 'Not done';
   const isFiltered = mode !== 'all';
 
+  const handleValueChange = (value: string) => {
+    if (value === 'all' || value === 'done' || value === 'not-done') {
+      onChangeMode(value);
+    }
+  };
+
   return (
-    
     <DropdownMenu>
-      <DropdownMenuTrigger>
+      <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
           size="sm"
@@ -48,7 +53,7 @@ export function TodoListFilterDropdown({
         <DropdownMenuSeparator />
         <DropdownMenuRadioGroup
           value={mode}
-          onValueChange={(value) => onChangeMode(value as FilterMode)}
+          onValueChange={handleValueChange}
         >
           <DropdownMenuRadioItem value="all">All tasks</DropdownMenuRadioItem>
           <DropdownMenuRadioItem value="done">Done</DropdownMenuRadioItem>

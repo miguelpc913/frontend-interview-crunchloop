@@ -180,6 +180,7 @@ describe('TodoListItem', () => {
 
     const user = userEvent.setup()
     await user.click(screen.getByRole('button', { name: 'Delete task' }))
+    await user.click(screen.getByRole('button', { name: 'Confirm delete task' }))
 
     expect(mockHandleDeleteItem).toHaveBeenCalledWith(1)
   })

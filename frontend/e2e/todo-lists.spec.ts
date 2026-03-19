@@ -114,6 +114,9 @@ test.describe('TodoLists', () => {
         .locator('li[data-task-name="Task to delete"]')
         .locator('button[aria-label="Delete task"]')
         .click();
+      await page
+        .getByRole('button', { name: 'Confirm delete task' })
+        .click();
       await expect(card.locator('[data-task-name="Task to delete"]')).not.toBeVisible();
     } finally {
       await deleteTestList(request, list.id);

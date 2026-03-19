@@ -18,6 +18,25 @@ interface TodoListItemsProps {
   onDragEnd: (event: DragEndEvent) => void;
 }
 
+const pendingItemClassName =
+  'opacity-50 rounded-lg border border-dashed border-slate-200/70 bg-slate-50/60 px-3 py-2.5 text-xs text-slate-600 dark:border-slate-700/80 dark:bg-slate-900/60 dark:text-slate-300';
+
+function PendingItems({ names }: { names: string[] }) {
+  return (
+    <>
+      {names.map((name, index) => (
+        <li
+          key={`${name}-${index}`}
+          data-testid="pending-todo-item"
+          className={pendingItemClassName}
+        >
+          {name}
+        </li>
+      ))}
+    </>
+  );
+}
+
 export function TodoListItems({
   todoListId,
   hasItems,
@@ -36,37 +55,25 @@ export function TodoListItems({
 
   if (!hasItems) {
     if (pendingItemNames.length === 0) {
-    return (
-      <TodoListEmptyState
-        title="No tasks yet."
-        description="Start by adding your first task above."
-      />
-    );
+      return (
+        <TodoListEmptyState
+          title="No tasks yet."
+          description="Start by adding your first task above."
+        />
+      );
     }
 
-    return (
-      <>
-        {pendingItemNames.map((name, index) => (
-          <li
-            key={`${name}-${index}`}
-            data-testid="pending-todo-item"
-            className="opacity-50 rounded-lg border border-dashed border-slate-200/70 bg-slate-50/60 px-3 py-2.5 text-xs text-slate-600 dark:border-slate-700/80 dark:bg-slate-900/60 dark:text-slate-300"
-          >
-            {name}
-          </li>
-        ))}
-      </>
-    );
+    return <PendingItems names={pendingItemNames} />;
   }
 
   if (filteredItems.length === 0) {
     if (pendingItemNames.length === 0) {
-    return (
-      <TodoListEmptyState
-        title="No tasks match your filters."
-        description="Try changing the search term or done filter."
-      />
-    );
+      return (
+        <TodoListEmptyState
+          title="No tasks match your filters."
+          description="Try changing the search term or done filter."
+        />
+      );
     }
 
     return (
@@ -75,15 +82,7 @@ export function TodoListItems({
           title="No tasks match your filters."
           description="Try changing the search term or done filter."
         />
-        {pendingItemNames.map((name, index) => (
-          <li
-            key={`${name}-${index}`}
-            data-testid="pending-todo-item"
-            className="opacity-50 rounded-lg border border-dashed border-slate-200/70 bg-slate-50/60 px-3 py-2.5 text-xs text-slate-600 dark:border-slate-700/80 dark:bg-slate-900/60 dark:text-slate-300"
-          >
-            {name}
-          </li>
-        ))}
+        <PendingItems names={pendingItemNames} />
       </>
     );
   }
@@ -99,15 +98,7 @@ export function TodoListItems({
             isDraggable={false}
           />
         ))}
-        {pendingItemNames.map((name, index) => (
-          <li
-            key={`${name}-${index}`}
-            data-testid="pending-todo-item"
-            className="opacity-50 rounded-lg border border-dashed border-slate-200/70 bg-slate-50/60 px-3 py-2.5 text-xs text-slate-600 dark:border-slate-700/80 dark:bg-slate-900/60 dark:text-slate-300"
-          >
-            {name}
-          </li>
-        ))}
+        <PendingItems names={pendingItemNames} />
       </>
     );
   }
@@ -131,15 +122,7 @@ export function TodoListItems({
           />
         ))}
       </SortableContext>
-      {pendingItemNames.map((name, index) => (
-        <li
-          key={`${name}-${index}`}
-          data-testid="pending-todo-item"
-          className="opacity-50 rounded-lg border border-dashed border-slate-200/70 bg-slate-50/60 px-3 py-2.5 text-xs text-slate-600 dark:border-slate-700/80 dark:bg-slate-900/60 dark:text-slate-300"
-        >
-          {name}
-        </li>
-      ))}
+      <PendingItems names={pendingItemNames} />
     </DndContext>
   );
 }
