@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -35,7 +35,7 @@ export function useTodoListHeader({
     listNameForm.reset({ name });
   }, [name, listNameForm]);
 
-  function handleListNameBlur() {
+  const handleListNameBlur = useCallback(() => {
     const current = listNameForm.getValues('name');
     const trimmed = current.trim();
     listNameForm.trigger('name').then((valid) => {
@@ -44,20 +44,23 @@ export function useTodoListHeader({
         onUpdateName(trimmed);
       }
     });
-  }
+  }, [listNameForm, name, onUpdateName]);
 
-  function handleListNameKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
-    if (event.key === 'Enter') {
-      (event.target as HTMLInputElement).blur();
-    }
-  }
+  const handleListNameKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === 'Enter') {
+        (event.target as HTMLInputElement).blur();
+      }
+    },
+    [],
+  );
 
-  function handleAddSubmit(values: AddTodoItemFormValues) {
+  const handleAddSubmit = useCallback((values: AddTodoItemFormValues) => {
     const trimmed = values.name.trim();
     if (!trimmed) return;
     onAddItem(trimmed);
     addTaskForm.reset({ name: '' });
-  }
+  }, [addTaskForm, onAddItem]);
 
   return {
     listNameForm,

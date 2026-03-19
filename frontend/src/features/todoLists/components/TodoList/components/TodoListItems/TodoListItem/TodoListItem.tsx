@@ -1,3 +1,4 @@
+import { useCallback, useMemo } from 'react';
 import { GripVertical, Trash2 } from 'lucide-react';
 import { CSS } from '@dnd-kit/utilities';
 import { useSortable } from '@dnd-kit/sortable';
@@ -42,11 +43,25 @@ export function TodoListItem({
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: item.id, disabled: !isDraggable });
 
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.7 : 1,
-  };
+  const style = useMemo(
+    () => ({
+      transform: CSS.Transform.toString(transform),
+      transition,
+      opacity: isDragging ? 0.7 : 1,
+    }),
+    [transform, transition, isDragging],
+  );
+
+  const handleCheckedChange = useCallback(
+    (checked: boolean | 'indeterminate') => {
+      handleUpdateItem(item.id, { done: checked === true });
+    },
+    [handleUpdateItem, item.id],
+  );
+
+  const handleDeleteClick = useCallback(() => {
+    handleDeleteItem(item.id);
+  }, [handleDeleteItem, item.id]);
 
   return (
     <li
@@ -78,9 +93,7 @@ export function TodoListItem({
 
       <Checkbox
         checked={optimisticDone}
-        onCheckedChange={(checked) =>
-          handleUpdateItem(item.id, { done: checked === true })
-        }
+        onCheckedChange={handleCheckedChange}
         aria-label={optimisticDone ? 'Mark as incomplete' : 'Mark as complete'}
         className="shrink-0"
       />
@@ -130,7 +143,7 @@ export function TodoListItem({
             variant="ghost"
             size="icon-xs"
             className="p-1.5 text-slate-400 opacity-60 hover:bg-red-50 hover:text-red-500 group-hover:opacity-100 dark:text-slate-500 dark:hover:bg-red-500/10 dark:hover:text-red-400"
-            onClick={() => handleDeleteItem(item.id)}
+            onClick={handleDeleteClick}
             aria-label="Delete task"
           >
             <Trash2 className="h-4 w-4" aria-hidden="true" />

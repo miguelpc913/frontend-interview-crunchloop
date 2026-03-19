@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import {
   KeyboardSensor,
   PointerSensor,
@@ -29,26 +29,38 @@ export function useTodoList(todoListId: number) {
     todoList?.todoItems ?? [],
   );
 
-  const normalizedSearch = searchQuery.trim().toLowerCase();
+  const normalizedSearch = useMemo(
+    () => searchQuery.trim().toLowerCase(),
+    [searchQuery],
+  );
 
-  const filteredItems = orderedItems.filter((item: TodoItem) => {
-    if (filterMode === 'done' && !item.done) return false;
-    if (filterMode === 'not-done' && item.done) return false;
-    if (!normalizedSearch) return true;
+  const filteredItems = useMemo(
+    () =>
+      orderedItems.filter((item: TodoItem) => {
+        if (filterMode === 'done' && !item.done) return false;
+        if (filterMode === 'not-done' && item.done) return false;
+        if (!normalizedSearch) return true;
 
-    const name = item.name?.toLowerCase() ?? '';
-    const description = item.description?.toLowerCase() ?? '';
-    return name.includes(normalizedSearch) || description.includes(normalizedSearch);
-  });
+        const name = item.name?.toLowerCase() ?? '';
+        const description = item.description?.toLowerCase() ?? '';
+        return (
+          name.includes(normalizedSearch) || description.includes(normalizedSearch)
+        );
+      }),
+    [orderedItems, filterMode, normalizedSearch],
+  );
 
-  const isReorderEnabled = filterMode === 'all' && !normalizedSearch;
+  const isReorderEnabled = useMemo(
+    () => filterMode === 'all' && !normalizedSearch,
+    [filterMode, normalizedSearch],
+  );
 
-  function handleDragEnd(event: DragEndEvent) {
+  const handleDragEnd = useCallback((event: DragEndEvent) => {
     if (!isReorderEnabled) return;
     const { active, over } = event;
     if (!over || active.id === over.id) return;
     reorder(active.id as number, over.id as number);
-  }
+  }, [isReorderEnabled, reorder]);
 
   return {
     todoList,

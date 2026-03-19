@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { TodoItem } from '../../../types/todoList';
 import { arrayMove } from '@dnd-kit/sortable';
+import toast from 'react-hot-toast';
 
 function getStorageKey(todoListId: number) {
   return `todo-order-${todoListId}`;
@@ -76,7 +77,7 @@ export function useItemOrder(todoListId: number, items: TodoItem[]) {
     return ordered;
   }, [items, order]);
 
-  function reorder(activeId: number, overId: number) {
+  const reorder = useCallback((activeId: number, overId: number) => {
     if (activeId === overId) return;
 
     const currentIds = items.map((item) => item.id);
@@ -101,7 +102,8 @@ export function useItemOrder(todoListId: number, items: TodoItem[]) {
     const nextOrder = arrayMove(baseOrder, oldIndex, newIndex);
     setOrder(nextOrder);
     writeStoredOrder(todoListId, nextOrder);
-  }
+    toast.success('Task reordered');
+  }, [items, order, todoListId]);
 
   return {
     orderedItems,

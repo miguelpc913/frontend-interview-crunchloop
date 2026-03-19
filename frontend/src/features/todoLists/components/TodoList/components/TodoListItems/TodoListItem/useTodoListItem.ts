@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { TodoItem, UpdateTodoItemDto } from '../../../../../types/todoList';
@@ -29,7 +29,7 @@ export function useTodoListItem({ item, onUpdate }: UseTodoListItemOptions) {
     });
   }, [item.id, item.name, item.description, form]);
 
-  function handleNameBlur() {
+  const handleNameBlur = useCallback(() => {
     const current = form.getValues('name');
     const trimmed = current.trim();
     form.trigger('name').then((valid) => {
@@ -38,9 +38,9 @@ export function useTodoListItem({ item, onUpdate }: UseTodoListItemOptions) {
         onUpdate({ name: trimmed });
       }
     });
-  }
+  }, [form, item.name, onUpdate]);
 
-  function handleDescriptionBlur() {
+  const handleDescriptionBlur = useCallback(() => {
     const current = form.getValues('description') ?? '';
     form.trigger('description').then((valid) => {
       if (!valid) return;
@@ -48,17 +48,20 @@ export function useTodoListItem({ item, onUpdate }: UseTodoListItemOptions) {
         onUpdate({ description: current });
       }
     });
-  }
+  }, [form, item.description, onUpdate]);
 
-  function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       (event.target as HTMLInputElement).blur();
     }
-  }
+    },
+    [],
+  );
 
-  function handleToggleDone() {
+  const handleToggleDone = useCallback(() => {
     onUpdate({ done: !item.done });
-  }
+  }, [item.done, onUpdate]);
 
   return {
     form,

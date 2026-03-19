@@ -1,4 +1,4 @@
-import type { ChangeEvent } from 'react';
+import { useCallback, type ChangeEvent } from 'react';
 import { Input } from '@/shared/ui/input';
 
 interface TodoListSearchProps {
@@ -7,9 +7,9 @@ interface TodoListSearchProps {
 }
 
 export function TodoListSearch({ value, onChange }: TodoListSearchProps) {
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     onChange(event.target.value);
-  };
+  }, [onChange]);
 
   return (
     <Input

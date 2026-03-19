@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { TodoList } from '../../../../types/todoList';
 import {
@@ -83,20 +84,20 @@ export function useTodoListHeaderMutations(todoListId: number) {
     },
   });
 
-  function handleUpdateName(name: string) {
+  const handleUpdateName = useCallback((name: string) => {
     if (todoListId <= 0) return;
     updateNameMutation.mutate(name);
-  }
+  }, [todoListId, updateNameMutation]);
 
-  function handleDeleteList() {
+  const handleDeleteList = useCallback(() => {
     if (todoListId <= 0) return;
     deleteListMutation.mutate();
-  }
+  }, [todoListId, deleteListMutation]);
 
-  function handleAddItem(name: string) {
+  const handleAddItem = useCallback((name: string) => {
     if (todoListId <= 0) return;
     addItemMutation.mutate(name);
-  }
+  }, [todoListId, addItemMutation]);
 
   return { handleUpdateName, handleDeleteList, handleAddItem };
 }

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import type { TodoList as TodoListType } from './types/todoList';
 import { getAllTodoLists } from './services/todoListService';
@@ -20,7 +20,7 @@ export function useTodoListsPage() {
     }
   }, [isError, error]);
 
-  const todoLists = (data ?? []) as TodoListType[];
+  const todoLists = useMemo(() => (data ?? []) as TodoListType[], [data]);
 
   return {
     todoLists,
