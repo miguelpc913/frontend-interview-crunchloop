@@ -2,11 +2,11 @@ import { useCallback, useEffect, type KeyboardEvent } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { TodoItem } from '@/shared/types/todoList';
-import type { UpdateTodoItemDto } from '../../../../../types/todoList';
+import type { UpdateTodoItemDto } from '../../../types/todoList';
 import {
   editTodoItemSchema,
   type EditTodoItemFormValues,
-} from '../../../../../schemas/todoList.schemas';
+} from '../../../schemas/todoList.schemas';
 
 interface UseTodoListItemOptions {
   item: TodoItem;
@@ -67,4 +67,3 @@ export function useTodoListItem({ item, onUpdate }: UseTodoListItemOptions) {
     handleKeyDown,
   };
 }
-

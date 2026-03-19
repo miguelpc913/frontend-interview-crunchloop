@@ -1,64 +1,29 @@
-import { useCallback, useDeferredValue, useMemo, useState } from 'react';
-import {
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  type DragEndEvent,
-} from '@dnd-kit/core';
-import type { TodoItem } from '@/shared/types/todoList';
-import type { FilterMode } from '../types';
 import { useTodoListQuery } from './useTodoListQuery';
 import { useItemOrder } from './useItemOrder';
+import { useTodoListFilter } from './useTodoListFilter';
+import { useTodoListDnd } from './useTodoListDnd';
 
 export function useTodoList(todoListId: number) {
   const { todoList, isLoading, isError, refetch } = useTodoListQuery(todoListId);
-
-  const [filterMode, setFilterMode] = useState<FilterMode>('all');
-  const [searchQuery, setSearchQuery] = useState('');
-  const deferredSearchQuery = useDeferredValue(searchQuery);
-
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: { distance: 8 },
-    }),
-    useSensor(KeyboardSensor),
-  );
 
   const { orderedItems, reorder } = useItemOrder(
     todoListId,
     todoList?.todoItems ?? [],
   );
 
-  const normalizedSearch = useMemo(
-    () => deferredSearchQuery.trim().toLowerCase(),
-    [deferredSearchQuery],
-  );
+  const {
+    filterMode,
+    setFilterMode,
+    searchQuery,
+    setSearchQuery,
+    filteredItems,
+    isReorderEnabled,
+  } = useTodoListFilter(orderedItems);
 
-  const filteredItems = useMemo(
-    () =>
-      orderedItems.filter((item: TodoItem) => {
-        if (filterMode === 'done' && !item.done) return false;
-        if (filterMode === 'not-done' && item.done) return false;
-        if (!normalizedSearch) return true;
-
-        const name = item.name?.toLowerCase() ?? '';
-        const description = item.description?.toLowerCase() ?? '';
-        return (
-          name.includes(normalizedSearch) || description.includes(normalizedSearch)
-        );
-      }),
-    [orderedItems, filterMode, normalizedSearch],
-  );
-
-  const isReorderEnabled = filterMode === 'all' && !normalizedSearch;
-
-  const handleDragEnd = useCallback((event: DragEndEvent) => {
-    if (!isReorderEnabled) return;
-    const { active, over } = event;
-    if (!over || active.id === over.id) return;
-    reorder(active.id as number, over.id as number);
-  }, [isReorderEnabled, reorder]);
+  const { sensors, handleDragEnd } = useTodoListDnd({
+    isReorderEnabled,
+    reorder,
+  });
 
   return {
     todoList,

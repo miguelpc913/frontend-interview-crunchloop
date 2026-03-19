@@ -1,7 +1,7 @@
-import { TodoListHeader } from './components/TodoListHeader/TodoListHeader';
+import { TodoListHeader } from './TodoListHeader/TodoListHeader';
 import { TodoListSkeleton } from '../TodoListSkeleton/TodoListSkeleton';
-import { TodoListToolbar } from './components/TodoListToolbar/TodoListToolbar';
-import { TodoListItems } from './components/TodoListItems/TodoListItems';
+import { TodoListToolbar } from './TodoListToolbar/TodoListToolbar';
+import { TodoListItems } from './TodoListItems/TodoListItems';
 import { useTodoList } from './hooks/useTodoList';
 import { QueryState } from '@/shared/ui/QueryState';
 import { Card, CardContent } from '@/shared/ui/card';

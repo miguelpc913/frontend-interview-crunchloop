@@ -6,9 +6,9 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import type { TodoItem } from '@/shared/types/todoList';
-import { TodoListItem } from './TodoListItem/TodoListItem';
-import { TodoListEmptyState } from './TodoListEmptyState/TodoListEmptyState';
-import { todoListQueryKeys } from '../../../../api/queryKeys';
+import { TodoListItem } from '../TodoListItem/TodoListItem';
+import { TodoListEmptyState } from './TodoListEmptyState';
+import { todoListMutationKeys } from '@/shared/query/todoLists';
 
 interface TodoListItemsProps {
   todoListId: number;
@@ -33,7 +33,7 @@ function PendingItems({ items }: { items: PendingItem[] }) {
       {items.map((item) => (
         <li
           key={item.mutationId}
-          data-testid="pending-todo-item"
+          data-testid='pending-todo-item'
           className={pendingItemClassName}
         >
           {item.name}
@@ -53,7 +53,7 @@ export function TodoListItems({
 }: TodoListItemsProps) {
   const pendingItems = useMutationState<PendingItem>({
     filters: {
-      mutationKey: todoListQueryKeys.addItem(todoListId),
+      mutationKey: todoListMutationKeys.addItem(todoListId),
       status: 'pending',
     },
     select: (mutation) => ({
@@ -66,8 +66,8 @@ export function TodoListItems({
     if (pendingItems.length === 0) {
       return (
         <TodoListEmptyState
-          title="No tasks yet."
-          description="Start by adding your first task above."
+          title='No tasks yet.'
+          description='Start by adding your first task above.'
         />
       );
     }
@@ -79,8 +79,8 @@ export function TodoListItems({
     if (pendingItems.length === 0) {
       return (
         <TodoListEmptyState
-          title="No tasks match your filters."
-          description="Try changing the search term or done filter."
+          title='No tasks match your filters.'
+          description='Try changing the search term or done filter.'
         />
       );
     }
@@ -88,8 +88,8 @@ export function TodoListItems({
     return (
       <>
         <TodoListEmptyState
-          title="No tasks match your filters."
-          description="Try changing the search term or done filter."
+          title='No tasks match your filters.'
+          description='Try changing the search term or done filter.'
         />
         <PendingItems items={pendingItems} />
       </>

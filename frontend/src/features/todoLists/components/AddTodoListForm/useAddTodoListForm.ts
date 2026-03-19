@@ -9,7 +9,7 @@ import {
   type CreateTodoListFormValues,
 } from '../../schemas/todoList.schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { todoListQueryKeys } from '../../api/queryKeys';
+import { todoListQueryKeys } from '@/shared/query/todoLists';
 
 interface UseAddTodoListFormOptions {
   initialValue?: string;

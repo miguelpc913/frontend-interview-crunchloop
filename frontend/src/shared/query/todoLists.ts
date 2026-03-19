@@ -1,6 +1,9 @@
 export const todoListQueryKeys = {
   all: ['todoLists'] as const,
   detail: (todoListId: number) => ['todoList', todoListId] as const,
+};
+
+export const todoListMutationKeys = {
   addItem: (todoListId: number) => ['addTodoItem', todoListId] as const,
 };
 
