@@ -49,8 +49,8 @@ export function TodoListHeader({ todoListId, name }: TodoListHeaderProps) {
             onBlur={handleListNameBlur}
             onKeyDown={handleListNameKeyDown}
             disabled={disabled}
-            name='name'
-            autoComplete='off'
+            name="name"
+            autoComplete="off"
           />
           {listNameErrors.name && (
             <p className="mt-1 text-xs text-red-500">{listNameErrors.name.message}</p>
@@ -97,7 +97,7 @@ export function TodoListHeader({ todoListId, name }: TodoListHeaderProps) {
             aria-label="Task name"
             {...registerAddTask('name')}
             disabled={disabled}
-            autoComplete='off'
+            autoComplete="off"
           />
         </div>
         <Button

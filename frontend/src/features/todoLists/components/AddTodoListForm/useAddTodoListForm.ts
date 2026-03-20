@@ -9,14 +9,18 @@ import {
   type CreateTodoListFormValues,
 } from '../../schemas/todoList.schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { todoListQueryKeys } from '@/shared/query/todoLists';
+import { todoListMutationKeys, todoListQueryKeys } from '@/shared/query/todoLists';
+import {
+  addTodoListToCaches,
+  removeTodoListFromCaches,
+  replaceTodoListInCaches,
+} from '@/shared/query/todoListCache';
 
 interface UseAddTodoListFormOptions {
   initialValue?: string;
 }
 
 interface OptimisticContext {
-  previous?: TodoList[];
   tempId: number;
 }
 
@@ -30,71 +34,44 @@ export function useAddTodoListForm({ initialValue = '' }: UseAddTodoListFormOpti
     },
   });
 
-  const createMutation = useMutation<TodoList, Error, CreateTodoListDto, OptimisticContext>({
+  const createListMutation = useMutation<TodoList, Error, CreateTodoListDto, OptimisticContext>({
+    mutationKey: todoListMutationKeys.create(),
     mutationFn: (dto) => createTodoList(dto),
     onMutate: async (dto) => {
       await queryClient.cancelQueries({ queryKey: todoListQueryKeys.all });
-
-      const previous = queryClient.getQueryData<TodoList[]>(todoListQueryKeys.all);
       const tempId = -Date.now();
-      const optimisticList: TodoList = {
+      addTodoListToCaches(queryClient, {
         id: tempId,
         name: dto.name.trim(),
         todoItems: [],
-      };
-
-      queryClient.setQueryData<TodoList[]>(todoListQueryKeys.all, (old) => {
-        const current = old ?? [];
-        return [...current, optimisticList];
       });
-
-      // Seed the per-list cache so `TodoList` can render without fetching
-      // (we also disable fetching for temporary ids in `useTodoList`).
-      queryClient.setQueryData<TodoList>(todoListQueryKeys.detail(tempId), optimisticList);
-
-      return { previous, tempId };
+      return { tempId };
     },
     onError: (err, _dto, context) => {
       if (!context) return;
-
-      queryClient.setQueryData<TodoList[] | undefined>(todoListQueryKeys.all, context.previous);
-      queryClient.removeQueries({ queryKey: todoListQueryKeys.detail(context.tempId) });
+      removeTodoListFromCaches(queryClient, context.tempId);
+      queryClient.invalidateQueries({ queryKey: todoListQueryKeys.all });
       toast.error(err.message || 'Could not create todo list');
     },
     onSuccess: (created, _dto, context) => {
       if (!context) return;
-
-      queryClient.setQueryData<TodoList[]>(todoListQueryKeys.all, (old) => {
-        const current = old ?? [];
-        const hasOptimisticEntry = current.some((list) => list.id === context.tempId);
-
-        if (hasOptimisticEntry) {
-          return current.map((list) => (list.id === context.tempId ? created : list));
-        }
-
-        // Fallback: if the optimistic entry is missing, still ensure the created list is present.
-        return [...current, created];
-      });
-
-      queryClient.setQueryData<TodoList>(todoListQueryKeys.detail(created.id), created);
-      queryClient.removeQueries({ queryKey: todoListQueryKeys.detail(context.tempId) });
-
+      replaceTodoListInCaches(queryClient, context.tempId, created);
       form.reset({ name: '' });
       toast.success('Todo list created');
     },
   });
 
   function onValidSubmit(values: CreateTodoListFormValues) {
-    createMutation.mutate({ name: values.name.trim() });
+    createListMutation.mutate({ name: values.name.trim() });
   }
 
   const errorMessage =
-    createMutation.error instanceof Error ? createMutation.error.message : undefined;
+    createListMutation.error instanceof Error ? createListMutation.error.message : undefined;
 
   return {
     form,
     handleSubmit: form.handleSubmit(onValidSubmit),
-    isSubmitting: createMutation.isPending,
+    isSubmitting: createListMutation.isPending,
     errorMessage,
   };
 }

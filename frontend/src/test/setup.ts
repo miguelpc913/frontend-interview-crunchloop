@@ -12,7 +12,8 @@ console.error = (...args: unknown[]) => {
     msg.includes('React does not recognize') ||
     msg.includes('is unrecognized in this browser') ||
     msg.includes('for a non-boolean attribute')
-  ) return;
+  )
+    return;
   originalConsoleError(...args);
 };
 

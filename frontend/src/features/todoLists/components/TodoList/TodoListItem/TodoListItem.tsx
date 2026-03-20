@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { GripVertical, Trash2 } from 'lucide-react';
 import { CSS } from '@dnd-kit/utilities';
 import { useSortable } from '@dnd-kit/sortable';
@@ -10,7 +10,7 @@ import { ConfirmationDialog } from '@/shared/ui/ConfirmationDialog';
 import { cn } from '@/shared/lib/utils';
 import type { TodoItem } from '@/shared/types/todoList';
 import type { UpdateTodoItemDto } from '@/features/todoLists/types/todoList';
-import { useTodoListItem } from './hooks/useTodoListItem';
+import { useTodoListItem } from './useTodoListItem';
 
 interface TodoListItemProps {
   todoListId: number;
@@ -20,23 +20,32 @@ interface TodoListItemProps {
   onDeleteItem: (todoItemId: number) => void;
 }
 
-function TodoListItemComponent({
+export function TodoListItem({
   todoListId,
   item,
   isDraggable = false,
   onUpdateItem,
   onDeleteItem,
 }: TodoListItemProps) {
-  const { form, handleNameBlur, handleDescriptionBlur, handleKeyDown } = useTodoListItem({
+  const {
+    form,
+    isDeleteDialogOpen,
+    setIsDeleteDialogOpen,
+    handleNameBlur,
+    handleDescriptionBlur,
+    handleKeyDown,
+    handleCheckedChange,
+    handleDeleteClick,
+  } = useTodoListItem({
     item,
     onUpdate: (updates: UpdateTodoItemDto) => onUpdateItem(item.id, updates),
+    onDelete: () => onDeleteItem(item.id),
   });
 
   const {
     register,
     formState: { errors },
   } = form;
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: item.id,
@@ -51,18 +60,6 @@ function TodoListItemComponent({
     }),
     [transform, transition, isDragging],
   );
-
-  const handleCheckedChange = useCallback(
-    (checked: boolean | 'indeterminate') => {
-      onUpdateItem(item.id, { done: checked === true });
-    },
-    [item.id, onUpdateItem],
-  );
-
-  const handleDeleteClick = useCallback(() => {
-    onDeleteItem(item.id);
-    setIsDeleteDialogOpen(false);
-  }, [item.id, onDeleteItem]);
 
   return (
     <li
@@ -112,7 +109,7 @@ function TodoListItemComponent({
             )}
             type="text"
             aria-label="Task name"
-            autoComplete='off'
+            autoComplete="off"
             {...register('name')}
             onBlur={handleNameBlur}
             onKeyDown={handleKeyDown}
@@ -165,18 +162,3 @@ function TodoListItemComponent({
     </li>
   );
 }
-
-function arePropsEqual(prev: TodoListItemProps, next: TodoListItemProps) {
-  return (
-    prev.todoListId === next.todoListId &&
-    prev.isDraggable === next.isDraggable &&
-    prev.item.id === next.item.id &&
-    prev.item.name === next.item.name &&
-    prev.item.description === next.item.description &&
-    prev.item.done === next.item.done &&
-    prev.onUpdateItem === next.onUpdateItem &&
-    prev.onDeleteItem === next.onDeleteItem
-  );
-}
-
-export const TodoListItem = memo(TodoListItemComponent, arePropsEqual);

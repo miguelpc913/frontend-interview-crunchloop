@@ -31,6 +31,54 @@ export function restoreTodoListCaches(
   }
 }
 
+export function addTodoListToCaches(queryClient: QueryClient, todoList: TodoList) {
+  queryClient.setQueryData<TodoList[]>(todoListQueryKeys.all, (current) => {
+    const lists = current ?? [];
+    if (lists.some((list) => list.id === todoList.id)) return lists;
+    return [...lists, todoList];
+  });
+  queryClient.setQueryData<TodoList>(todoListQueryKeys.detail(todoList.id), todoList);
+}
+
+export function removeTodoListFromCaches(queryClient: QueryClient, todoListId: number) {
+  queryClient.setQueryData<TodoList[] | undefined>(todoListQueryKeys.all, (current) => {
+    if (!current) return current;
+    return current.filter((list) => list.id !== todoListId);
+  });
+  queryClient.removeQueries({ queryKey: todoListQueryKeys.detail(todoListId) });
+}
+
+export function updateTodoListInCaches(
+  queryClient: QueryClient,
+  todoListId: number,
+  updater: (current: TodoList) => TodoList,
+) {
+  queryClient.setQueryData<TodoList | undefined>(todoListQueryKeys.detail(todoListId), (current) =>
+    current ? updater(current) : current,
+  );
+  queryClient.setQueryData<TodoList[] | undefined>(todoListQueryKeys.all, (current) => {
+    if (!current) return current;
+    return current.map((list) => (list.id === todoListId ? updater(list) : list));
+  });
+}
+
+export function replaceTodoListInCaches(
+  queryClient: QueryClient,
+  tempId: number,
+  realList: TodoList,
+) {
+  queryClient.setQueryData<TodoList[]>(todoListQueryKeys.all, (current) => {
+    const lists = current ?? [];
+    const hasTemp = lists.some((list) => list.id === tempId);
+    if (hasTemp) {
+      return lists.map((list) => (list.id === tempId ? realList : list));
+    }
+    return [...lists, realList];
+  });
+  queryClient.setQueryData<TodoList>(todoListQueryKeys.detail(realList.id), realList);
+  queryClient.removeQueries({ queryKey: todoListQueryKeys.detail(tempId) });
+}
+
 export function updateTodoItemInCaches(
   queryClient: QueryClient,
   todoListId: number,

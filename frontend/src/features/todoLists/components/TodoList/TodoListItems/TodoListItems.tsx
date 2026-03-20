@@ -6,6 +6,7 @@ import type { TodoItem } from '@/shared/types/todoList';
 import type { UpdateTodoItemDto } from '@/features/todoLists/types/todoList';
 import { TodoListItem } from '../TodoListItem/TodoListItem';
 import { TodoListEmptyState } from './TodoListEmptyState';
+import { PendingItems, type PendingItem } from './PendingItems';
 import { todoListMutationKeys } from '@/shared/query/todoLists';
 
 interface TodoListItemsProps {
@@ -17,26 +18,6 @@ interface TodoListItemsProps {
   onDragEnd: (event: DragEndEvent) => void;
   onUpdateItem: (todoItemId: number, updates: UpdateTodoItemDto) => void;
   onDeleteItem: (todoItemId: number) => void;
-}
-
-const pendingItemClassName =
-  'rounded-lg border border-dashed border-border bg-muted/60 px-3 py-2.5 text-xs text-muted-foreground opacity-50';
-
-interface PendingItem {
-  mutationId: number;
-  name: string;
-}
-
-function PendingItems({ items }: { items: PendingItem[] }) {
-  return (
-    <>
-      {items.map((item) => (
-        <li key={item.mutationId} data-testid="pending-todo-item" className={pendingItemClassName}>
-          {item.name}
-        </li>
-      ))}
-    </>
-  );
 }
 
 export function TodoListItems({

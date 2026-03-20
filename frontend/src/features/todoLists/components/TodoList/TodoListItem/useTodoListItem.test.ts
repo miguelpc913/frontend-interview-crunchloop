@@ -9,6 +9,7 @@ describe('useTodoListItem', () => {
       useTodoListItem({
         item: { id: 1, name: 'Task A', description: 'desc', done: false },
         onUpdate,
+        onDelete: vi.fn(),
       }),
     );
 
@@ -28,6 +29,7 @@ describe('useTodoListItem', () => {
       useTodoListItem({
         item: { id: 1, name: 'Task A', description: 'desc', done: false },
         onUpdate,
+        onDelete: vi.fn(),
       }),
     );
 
@@ -47,6 +49,7 @@ describe('useTodoListItem', () => {
       useTodoListItem({
         item: { id: 1, name: 'Task A', description: 'desc', done: false },
         onUpdate,
+        onDelete: vi.fn(),
       }),
     );
 
@@ -65,6 +68,7 @@ describe('useTodoListItem', () => {
       useTodoListItem({
         item: { id: 1, name: 'Task A', description: '', done: false },
         onUpdate: vi.fn(),
+        onDelete: vi.fn(),
       }),
     );
     const blur = vi.fn();
@@ -84,6 +88,7 @@ describe('useTodoListItem', () => {
         useTodoListItem({
           item: { id: 1, name: itemName, description: 'desc', done: false },
           onUpdate,
+          onDelete: vi.fn(),
         }),
       { initialProps: { itemName: 'Task A' } },
     );

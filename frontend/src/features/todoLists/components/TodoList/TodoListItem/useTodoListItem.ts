@@ -1,16 +1,17 @@
-import { useCallback, useEffect, type KeyboardEvent } from 'react';
+import { useCallback, useEffect, useState, type KeyboardEvent } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { TodoItem } from '@/shared/types/todoList';
-import type { UpdateTodoItemDto } from '../../../../types/todoList';
-import { editTodoItemSchema, type EditTodoItemFormValues } from '../../../../schemas/todoList.schemas';
+import type { UpdateTodoItemDto } from '../../../types/todoList';
+import { editTodoItemSchema, type EditTodoItemFormValues } from '../../../schemas/todoList.schemas';
 
 interface UseTodoListItemOptions {
   item: TodoItem;
   onUpdate: (updates: UpdateTodoItemDto) => void;
+  onDelete: () => void;
 }
 
-export function useTodoListItem({ item, onUpdate }: UseTodoListItemOptions) {
+export function useTodoListItem({ item, onUpdate, onDelete }: UseTodoListItemOptions) {
   const form = useForm<EditTodoItemFormValues>({
     mode: 'onChange',
     resolver: zodResolver(editTodoItemSchema),
@@ -19,6 +20,8 @@ export function useTodoListItem({ item, onUpdate }: UseTodoListItemOptions) {
       description: item.description ?? '',
     },
   });
+
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   useEffect(() => {
     form.reset({
@@ -54,10 +57,26 @@ export function useTodoListItem({ item, onUpdate }: UseTodoListItemOptions) {
     }
   }, []);
 
+  const handleCheckedChange = useCallback(
+    (checked: boolean | 'indeterminate') => {
+      onUpdate({ done: checked === true });
+    },
+    [onUpdate],
+  );
+
+  const handleDeleteClick = useCallback(() => {
+    onDelete();
+    setIsDeleteDialogOpen(false);
+  }, [onDelete]);
+
   return {
     form,
+    isDeleteDialogOpen,
+    setIsDeleteDialogOpen,
     handleNameBlur,
     handleDescriptionBlur,
     handleKeyDown,
+    handleCheckedChange,
+    handleDeleteClick,
   };
 }

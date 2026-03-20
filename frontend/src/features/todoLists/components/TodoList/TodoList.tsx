@@ -3,7 +3,7 @@ import { TodoListSkeleton } from '../TodoListSkeleton/TodoListSkeleton';
 import { TodoListToolbar } from './TodoListToolbar/TodoListToolbar';
 import { TodoListItems } from './TodoListItems/TodoListItems';
 import { useTodoList } from './hooks/useTodoList';
-import { useTodoListItemMutations } from './TodoListItem/hooks/useTodoListItemMutations';
+import { useTodoListItemMutations } from './hooks/useTodoListItemMutations';
 import { QueryState } from '@/shared/ui/QueryState';
 import { Card, CardContent } from '@/shared/ui/card';
 import { Separator } from '@/shared/ui/separator';

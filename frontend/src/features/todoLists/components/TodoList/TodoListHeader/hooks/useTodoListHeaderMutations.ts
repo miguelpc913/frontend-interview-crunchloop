@@ -1,66 +1,57 @@
 import { useCallback } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import type { TodoList } from '@/shared/types/todoList';
 import { updateTodoList, deleteTodoList, addTodoItem } from '@/shared/api/todoLists';
 import toast from 'react-hot-toast';
 import { todoListMutationKeys, todoListQueryKeys } from '@/shared/query/todoLists';
 import {
   addTodoItemToCaches,
+  removeTodoListFromCaches,
   restoreTodoListCaches,
   snapshotTodoListCaches,
-  updateTodoItemInCaches,
+  updateTodoListInCaches,
 } from '@/shared/query/todoListCache';
 
 export function useTodoListHeaderMutations(todoListId: number) {
   const queryClient = useQueryClient();
 
-  const updateNameMutation = useMutation({
+  const updateListNameMutation = useMutation({
+    mutationKey: todoListMutationKeys.update(todoListId),
     mutationFn: (name: string) => updateTodoList(todoListId, { name }),
     onMutate: async (name: string) => {
+      await queryClient.cancelQueries({ queryKey: todoListQueryKeys.all });
       await queryClient.cancelQueries({ queryKey: todoListQueryKeys.detail(todoListId) });
       const snapshot = snapshotTodoListCaches(queryClient, todoListId);
-
-      queryClient.setQueryData<TodoList | undefined>(
-        todoListQueryKeys.detail(todoListId),
-        (current) => (current ? { ...current, name } : current),
-      );
-      queryClient.setQueryData<TodoList[] | undefined>(todoListQueryKeys.all, (current) =>
-        current?.map((list) => (list.id === todoListId ? { ...list, name } : list)),
-      );
-
+      updateTodoListInCaches(queryClient, todoListId, (current) => ({ ...current, name }));
       return { snapshot };
     },
     onSuccess: (updated) => {
-      queryClient.setQueryData<TodoList | undefined>(
-        todoListQueryKeys.detail(todoListId),
-        (current) => (current ? { ...current, name: updated.name } : current),
-      );
-      queryClient.setQueryData<TodoList[] | undefined>(todoListQueryKeys.all, (current) =>
-        current?.map((list) => (list.id === todoListId ? { ...list, name: updated.name } : list)),
-      );
+      updateTodoListInCaches(queryClient, todoListId, (current) => ({
+        ...current,
+        name: updated.name,
+      }));
     },
     onError: (_err, _variables, context) => {
       restoreTodoListCaches(queryClient, todoListId, context?.snapshot);
+      queryClient.invalidateQueries({ queryKey: todoListQueryKeys.detail(todoListId) });
+      queryClient.invalidateQueries({ queryKey: todoListQueryKeys.all });
       toast.error('Could not rename the list');
     },
   });
 
   const deleteListMutation = useMutation({
+    mutationKey: todoListMutationKeys.delete(todoListId),
     mutationFn: () => deleteTodoList(todoListId),
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: todoListQueryKeys.all });
       await queryClient.cancelQueries({ queryKey: todoListQueryKeys.detail(todoListId) });
       const snapshot = snapshotTodoListCaches(queryClient, todoListId);
-
-      queryClient.setQueryData<TodoList[] | undefined>(todoListQueryKeys.all, (current) =>
-        current?.filter((list) => list.id !== todoListId),
-      );
-      queryClient.removeQueries({ queryKey: todoListQueryKeys.detail(todoListId) });
-
+      removeTodoListFromCaches(queryClient, todoListId);
       return { snapshot };
     },
     onError: (_err, _variables, context) => {
       restoreTodoListCaches(queryClient, todoListId, context?.snapshot);
+      queryClient.invalidateQueries({ queryKey: todoListQueryKeys.detail(todoListId) });
+      queryClient.invalidateQueries({ queryKey: todoListQueryKeys.all });
       toast.error('Could not delete the list');
     },
     onSuccess: () => {
@@ -71,29 +62,11 @@ export function useTodoListHeaderMutations(todoListId: number) {
   const addItemMutation = useMutation({
     mutationFn: (name: string) => addTodoItem(todoListId, { name }),
     mutationKey: todoListMutationKeys.addItem(todoListId),
-    onMutate: async (name: string) => {
-      await queryClient.cancelQueries({ queryKey: todoListQueryKeys.detail(todoListId) });
-      const snapshot = snapshotTodoListCaches(queryClient, todoListId);
-      const optimisticId = -Date.now();
-      addTodoItemToCaches(queryClient, todoListId, {
-        id: optimisticId,
-        name: name.trim(),
-        description: '',
-        done: false,
-      });
-
-      return { snapshot, optimisticId };
-    },
-    onSuccess: (createdItem, _name, context) => {
-      if (context?.optimisticId) {
-        updateTodoItemInCaches(queryClient, todoListId, context.optimisticId, () => createdItem);
-      } else {
-        addTodoItemToCaches(queryClient, todoListId, createdItem);
-      }
+    onSuccess: (createdItem) => {
+      addTodoItemToCaches(queryClient, todoListId, createdItem);
       toast.success('Task added');
     },
-    onError: (_err, _variables, context) => {
-      restoreTodoListCaches(queryClient, todoListId, context?.snapshot);
+    onError: () => {
       toast.error('Could not add the task');
     },
   });
@@ -101,9 +74,9 @@ export function useTodoListHeaderMutations(todoListId: number) {
   const handleUpdateName = useCallback(
     (name: string) => {
       if (todoListId <= 0) return;
-      updateNameMutation.mutate(name);
+      updateListNameMutation.mutate(name);
     },
-    [todoListId, updateNameMutation],
+    [todoListId, updateListNameMutation],
   );
 
   const handleDeleteList = useCallback(() => {
