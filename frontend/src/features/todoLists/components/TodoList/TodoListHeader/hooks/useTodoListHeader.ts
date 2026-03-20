@@ -6,7 +6,7 @@ import {
   editTodoListNameSchema,
   type AddTodoItemFormValues,
   type EditTodoListNameFormValues,
-} from '../../../schemas/todoList.schemas';
+} from '../../../../schemas/todoList.schemas';
 
 interface UseTodoListHeaderOptions {
   name: string;

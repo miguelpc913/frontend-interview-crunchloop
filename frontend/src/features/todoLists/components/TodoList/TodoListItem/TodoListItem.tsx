@@ -10,7 +10,7 @@ import { ConfirmationDialog } from '@/shared/ui/ConfirmationDialog';
 import { cn } from '@/shared/lib/utils';
 import type { TodoItem } from '@/shared/types/todoList';
 import type { UpdateTodoItemDto } from '@/features/todoLists/types/todoList';
-import { useTodoListItem } from './useTodoListItem';
+import { useTodoListItem } from './hooks/useTodoListItem';
 
 interface TodoListItemProps {
   todoListId: number;

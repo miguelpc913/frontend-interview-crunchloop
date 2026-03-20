@@ -3,8 +3,8 @@ import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Trash2, ListTodo, Plus } from 'lucide-react';
 import { ConfirmationDialog } from '@/shared/ui/ConfirmationDialog';
-import { useTodoListHeaderMutations } from './useTodoListHeaderMutations';
-import { useTodoListHeader } from './useTodoListHeader';
+import { useTodoListHeaderMutations } from './hooks/useTodoListHeaderMutations';
+import { useTodoListHeader } from './hooks/useTodoListHeader';
 
 export interface TodoListHeaderProps {
   todoListId: number;

@@ -2,14 +2,13 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { renderWithProviders } from '@/test/test-utils';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-
 import { TodoListHeader } from './TodoListHeader';
 
 const mockHandleUpdateName = vi.fn();
 const mockHandleDeleteList = vi.fn();
 const mockHandleAddItem = vi.fn();
 
-vi.mock('./useTodoListHeaderMutations', () => ({
+vi.mock('./hooks/useTodoListHeaderMutations', () => ({
   useTodoListHeaderMutations: () => ({
     handleUpdateName: mockHandleUpdateName,
     handleDeleteList: mockHandleDeleteList,

@@ -5,6 +5,17 @@ import { afterAll, afterEach, beforeAll, vi } from 'vitest';
 import { server } from './server';
 import { resetTodoLists } from './handlers';
 
+const originalConsoleError = console.error;
+console.error = (...args: unknown[]) => {
+  const msg = typeof args[0] === 'string' ? args[0] : '';
+  if (
+    msg.includes('React does not recognize') ||
+    msg.includes('is unrecognized in this browser') ||
+    msg.includes('for a non-boolean attribute')
+  ) return;
+  originalConsoleError(...args);
+};
+
 vi.mock('@dnd-kit/core', () => {
   return {
     DndContext: (props: { children: unknown }) => props.children,
